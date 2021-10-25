@@ -16,13 +16,13 @@ export default {
         inputs: [
           {
             label: 'Nickname',
-            id: 'nickname',
+            id: 'userName',
             placeholder: 'fulano_X123',
             type: 'text',
           },
           {
             label: 'Nome Completo',
-            id: 'name',
+            id: 'fullName',
             placeholder: 'Fulano de Tal',
             type: 'text',
           },
@@ -39,7 +39,7 @@ export default {
           },
           {
             label: 'Confirmar Senha',
-            id: 'password_confirmation',
+            id: 'passwordConfirmation',
             type: 'password',
           },
         ],

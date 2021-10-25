@@ -4,6 +4,7 @@
             <button class="button-1 btn-2" @click="send(form_data)">
               Entrar
             </button>
+            <NuxtLink to="/schedule/people">Teste, bora</NuxtLink>
     </template>
     </form-page>
 </template>
@@ -18,7 +19,7 @@ export default {
         inputs: [
           {
             label: 'Nick ou Email',
-            id: 'usuario',
+            id: 'userName',
             placeholder: 'fulano_X123',
             type: 'text',
           },
@@ -33,7 +34,8 @@ export default {
   },
   methods:{
     send(data){
-      console.log(data.form_data.usuario);
+      this.$axios.post("v1/Auth/signin", data.form_data).then(response => {
+      });
     },
   },
   components:{
