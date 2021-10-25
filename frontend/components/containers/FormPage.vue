@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import BackArrow from '@/components/BackArrow'
+import BackArrow from '@/components/BackArrow';
 
 export default {
   data(){
@@ -95,8 +95,6 @@ export default {
             inset 5px 5px 8px #00000040, inset -5px -5px 8px #ffffff40;
         }
       }
-    }
-    .actions {
     }
   }
 }
