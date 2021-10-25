@@ -1,0 +1,85 @@
+<template>
+  <NuxtLink to="/">
+    <div class="back-arrow">
+      <svg
+        width="11px"
+        height="20px"
+        viewBox="0 0 11 20"
+        version="1.1"
+        xmlns="http://www.w3.org/2000/svg"
+        xmlns:xlink="http://www.w3.org/1999/xlink"
+      >
+        <g
+          id="Icons"
+          stroke="none"
+          stroke-width="1"
+          fill="none"
+          fill-rule="evenodd"
+        >
+          <g id="Rounded" transform="translate(-548.000000, -3434.000000)">
+            <g id="Navigation" transform="translate(100.000000, 3378.000000)">
+              <g
+                id="-Round-/-Navigation-/-arrow_back_ios"
+                transform="translate(442.000000, 54.000000)"
+              >
+                <g>
+                  <polygon
+                    id="Path"
+                    opacity="0.87"
+                    points="0 0 24 0 24 24 0 24"
+                  ></polygon>
+                  <path
+                    d="M16.62,2.99 C16.13,2.5 15.34,2.5 14.85,2.99 L6.54,11.3 C6.15,11.69 6.15,12.32 6.54,12.71 L14.85,21.02 C15.34,21.51 16.13,21.51 16.62,21.02 C17.11,20.53 17.11,19.74 16.62,19.25 L9.38,12 L16.63,4.75 C17.11,4.27 17.11,3.47 16.62,2.99 Z"
+                    id="🔹-Icon-Color"
+                    fill="#1D1D1D"
+                  ></path>
+                </g>
+              </g>
+            </g>
+          </g>
+        </g>
+      </svg>
+    </div>
+  </NuxtLink>
+</template>
+
+<script>
+export default {}
+</script>
+
+<style lang="scss" scoped>
+.back-arrow {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 46px;
+  width: 46px;
+
+  cursor: pointer;
+
+  border-radius: 100%;
+  box-shadow: 2px 2px 6px #00000060, -2px -2px 6px #ffffff60,
+    inset 2px 2px 6px #ffffff60, inset -2px -2px 6px #00000060;
+
+  svg {
+    width: 30px;
+    height: 30px;
+
+    transition: transform 300ms;
+  }
+
+  transition: box-shadow 300ms;
+
+  &:hover {
+    box-shadow: 2px 2px 8px #00000060, -2px -2px 8px #ffffff60,
+      inset 2px 2px 8px #00000060, inset -2px -2px 8px #ffffff60;
+
+    svg {
+      transform: translate(3px, 3px);
+    }
+  }
+}
+</style>
