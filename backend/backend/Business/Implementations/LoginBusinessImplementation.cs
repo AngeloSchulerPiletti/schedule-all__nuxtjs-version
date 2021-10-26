@@ -27,6 +27,7 @@ namespace backend.Business.Implementations
         public TokenVO ValidateCredentials(UserVO userCredentials)
         {
             var user = _repository.ValidateCredentials(userCredentials);
+        
             if (user == null) return null;
             var claims = new List<Claim> {
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString("N")),

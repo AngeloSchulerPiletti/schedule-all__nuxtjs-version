@@ -5,6 +5,7 @@ using System;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace backend.Repository
 {
@@ -20,7 +21,15 @@ namespace backend.Repository
         public User ValidateCredentials(UserVO user)
         {
             var pass = ComputeHash(user.Password, new SHA256CryptoServiceProvider());
-            return _context.Users.FirstOrDefault(u => (u.UserName == user.UserName) && (u.Password == pass));
+            /*
+                Verificação do username, verificar se é um email ou username
+            */
+            var emailPattern = @"^\S+@\S+\.\S+$";
+            Match match = Regex.Match(user.UserName, emailPattern);
+            bool isEmail = match.Success;
+
+            // if (Caso o email do usuario seja nulo, faça a verificação por username)
+            return _context.Users.FirstOrDefault(u => ((isEmail) ? u.Email == user.UserName : (u.UserName == user.UserName)) && (u.Password == pass));
         }
 
         public User ValidateCredentials(string userName)
