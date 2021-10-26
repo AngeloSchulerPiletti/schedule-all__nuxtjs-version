@@ -35,6 +35,15 @@ namespace backend.Controllers
 
 
         [HttpPost]
+        [Route("validate-token")]
+        [Authorize("Bearer")]
+        public IActionResult ValidateToken()
+        {
+            return Ok("Token Válido");
+        }
+
+
+        [HttpPost]
         [Route("refresh")]
         public IActionResult Refresh([FromBody] TokenVO tokenVo)
         {
