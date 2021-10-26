@@ -43,16 +43,38 @@ export default {
     '@nuxtjs/vuetify',
   ],
 
+  ssr: true,
+  target: 'server',
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
+    'cookie-universal-nuxt',
+    // '@nuxtjs/auth-next'
   ],
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     baseUrl: "https://localhost:44335/api/",
+
   },
+
+  // auth: {
+  //   strategies: {
+  //     local: {
+  //       token: {
+  //         property: 'accessToken',
+  //         global: true,
+  //       },
+  //       endpoints: {
+  //         login: { url: '/v1/Auth/signin', method: 'post' },
+  //         logout: { url: '/v1/Auth/revoke', method: 'get' },
+  //         refresh: { url: '/v1/Auth/refresh', method: 'post' },
+  //         user: false,
+  //       }
+  //     }
+  //   }
+  // },
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {

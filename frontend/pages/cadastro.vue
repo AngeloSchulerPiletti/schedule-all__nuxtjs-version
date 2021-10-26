@@ -10,6 +10,7 @@
 import FormPage from '@/components/containers/FormPage.vue'
 
 export default {
+  middleware: 'auth_not_allowed',
   data() {
     return {
       form_structure: {

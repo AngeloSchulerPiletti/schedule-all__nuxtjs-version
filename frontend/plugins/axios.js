@@ -1,20 +1,21 @@
+const https = require('https')
 
-export default function ({ $axios, redirect, store }) {
+export default function ({ $axios, redirect, $cookies }) {
+    $axios.defaults.httpsAgent = new https.Agent({ rejectUnauthorized: false });
+
     $axios.onRequest(config => {
-        var userInfo_str = window.sessionStorage.getItem('userInfo');
-        if (userInfo_str) {
-            $axios.setToken(JSON.parse(userInfo_str).accessToken, 'Bearer');
+        var userData = $cookies.get('userData');
+        if (userData) {
+            console.log('o token enviado é: ' + userData.accessToken);
+            $axios.setToken(userData.accessToken, 'Bearer');
         }
-        console.log(config);
     });
 
     $axios.onResponse(response => {
-        if (response.data.authenticated) {
-            window.sessionStorage.setItem('userInfo', JSON.stringify(response.data));
-        }
+        // console.log(response);
     });
 
     $axios.onError(error => {
-      console.log(error);
+        console.log(error);
     });
-  }
+}
