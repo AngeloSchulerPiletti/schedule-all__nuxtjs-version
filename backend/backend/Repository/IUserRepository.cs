@@ -7,6 +7,8 @@ namespace backend.Repository
     {
         User ValidateCredentials(UserVO user);
         User ValidateCredentials(string userName);
+        bool SaveNewUserOnDB(NewUserVO user);
+        bool CheckIfUserAlreadyExists(NewUserVO user);
         bool RevokeToken(string userName);
         User RefreshUserInfo(User user);
     }

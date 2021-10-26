@@ -7,6 +7,14 @@ namespace backend.Models
     [Table("users")]
     public class User
     {
+        public User(string userName, string fullName, string email, string password)
+        {
+            UserName = userName;
+            FullName = fullName;
+            Email = email;
+            Password = password;
+        }
+
         [Key]
         [Column("id")]
         public long Id { get; set; }

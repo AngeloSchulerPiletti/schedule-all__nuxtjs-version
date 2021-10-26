@@ -32,10 +32,12 @@ namespace backend.Repository
             return _context.Users.FirstOrDefault(u => ((isEmail) ? u.Email == user.UserName : (u.UserName == user.UserName)) && (u.Password == pass));
         }
 
+
         public User ValidateCredentials(string userName)
         {
             return _context.Users.SingleOrDefault(u => u.UserName == userName);
         }
+
 
         public bool RevokeToken(string userName)
         {
@@ -74,5 +76,27 @@ namespace backend.Repository
             return BitConverter.ToString(hashedBytes);
         }
 
+        public bool CheckIfUserAlreadyExists(NewUserVO user)
+        {
+            var usernameResult = _context.Users.SingleOrDefault(u => u.UserName == user.UserName);
+            if (usernameResult != null) return true;
+            var emailResult = _context.Users.SingleOrDefault(u => u.Email == user.Email);
+            if (emailResult != null) return true;
+            return false;
+        }
+
+        public bool SaveNewUserOnDB(NewUserVO userVo)
+        {
+            string hashedPassword = ComputeHash(userVo.Password, new SHA256CryptoServiceProvider());
+            string fullName = userVo.FullName;
+            string email = userVo.Email;
+            string userName = userVo.UserName;
+
+            User user = new(userName, fullName, email, hashedPassword);
+
+            _context.Add(user);
+            _context.SaveChanges();
+            return true;
+        }
     }
 }
