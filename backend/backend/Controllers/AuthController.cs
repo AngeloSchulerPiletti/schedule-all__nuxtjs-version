@@ -26,9 +26,9 @@ namespace backend.Controllers
         [Route("signin")]
         public IActionResult Signin([FromBody] UserVO user) 
         {
-            if (user == null) return BadRequest("Invalid Request");
+            if (user == null) return BadRequest("Usuário Inválido");
             var token = _loginBusiness.ValidateCredentials(user);
-            if (token == null) return Unauthorized();
+            if (token is ErrorBadgeVO) return BadRequest(token);
          
             return Ok(token);
         }

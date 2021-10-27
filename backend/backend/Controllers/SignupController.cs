@@ -28,7 +28,7 @@ namespace backend.Controllers
         public IActionResult Signup([FromBody] NewUserVO user)
         {
             var token = _signupBusiness.CreateNewUser(user);
-            if (token == null) return BadRequest("Dado Inválido");
+            if (token is ErrorBadgeVO) return BadRequest(token);
 
             return Ok(token);
         }

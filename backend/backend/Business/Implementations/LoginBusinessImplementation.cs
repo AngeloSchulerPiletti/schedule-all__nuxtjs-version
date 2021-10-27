@@ -24,11 +24,15 @@ namespace backend.Business.Implementations
             _tokenService = tokenService;
         }
 
-        public TokenVO ValidateCredentials(UserVO userCredentials)
+        public object ValidateCredentials(UserVO userCredentials)
         {
+            ErrorBadgeVO error = new(new List<string>());
+            var result = _repository.ValidateUserVO(userCredentials, error);
+            if (result != null) return result;
+
             var user = _repository.ValidateCredentials(userCredentials);
-        
-            if (user == null) return null;
+            if (user == null) return new ErrorBadgeVO(new List<string>(new string[] { "email, usuário ou senha incorretos" }));
+            
             var claims = new List<Claim> {
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString("N")),
                 new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName)

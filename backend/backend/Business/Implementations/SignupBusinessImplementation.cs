@@ -26,44 +26,20 @@ namespace backend.Business.Implementations
             _tokenService = tokenService;
         }
 
-        public TokenVO CreateNewUser(NewUserVO user)
+        public object CreateNewUser(NewUserVO user)
         {
-            if (user.UserName.Length < 4) return null;
-            var usernamePattern = @"^\w+$";
-            Match usernameMatch = Regex.Match(user.UserName, usernamePattern);
-            bool isUsername = usernameMatch.Success;
-            if (!isUsername) return null;
+            ErrorBadgeVO errors = new(new List<string>());
+            var inputsValidateResult = _repository.ValidateNewUserVO(user, errors);
+            if (inputsValidateResult != null) return inputsValidateResult;
 
-            var emailPattern = @"^\S+@\S+\.\S+$";
-            Match emailMatch = Regex.Match(user.Email, emailPattern);
-            bool isEmail = emailMatch.Success;
-            if (!isEmail) return null;
-
-            var namePattern = @"^[a-zA-Z\s]+$";
-            Match nameMatch = Regex.Match(user.FullName, namePattern);
-            bool isName = nameMatch.Success;
-            if (!isName) return null;
-
-            if (user.Password.Length < 8) return null;
-            var passwordPattern = @"^\S+$";
-            Match passwordMatch = Regex.Match(user.Password, passwordPattern);
-            bool isPassword = passwordMatch.Success;
-            if (!isPassword) return null;
-
-            if (user.PasswordConfirmation == null) return null;
-            if (!user.Password.Equals(user.PasswordConfirmation)) return null;
-
-            if (_repository.CheckIfUserAlreadyExists(user)) return null;
-
-
+            var checkUserExistenceResult = _repository.CheckIfUserAlreadyExists(user, errors);
+            if (checkUserExistenceResult is ErrorBadgeVO) return checkUserExistenceResult;
 
             var saveResult = _repository.SaveNewUserOnDB(user);
-            if (!saveResult) return null;
-
+            if (!saveResult) errors.messages.Add("Houve um erro ao salvar seu usuário. Tente novamente mais tarde");
 
 
             var freshUser = _repository.ValidateCredentials(user.UserName);
-            if (freshUser == null) return null; //APAGA ISSO DEPOIS
 
             var claims = new List<Claim> {
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString("N")),
@@ -80,6 +56,8 @@ namespace backend.Business.Implementations
 
             DateTime createDate = DateTime.Now;
             DateTime expirationDate = createDate.AddMinutes(_configuration.Minutes);
+
+            if (errors.messages.Count > 0) return errors;
 
             return new TokenVO(
                 true,

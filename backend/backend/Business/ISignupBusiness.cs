@@ -8,6 +8,6 @@ namespace backend.Business
 {
     public interface ISignupBusiness
     {
-        TokenVO CreateNewUser(NewUserVO user);
+        object CreateNewUser(NewUserVO user);
     }
 }
