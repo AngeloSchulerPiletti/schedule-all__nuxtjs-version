@@ -49,7 +49,12 @@ export default {
   },
   methods:{
     send(data){
-      console.log(data.form_data.usuario);
+      this.$axios.post('/v1/Signup/signup', data.form_data).then((response) => {
+          this.$cookies.set('userData', response.data);
+          this.$router.push('/schedule');
+      }).catch(err => {
+        err.response.data.messages.map(m => console.log(m));
+      });
     },
   },
   components: {
