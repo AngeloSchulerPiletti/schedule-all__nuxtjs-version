@@ -27,10 +27,10 @@ namespace backend.Controllers
         public IActionResult Signin([FromBody] UserVO user) 
         {
             if (user == null) return BadRequest("Usuário Inválido");
-            var token = _loginBusiness.ValidateCredentials(user);
-            if (token is ErrorBadgeVO) return BadRequest(token);
+            var userData = _loginBusiness.ValidateCredentials(user);
+            if (userData is ErrorBadgeVO) return BadRequest(userData);
          
-            return Ok(token);
+            return Ok(userData);
         }
 
 
@@ -48,10 +48,10 @@ namespace backend.Controllers
         public IActionResult Refresh([FromBody] TokenVO tokenVo)
         {
             if (tokenVo == null) return BadRequest("Invalid Request");
-            var token = _loginBusiness.ValidateCredentials(tokenVo);
-            if (token == null) return BadRequest("Token Inválido");
+            var userData = _loginBusiness.ValidateCredentials(tokenVo);
+            if (userData == null) return BadRequest("Token Inválido");
 
-            return Ok(token);
+            return Ok(userData);
         }
 
         [HttpGet]

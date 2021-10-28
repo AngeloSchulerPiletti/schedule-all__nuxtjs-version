@@ -59,13 +59,15 @@ namespace backend.Business.Implementations
 
             if (errors.messages.Count > 0) return errors;
 
-            return new TokenVO(
-                true,
-                createDate.ToString(DATE_FORMAT),
-                expirationDate.ToString(DATE_FORMAT),
-                accessToken,
-                refreshToken
-                );
+            TokenVO token = new(
+                            true,
+                            createDate.ToString(DATE_FORMAT),
+                            expirationDate.ToString(DATE_FORMAT),
+                            accessToken,
+                            refreshToken
+                            );
+
+            return new UserDataVO(user.UserName, user.FullName, user.Email, token);
         }
     }
 }

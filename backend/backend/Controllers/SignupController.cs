@@ -27,10 +27,10 @@ namespace backend.Controllers
         [Route("signup")]
         public IActionResult Signup([FromBody] NewUserVO user)
         {
-            var token = _signupBusiness.CreateNewUser(user);
-            if (token is ErrorBadgeVO) return BadRequest(token);
+            var userData = _signupBusiness.CreateNewUser(user);
+            if (userData is ErrorBadgeVO) return BadRequest(userData);
 
-            return Ok(token);
+            return Ok(userData);
         }
     }
 }

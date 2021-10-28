@@ -5,7 +5,7 @@ namespace backend.Business
     public interface ILoginBusiness
     {
         object ValidateCredentials(UserVO user);
-        TokenVO ValidateCredentials(TokenVO token);
+        UserDataVO ValidateCredentials(TokenVO tokenVo);
         bool RevokeToken(string userName);
     }
 }

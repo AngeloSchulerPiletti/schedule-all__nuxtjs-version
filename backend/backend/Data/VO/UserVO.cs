@@ -9,7 +9,7 @@ namespace backend.Data.VO
         {
             this.inputsName = new();
             this.inputsName.Add("Password", "senha");
-            this.inputsName.Add("Email", "email");
+            this.inputsName.Add("UserName", "nickname ou email");
         }
 
         public Dictionary<string, string> inputsName { get; set; }

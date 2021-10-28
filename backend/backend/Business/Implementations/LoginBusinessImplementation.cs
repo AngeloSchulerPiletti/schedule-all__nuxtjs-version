@@ -32,7 +32,7 @@ namespace backend.Business.Implementations
 
             var user = _repository.ValidateCredentials(userCredentials);
             if (user == null) return new ErrorBadgeVO(new List<string>(new string[] { "email, usuário ou senha incorretos" }));
-            
+
             var claims = new List<Claim> {
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString("N")),
                 new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName)
@@ -49,19 +49,21 @@ namespace backend.Business.Implementations
             DateTime createDate = DateTime.Now;
             DateTime expirationDate = createDate.AddMinutes(_configuration.Minutes);
 
-            return new TokenVO(
-                true,
-                createDate.ToString(DATE_FORMAT),
-                expirationDate.ToString(DATE_FORMAT),
-                accessToken,
-                refreshToken
-                );
+            TokenVO token = new(
+                            true,
+                            createDate.ToString(DATE_FORMAT),
+                            expirationDate.ToString(DATE_FORMAT),
+                            accessToken,
+                            refreshToken
+                            );
+
+            return new UserDataVO(user.UserName, user.FullName, user.Email, token);
         }
 
-        public TokenVO ValidateCredentials(TokenVO token)
+        public UserDataVO ValidateCredentials(TokenVO tokenVo)
         {
-            var accessToken = token.AccessToken;
-            var refreshToken = token.RefreshToken;
+            var accessToken = tokenVo.AccessToken;
+            var refreshToken = tokenVo.RefreshToken;
 
             var principal = _tokenService.GetPrincipalFromExpiredToken(accessToken);
 
@@ -69,8 +71,8 @@ namespace backend.Business.Implementations
 
             var user = _repository.ValidateCredentials(username);
 
-            if (user == null || 
-                user.RefreshToken != refreshToken || 
+            if (user == null ||
+                user.RefreshToken != refreshToken ||
                 user.RefreshTokenExpiryTime <= DateTime.Now) return null;
 
             accessToken = _tokenService.GenerateAccessToken(principal.Claims);
@@ -83,13 +85,15 @@ namespace backend.Business.Implementations
             DateTime createDate = DateTime.Now;
             DateTime expirationDate = createDate.AddMinutes(_configuration.Minutes);
 
-            return new TokenVO(
-                true,
-                createDate.ToString(DATE_FORMAT),
-                expirationDate.ToString(DATE_FORMAT),
-                accessToken,
-                refreshToken
-                );
+            TokenVO token = new(
+                            true,
+                            createDate.ToString(DATE_FORMAT),
+                            expirationDate.ToString(DATE_FORMAT),
+                            accessToken,
+                            refreshToken
+                            );
+
+            return new UserDataVO(user.UserName, user.FullName, user.Email, token);
         }
 
         public bool RevokeToken(string userName)
