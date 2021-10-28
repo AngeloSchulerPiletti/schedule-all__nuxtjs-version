@@ -1,7 +1,3 @@
-//Checa se o usuário está autenticado
-    //Se tiver, segue firme
-    //Senão, verifica se tem o refreshtoken e autentica
-    //Senão, retorna
 
 
     export default async function ({ redirect, $axios, $cookies }) {

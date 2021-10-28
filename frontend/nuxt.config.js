@@ -59,22 +59,6 @@ export default {
 
   },
 
-  // auth: {
-  //   strategies: {
-  //     local: {
-  //       token: {
-  //         property: 'accessToken',
-  //         global: true,
-  //       },
-  //       endpoints: {
-  //         login: { url: '/v1/Auth/signin', method: 'post' },
-  //         logout: { url: '/v1/Auth/revoke', method: 'get' },
-  //         refresh: { url: '/v1/Auth/refresh', method: 'post' },
-  //         user: false,
-  //       }
-  //     }
-  //   }
-  // },
 
   // Vuetify module configuration: https://go.nuxtjs.dev/config-vuetify
   vuetify: {

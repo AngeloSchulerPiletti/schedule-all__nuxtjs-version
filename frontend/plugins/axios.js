@@ -6,8 +6,8 @@ export default function ({ $axios, redirect, $cookies }) {
     $axios.onRequest(config => {
         var userData = $cookies.get('userData');
         if (userData) {
-            console.log('o token enviado é: ' + userData.accessToken);
-            $axios.setToken(userData.accessToken, 'Bearer');
+            console.log('o token enviado é: ' + userData.tokenData.accessToken);
+            $axios.setToken(userData.tokenData.accessToken, 'Bearer');
         }
     });
 
