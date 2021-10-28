@@ -20,6 +20,11 @@
             />
           </div>
         </div>
+        <div v-if="errors.length > 0" class="errors">
+          <ul class="flex_c">
+            <li v-for="(error, index) in errors" :key="index">{{error}}</li>
+          </ul>
+        </div>
         <div class="actions">
           <slot :form_data="form_data"></slot>
         </div>
@@ -40,6 +45,7 @@ export default {
   props: {
     title: String,
     form_structure: Object,
+    errors: Array,
   },
   components: {
     BackArrow,
@@ -49,9 +55,9 @@ export default {
 
 <style lang="scss" scoped>
 .form-page {
-  height: 100vh;
+  min-height: 100vh;
   box-sizing: border-box;
-  padding: 0 34vw;
+  padding: 15vh 34vw;
   justify-content: center;
 
   background: linear-gradient(135deg, #e6e6e6 30%, #ffffff);
@@ -93,6 +99,20 @@ export default {
           font-size: 15px;
           box-shadow: 5px 5px 8px #00000000, -5px -5px 8px #ffffff00,
             inset 5px 5px 8px #00000040, inset -5px -5px 8px #ffffff40;
+        }
+      }
+    }
+
+    .errors{
+      color: #7c0606;
+      padding: 0 10px;
+      ul{
+        gap: 5px;
+        list-style-type: disc;
+        list-style-position: inside;
+        li{
+          font-weight: 400;
+          font-size: 13px;
         }
       }
     }

@@ -1,9 +1,9 @@
 <template>
-  <FormPage title="Cadastro" :form_structure="form_structure">
+  <form-page title="Cadastro" :form_structure="form_structure" :errors="errors">
     <template v-slot:default="form_data">
         <button class="button-1 btn-2"  @click="send(form_data)">Criar Conta</button>
     </template>
-  </FormPage>
+  </form-page>
 </template>
 
 <script>
@@ -13,6 +13,7 @@ export default {
   middleware: 'auth_not_allowed',
   data() {
     return {
+      errors: [],
       form_structure: {
         inputs: [
           {
@@ -53,7 +54,11 @@ export default {
           this.$cookies.set('userData', response.data);
           this.$router.push('/schedule');
       }).catch(err => {
-        err.response.data.messages.map(m => console.log(m));
+        if (err.response.data.messages) {
+          this.errors = err.response.data.messages; 
+        }
+        console.log(err);
+        // err.response.data.messages.map(m => console.log(m));
       });
     },
   },

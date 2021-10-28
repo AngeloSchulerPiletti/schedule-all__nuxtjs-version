@@ -108,7 +108,7 @@ namespace backend.Repository
             {
                 if(input.GetValue(user) == null)
                 {
-                    error.messages.Add($"O campo {input.Name} não pode ser nulo");
+                    error.messages.Add($"O campo {user.inputsName[input.Name]} não pode ser nulo");
                     return error;
                 }
             }
