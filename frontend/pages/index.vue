@@ -23,8 +23,8 @@
         <button class="btn-1 button-1">Meu Schedule</button>
       </NuxtLink>
     </div>
-    <div class="logout_container flex_r" v-if="$cookies.get('userData')" @click="logout">
-      <logout /> <span>Sair</span>
+    <div class="logout_container" v-if="$cookies.get('userData')">
+      <logout />
     </div>
   </div>
 </template>
@@ -33,13 +33,6 @@
 import Logout from '@/components/Logout.vue'
 
 export default {
-  methods:{
-    async logout(){
-        await this.$axios.get('/v1/Auth/revoke').catch(err => {`logout falhou no endpoint: ${err}`});
-        this.$cookies.remove('userData');
-        this.$router.go(0);
-    },
-  },
   components: {
     Logout,
   },
@@ -68,31 +61,9 @@ export default {
     gap: 20px;
   }
   .logout_container {
-    cursor: pointer;
     position: absolute;
     bottom: 2vw;
     left: 2vw;
-    align-items: center;
-    gap: 7px;
-    margin-top: auto;
-    font-weight: 300;
-    font-size: 16px;
-
-    span{
-      transition: transform 300ms;
-    }
-    svg{
-      transition: opacity 300ms;
-    }
-
-    &:hover{
-      span{
-        transform: translateX(-100%);
-      }
-      svg{
-        opacity: 0.1;
-      }
-    }
   }
 }
 </style>

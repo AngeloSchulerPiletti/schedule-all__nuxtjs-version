@@ -1,10 +1,10 @@
 <template>
   <div class="wrapper border-soft flex_c" :data-state="menuState">
-    <div class="close-open flex_r">
+    <div class="close-open up flex_r">
       <span @click="changeMenuState"><go-back-arrows /></span>
     </div>
     <hr class="division_3d"/>
-    <ul class="page-list flex_c">
+    <ul class="page-list up flex_c">
       <li>
         <NuxtLink to="/schedule" class="flex_r">
           <span class="menu-icon spare-button pseudo"><grid /></span>
@@ -25,14 +25,18 @@
       </li>
     </ul>
     <hr class="division_3d"/>
+    <div class="logout_container up">
+      <logout :turnOff="menuState"/>
+    </div>
   </div>
 </template>
 
 <script>
-import Todo from '@/components/icons/Todo'
-import Arrows from '@/components/icons/Arrows'
-import Case from '@/components/icons/Case'
-import Grid from '@/components/icons/Grid'
+import Todo from '@/components/icons/Todo';
+import Arrows from '@/components/icons/Arrows';
+import Case from '@/components/icons/Case';
+import Grid from '@/components/icons/Grid';
+import Logout from "@/components/Logout";
 
 export default {
   data() {
@@ -54,6 +58,7 @@ export default {
     'go-back-arrows': Arrows,
     Case,
     Grid,
+    Logout,
   },
 }
 </script>
@@ -73,9 +78,12 @@ export default {
       inset -4px -4px 14px #ffffff, inset 4px 4px 14px #a9a8b7;
   }
 
-  .close-open {
+  .up{
     position: relative;
     z-index: 5;
+  }
+
+  .close-open {
     justify-content: flex-end;
     width: 100%;
 
@@ -95,8 +103,6 @@ export default {
   }
 
   .page-list {
-    position: relative;
-    z-index: 5;
     gap: 15px;
     width: 100%;
 
@@ -158,6 +164,10 @@ export default {
         }
       }
     }
+  }
+
+  .logout_container{
+    margin: auto auto 0 0;
   }
 
   @keyframes open_anim {

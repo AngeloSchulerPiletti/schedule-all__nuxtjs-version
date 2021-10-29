@@ -56,9 +56,9 @@ export default {
       }).catch(err => {
         if (err.response.data.messages) {
           this.errors = err.response.data.messages; 
+          return;
         }
         this.errors = ["Problemas internos, tente mais tarde"];
-        // err.response.data.messages.map(m => console.log(m));
       });
     },
   },
