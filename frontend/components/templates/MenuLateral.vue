@@ -1,8 +1,9 @@
 <template>
-  <div class="wrapper border-soft" :data-state="menuState">
+  <div class="wrapper border-soft flex_c" :data-state="menuState">
     <div class="close-open flex_r">
       <span @click="changeMenuState"><go-back-arrows /></span>
     </div>
+    <hr class="division_3d"/>
     <ul class="page-list flex_c">
       <li>
         <NuxtLink to="/schedule" class="flex_r">
@@ -23,6 +24,7 @@
         </NuxtLink>
       </li>
     </ul>
+    <hr class="division_3d"/>
   </div>
 </template>
 
@@ -59,7 +61,9 @@ export default {
 <style lang="scss" scoped>
 .wrapper {
   max-height: 100vh;
-  padding: 20px 10px 20px 0;
+  gap: 25px;
+  align-items: center;
+  padding: 20px;
   border-top-right-radius: 15px;
   background: linear-gradient(-105deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1));
 
@@ -73,7 +77,7 @@ export default {
     position: relative;
     z-index: 5;
     justify-content: flex-end;
-    margin-right: 18px;
+    width: 100%;
 
     svg {
       width: 35px;
@@ -93,8 +97,8 @@ export default {
   .page-list {
     position: relative;
     z-index: 5;
-    padding: 30px 0 0 15px;
     gap: 15px;
+    width: 100%;
 
     li {
       a {
@@ -105,7 +109,6 @@ export default {
           border-radius: 100%;
           width: 30px;
           height: 30px;
-          // padding: 8px;
 
           &::before {
             border-radius: 100%;
