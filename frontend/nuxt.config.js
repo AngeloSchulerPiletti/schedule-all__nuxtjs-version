@@ -26,7 +26,8 @@ export default {
   css: [
     '@/assets/sass/reset.scss',
     '@/assets/sass/default.scss',
-    '@/assets/sass/_index.scss'
+    '@/assets/sass/_index.scss',
+    '@/assets/sass/abstract/_variables.scss'
   ],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
@@ -50,8 +51,13 @@ export default {
     // https://go.nuxtjs.dev/axios
     '@nuxtjs/axios',
     'cookie-universal-nuxt',
+    '@nuxtjs/style-resources',
     // '@nuxtjs/auth-next'
   ],
+
+  styleResources: {
+    scss: ['./assets/sass/abstract/*.scss']
+  },
 
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {

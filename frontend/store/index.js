@@ -10,7 +10,7 @@ export const mutations = {
 
 
 export const actions = {
-    async nuxtServerInit(vuexContext, {app}) {
+    async nuxtServerInit(vuexContext, {app, redirect}) {
         var userData_obj = app.$cookies.get('userData')
         if (userData_obj) {
             var refreshToken = userData_obj.tokenData.refreshToken,

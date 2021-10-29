@@ -1,6 +1,6 @@
 <template>
   <NuxtLink to="/">
-    <div class="back-arrow">
+    <div class="back-arrow spare-button pseudo">
       <svg
         width="11px"
         height="20px"
@@ -57,12 +57,12 @@ export default {}
   justify-content: center;
   height: 46px;
   width: 46px;
-
   cursor: pointer;
-
   border-radius: 100%;
-  box-shadow: 2px 2px 6px #00000060, -2px -2px 6px #ffffff60,
-    inset 2px 2px 6px #ffffff60, inset -2px -2px 6px #00000060;
+
+  &::before{
+    border-radius: 100%;
+  }
 
   svg {
     width: 30px;
@@ -71,12 +71,7 @@ export default {}
     transition: transform 300ms;
   }
 
-  transition: box-shadow 300ms;
-
   &:hover {
-    box-shadow: 2px 2px 8px #00000060, -2px -2px 8px #ffffff60,
-      inset 2px 2px 8px #00000060, inset -2px -2px 8px #ffffff60;
-
     svg {
       transform: translate(3px, 3px);
     }

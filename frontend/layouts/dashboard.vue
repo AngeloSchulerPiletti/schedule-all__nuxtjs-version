@@ -1,9 +1,9 @@
 <template>
   <div id="dashboard-layout" class="flex_c">
-    <menu-superior />
+    <menu-superior :userData="userData" />
     <div id="vertical-container" class="flex_r">
       <menu-lateral />
-      <div>
+      <div id="view_container" class="border-soft">
         <Nuxt />
       </div>
     </div>
@@ -15,6 +15,12 @@ import MenuLateral from '@/components/templates/MenuLateral'
 import MenuSuperior from '@/components/templates/MenuSuperior'
 
 export default {
+  middleware: 'auth',
+  computed: {
+    userData() {
+      return this.$cookies.get('userData')
+    },
+  },
   components: {
     MenuLateral,
     MenuSuperior,
@@ -26,10 +32,29 @@ export default {
 #dashboard-layout {
   overflow: hidden;
   height: 100vh;
+  gap: $dashboard_components_spacing;
+  // background-color: #00000050;
 
   #vertical-container {
     flex-grow: 1;
-    background-color: green;
+    gap: $dashboard_components_spacing;
+
+    #view_container {
+      flex-grow: 1;
+      border-top-left-radius: 15px;
+
+      background: linear-gradient(
+        135deg,
+        rgba(0, 0, 0, 0.1),
+        rgba(0, 0, 0, 0.1)
+      );
+
+      &::before {
+        border-top-left-radius: 15px;
+        box-shadow: 6px 6px 14px #a9a8b7, -6px -6px 14px #fff,
+          inset -4px -4px 14px #fff, inset 4px 4px 14px #a9a8b7;
+      }
+    }
   }
 }
 </style>
