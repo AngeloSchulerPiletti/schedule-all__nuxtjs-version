@@ -40,6 +40,7 @@ export default {
     gap: $dashboard_components_spacing;
 
     #view_container {
+      padding: 20px;
       flex-grow: 1;
       border-top-left-radius: 15px;
 

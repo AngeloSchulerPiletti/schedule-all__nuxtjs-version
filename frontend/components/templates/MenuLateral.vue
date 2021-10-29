@@ -6,7 +6,7 @@
     <ul class="page-list flex_c">
       <li>
         <NuxtLink to="/schedule" class="flex_r">
-          <span class="menu-icon spare-button pseudo"><grid/></span>
+          <span class="menu-icon spare-button pseudo"><grid /></span>
           <span class="link-legend">Workspace</span>
         </NuxtLink>
       </li>
@@ -19,7 +19,7 @@
       <li>
         <NuxtLink to="/schedule/projects" class="flex_r">
           <span class="menu-icon spare-button pseudo"><case /></span>
-          <span class="link-legend">Tarefas</span>
+          <span class="link-legend">Projetos</span>
         </NuxtLink>
       </li>
     </ul>
@@ -72,7 +72,8 @@ export default {
   .close-open {
     position: relative;
     z-index: 5;
-    justify-content: center;
+    justify-content: flex-end;
+    margin-right: 18px;
 
     svg {
       width: 35px;
@@ -92,13 +93,13 @@ export default {
   .page-list {
     position: relative;
     z-index: 5;
-    align-items: center;
-    padding: 30px 0;
+    padding: 30px 0 0 15px;
     gap: 15px;
 
     li {
       a {
-        align-items: center;
+        position: relative;
+        width: fit-content;
 
         .menu-icon {
           border-radius: 100%;
@@ -113,11 +114,44 @@ export default {
           svg {
             transition: transform 300ms;
           }
-          &:hover {
-            svg {
-              transform: translate(3px, 3px);
-            }
+        }
+        .link-legend {
+          position: absolute;
+          right: -20px;
+          top: 50%;
+          transform: translate(100%, -50%);
+          font-weight: 300;
+          text-transform: uppercase;
+          font-size: 15px;
+          padding: 6px 14px;
+          border-radius: 10px;
+
+          box-shadow: inset 2px 2px 5px 1px rgba(0, 0, 0, 0),
+            inset -2px -2px 5px 1px rgba(255, 255, 255, 0),
+            2px 2px 5px 1px rgba(0, 0, 0, 0.2),
+            -2px -2px 5px 1px rgba(255, 255, 255, 0.5);
+
+          transition: box-shadow 300ms;
+        }
+
+        &:hover, &.nuxt-link-exact-active{
+          .menu-icon {
+          box-shadow: 2px 2px 8px #00000060, -2px -2px 8px #ffffff60;
+          &::before {
+            box-shadow: inset 2px 2px 8px #00000060,
+              inset -2px -2px 8px #ffffff60;
           }
+          svg {
+            transform: translate(2px, 2px);
+          }
+        }
+        .link-legend{
+          box-shadow: inset 2px 2px 5px 1px rgba(0, 0, 0, 0.2),
+              inset -2px -2px 5px 1px rgba(255, 255, 255, 0.5),
+              2px 2px 5px 1px rgba(102, 76, 76, 0),
+              -2px -2px 5px 1px rgba(255, 255, 255, 0);
+          
+        }
         }
       }
     }
@@ -128,12 +162,12 @@ export default {
       width: 76px;
     }
     100% {
-      width: 280px;
+      width: 230px;
     }
   }
   @keyframes close_anim {
     0% {
-      width: 280px;
+      width: 230px;
     }
     100% {
       width: 76px;
@@ -142,6 +176,26 @@ export default {
 
   &[data-state='open'] {
     animation: open_anim 300ms ease 0ms 1 normal forwards;
+
+    @keyframes show-legends {
+      0% {
+        opacity: 0;
+      }
+      100% {
+        opacity: 1;
+      }
+    }
+
+    .page-list {
+      li {
+        a {
+          .link-legend {
+            display: block;
+            animation: show-legends 200ms linear 230ms 1 normal both;
+          }
+        }
+      }
+    }
   }
   &[data-state='close'] {
     animation: close_anim 300ms ease 0ms 1 normal forwards;
@@ -157,14 +211,8 @@ export default {
       }
     }
 
-    .page-list {
-      li {
-        a {
-          .link-legend {
-            display: none;
-          }
-        }
-      }
+    .link-legend {
+      display: none;
     }
   }
 }

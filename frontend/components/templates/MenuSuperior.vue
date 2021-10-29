@@ -30,7 +30,7 @@ export default {
 
   &::before {
     box-shadow: 6px 6px 14px #a9a8b7, -6px -6px 14px #fff,
-      inset -4px -4px 14px #fff;
+      inset -4px -4px 14px #F0F0F0;
   }
 
   #user-profile_container {
