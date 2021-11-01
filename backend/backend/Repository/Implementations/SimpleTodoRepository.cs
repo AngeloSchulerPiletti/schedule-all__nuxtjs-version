@@ -44,6 +44,12 @@ namespace backend.Repository.Implementations
             return new SuccessBadgeVO(new List<string> { "Tarefa criada com sucesso" });
         }
 
+        public object GetSimpleTodosByUserId(long userId)
+        {
+            return _context.SimpleTodos.Where(task => task.UserId == userId).ToList();
+
+        }
+
         public ErrorBadgeVO ValidateSimpleTodoInput(NewSimpleTodoVO simpletodo)
         {
             ErrorBadgeVO errors = new(new List<string>());

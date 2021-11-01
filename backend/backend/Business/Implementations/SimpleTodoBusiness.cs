@@ -24,5 +24,10 @@ namespace backend.Business.Implementations
             var creationResult = _repository.CreateSimpleTodo(simpletodo, user);
             return creationResult;
         }
+
+        public object GetSimpleTodosByUserId(long userId)
+        {
+            return _repository.GetSimpleTodosByUserId(userId);
+        }
     }
 }

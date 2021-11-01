@@ -1,6 +1,7 @@
 ﻿using backend.Business;
 using backend.Business.Implementations;
 using backend.Data.VO;
+using backend.Models;
 using backend.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -24,20 +25,28 @@ namespace backend.Controllers
             _business = business;
         }
 
+        [HttpGet]
+        [Route("get-all-user-simpletodos")]
+        public IActionResult GetAllUserSimpleTodos()
+        {
+            User user = GetUserFromJWT();
+            if (user == null) return BadRequest(new ErrorBadgeVO(new List<string> { "Houve um erro com a sua identidade" }));
+            var result = _business.GetSimpleTodosByUserId(user.Id);
+            return Ok(result);
+        }
+
         [HttpPost]
         [Route("create-simpletodo")]
         public IActionResult CreateSimpleTodo([FromBody] NewSimpleTodoVO simpletodo)
         {
-            ErrorBadgeVO errors = new(new List<string>());
-            var user = GetUserFromJWT();
-            if (user == null)
-            {
-                errors.messages.Add("Houve um erro com seu token de autenticação");
-                return BadRequest(errors);
-            }
+            User user = GetUserFromJWT();
+            if (user == null) return BadRequest(new ErrorBadgeVO(new List<string>{ "Houve um erro com a sua identidade" }));
+            
             var result = _business.CreateSimpleTodo(simpletodo, user);
             if (result is ErrorBadgeVO) return BadRequest(result);
             return Ok(result);
         }
+
+
     }
 }
