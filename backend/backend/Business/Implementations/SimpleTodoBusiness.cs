@@ -1,4 +1,6 @@
-﻿using backend.Models;
+﻿using backend.Data.VO;
+using backend.Models;
+using backend.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,39 +10,19 @@ namespace backend.Business.Implementations
 {
     public class SimpleTodoBusiness : ISimpleTodoBusiness
     {
-        public SimpleTodo AddInvolvedOne()
+        private ISimpleTodoRepository _repository;
+
+        public SimpleTodoBusiness(ISimpleTodoRepository repository)
         {
-            throw new NotImplementedException();
+            _repository = repository;
         }
 
-        public SimpleTodo Create()
+        public object CreateSimpleTodo(NewSimpleTodoVO simpletodo, User user)
         {
-            throw new NotImplementedException();
-        }
-
-        public SimpleTodo Delete()
-        {
-            throw new NotImplementedException();
-        }
-
-        public SimpleTodo GetAll()
-        {
-            throw new NotImplementedException();
-        }
-
-        public SimpleTodo GetOne()
-        {
-            throw new NotImplementedException();
-        }
-
-        public SimpleTodo RemoveInvolvedOne()
-        {
-            throw new NotImplementedException();
-        }
-
-        public SimpleTodo Update()
-        {
-            throw new NotImplementedException();
+            var validationResult = _repository.ValidateSimpleTodoInput(simpletodo);
+            if (validationResult != null) return validationResult;
+            var creationResult = _repository.CreateSimpleTodo(simpletodo, user);
+            return creationResult;
         }
     }
 }

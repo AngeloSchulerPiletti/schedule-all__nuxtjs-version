@@ -1,5 +1,6 @@
 ﻿using backend.Business;
 using backend.Models;
+using backend.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -16,7 +17,7 @@ namespace backend.Controllers
     {
         private readonly ILogger<PersonController> _logger;
         private IPersonBusiness _personBusiness;
-        public PersonController(ILogger<PersonController> logger, IPersonBusiness personBusiness)
+        public PersonController(ILogger<PersonController> logger, IPersonBusiness personBusiness, IUserRepository userRepository) : base(userRepository)
         {
             _logger = logger;
             _personBusiness = personBusiness;

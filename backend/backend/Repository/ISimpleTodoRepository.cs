@@ -1,15 +1,11 @@
-﻿using backend.Models;
+﻿using backend.Data.VO;
+using backend.Models;
 
 namespace backend.Repository
 {
-    interface ISimpleTodoRepository
+    public interface ISimpleTodoRepository
     {
-        SimpleTodo Create();
-        SimpleTodo GetAll();
-        SimpleTodo GetOne();
-        SimpleTodo AddInvolvedOne();
-        SimpleTodo RemoveInvolvedOne();
-        SimpleTodo Update();
-        SimpleTodo Delete();
+        public ErrorBadgeVO ValidateSimpleTodoInput(NewSimpleTodoVO simpletodo);
+        public object CreateSimpleTodo(NewSimpleTodoVO simpletodo, User user);
     }
 }

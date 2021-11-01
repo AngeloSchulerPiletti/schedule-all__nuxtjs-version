@@ -1,5 +1,6 @@
 ﻿using backend.Business;
 using backend.Data.VO;
+using backend.Repository;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -17,7 +18,7 @@ namespace backend.Controllers
     {
         private ILoginBusiness _loginBusiness;
 
-        public AuthController(ILoginBusiness loginBusiness)
+        public AuthController(ILoginBusiness loginBusiness, IUserRepository userRepository) : base(userRepository)
         {
             _loginBusiness = loginBusiness;
         }

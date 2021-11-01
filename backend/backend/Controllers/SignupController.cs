@@ -17,7 +17,7 @@ namespace backend.Controllers
     {
         private ISignupBusiness _signupBusiness;
 
-        public SignupController(ISignupBusiness signupBusiness)
+        public SignupController(ISignupBusiness signupBusiness, IUserRepository userRepository) : base(userRepository)
         {
             _signupBusiness = signupBusiness;
         }

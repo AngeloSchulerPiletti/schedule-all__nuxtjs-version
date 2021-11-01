@@ -14,5 +14,8 @@ namespace backend.Models.Context
         }
         public DbSet<Person> Persons { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<SimpleTodo> SimpleTodos { get; set; }
+        public DbSet<Category> Categorys { get; set; }
+        public DbSet<SimpleTodoBond> SimpleTodoBonds { get; set; }
     }
 }

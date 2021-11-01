@@ -109,6 +109,7 @@ namespace backend
             services.AddScoped<IPersonBusiness, PersonBusinessImplementation>();
             services.AddScoped<IPersonRepository, PersonRepositoryImplementation>();
             services.AddScoped<ISimpleTodoBusiness, SimpleTodoBusiness>();
+            services.AddScoped<ISimpleTodoRepository, SimpleTodoRepository>();
             services.AddScoped<ISignupBusiness, SignupBusinessImplementation>();
             services.AddScoped<ILoginBusiness, LoginBusinessImplementation>();
 
