@@ -24,6 +24,13 @@ namespace backend.Business.Implementations
             var creationResult = _repository.CreateSimpleTodo(simpletodo, user);
             return creationResult;
         }
+        public object UpdateSimpleTodo(SimpleTodoVO simpletodo, User user)
+        {
+            var validationResult = _repository.ValidateSimpleTodoInput(simpletodo);
+            if (validationResult != null) return validationResult;
+            var updateResult = _repository.UpdateSimpleTodo(simpletodo, user);
+            return updateResult;
+        }
 
         public object GetSimpleTodosByUserId(long userId)
         {
@@ -38,6 +45,11 @@ namespace backend.Business.Implementations
         public object SetSimpleTodoState(long simpletodoId)
         {
             return _repository.SetSimpleTodoState(simpletodoId);
+        }
+
+        public object DeleteSimpleTodo(long userId, long simpletodoId)
+        {
+            return _repository.DeleteSimpleTodo(userId, simpletodoId);
         }
     }
 }

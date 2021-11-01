@@ -59,7 +59,7 @@ namespace backend.Controllers
 
         [HttpPatch]
         [Route("change-simpletodo-state")]
-        public IActionResult ChangeSimpleTodo([FromBody] long simpletodoId)
+        public IActionResult ChangeSimpleTodoState([FromBody] long simpletodoId)
         {
             if (simpletodoId == 0) return BadRequest(new ErrorBadgeVO(new List<string> { "Não foi possível finalizar essa tarefa" }));
             var result = _business.SetSimpleTodoState(simpletodoId);
@@ -68,6 +68,29 @@ namespace backend.Controllers
         }
 
 
+        [HttpPut]
+        [Route("update-simpletodo")]
+        public IActionResult UpdateSimpleTodo([FromBody] SimpleTodoVO simpletodo)
+        {
+            User user = GetUserFromJWT();
+            if (user == null) return BadRequest(new ErrorBadgeVO(new List<string> { "Houve um erro com a sua identidade" }));
+
+            var result = _business.UpdateSimpleTodo(simpletodo, user);
+            if (result is ErrorBadgeVO) return BadRequest(result);
+            return Ok(result);
+        }
+
+        [HttpDelete]
+        [Route("delete-simpletodo")]
+        public IActionResult DeleteSimpleTodo([FromBody] long simpletodoId)
+        {
+            User user = GetUserFromJWT();
+            if (user == null) return BadRequest(new ErrorBadgeVO(new List<string> { "Houve um erro com a sua identidade" }));
+
+            var result = _business.DeleteSimpleTodo(user.Id, simpletodoId);
+            if (result is ErrorBadgeVO) return BadRequest(result);
+            return NoContent();
+        }
 
     }
 }

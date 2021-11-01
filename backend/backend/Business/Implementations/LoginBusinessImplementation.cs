@@ -66,6 +66,7 @@ namespace backend.Business.Implementations
             var refreshToken = tokenVo.RefreshToken;
 
             var principal = _tokenService.GetPrincipalFromExpiredToken(accessToken);
+            if (principal == null) return null;
 
             var username = principal.Identity.Name;
 
