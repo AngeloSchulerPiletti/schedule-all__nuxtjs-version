@@ -47,7 +47,25 @@ namespace backend.Repository.Implementations
         public object GetSimpleTodosByUserId(long userId)
         {
             return _context.SimpleTodos.Where(task => task.UserId == userId).ToList();
+        }
 
+        public object GetSingleSimpleTodoByUserId(long userId, long simpletodoId)
+        {
+            return _context.SimpleTodos.Where(task => task.Id == simpletodoId).SingleOrDefault(task => task.UserId == userId);
+        }
+
+        public object SetSimpleTodoState(long simpletodoId)
+        {
+            var task = _context.SimpleTodos.SingleOrDefault(task => task.Id == simpletodoId);
+            if (task == null) return new ErrorBadgeVO(new List<string> { "Essa tarefa não existe" });
+
+            if (!task.Finished) task.FinishedAt = DateTime.Now;
+
+            task.Finished = !task.Finished;
+
+            _context.SaveChanges();
+
+            return _context.SimpleTodos.SingleOrDefault(task => task.Id == simpletodoId);
         }
 
         public ErrorBadgeVO ValidateSimpleTodoInput(NewSimpleTodoVO simpletodo)

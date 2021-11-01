@@ -29,5 +29,15 @@ namespace backend.Business.Implementations
         {
             return _repository.GetSimpleTodosByUserId(userId);
         }
+
+        public object GetSingleSimpleTodoByUserId(long userId, long simpletodoId)
+        {
+            return _repository.GetSingleSimpleTodoByUserId(userId, simpletodoId);
+        }
+
+        public object SetSimpleTodoState(long simpletodoId)
+        {
+            return _repository.SetSimpleTodoState(simpletodoId);
+        }
     }
 }

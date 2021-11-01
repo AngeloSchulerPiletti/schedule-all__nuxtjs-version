@@ -35,6 +35,16 @@ namespace backend.Controllers
             return Ok(result);
         }
 
+        [HttpGet]
+        [Route("get-user-simpletodo")]
+        public IActionResult GetUserSimpleTodo([FromBody] long simpletodoId)
+        {
+            User user = GetUserFromJWT();
+            if (user == null) return BadRequest(new ErrorBadgeVO(new List<string> { "Houve um erro com a sua identidade" }));
+            var result = _business.GetSingleSimpleTodoByUserId(user.Id, simpletodoId);
+            return Ok(result);
+        }
+
         [HttpPost]
         [Route("create-simpletodo")]
         public IActionResult CreateSimpleTodo([FromBody] NewSimpleTodoVO simpletodo)
@@ -46,6 +56,17 @@ namespace backend.Controllers
             if (result is ErrorBadgeVO) return BadRequest(result);
             return Ok(result);
         }
+
+        [HttpPatch]
+        [Route("change-simpletodo-state")]
+        public IActionResult ChangeSimpleTodo([FromBody] long simpletodoId)
+        {
+            if (simpletodoId == 0) return BadRequest(new ErrorBadgeVO(new List<string> { "Não foi possível finalizar essa tarefa" }));
+            var result = _business.SetSimpleTodoState(simpletodoId);
+            if (result is ErrorBadgeVO) return BadRequest(result);
+            return Ok(result);
+        }
+
 
 
     }
