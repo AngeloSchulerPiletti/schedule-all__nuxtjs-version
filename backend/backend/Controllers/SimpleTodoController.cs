@@ -30,10 +30,10 @@ namespace backend.Controllers
         public IActionResult GetAllUserSimpleTodos()
         {
             User user = GetUserFromJWT();
-            if (user == null) return BadRequest(new ErrorBadgeVO(new List<string> { "Houve um erro com a sua identidade" }));
+            if (user == null) return BadRequest(new MessageBadgeVO(new List<string> { "Houve um erro com a sua identidade" }));
 
-            var result = _business.GetSimpleTodosByUserId(user.Id);
-            if (result is ErrorBadgeVO) return BadRequest(result);
+            List<SimpleTodo> result = _business.GetSimpleTodosByUserId(user.Id);
+            if (result == null) return BadRequest(new MessageBadgeVO(new List<string> { "Não encontramos essas tarefas..." }));
             return Ok(result);
         }
 
@@ -42,10 +42,10 @@ namespace backend.Controllers
         public IActionResult GetUserSimpleTodo([FromBody] long simpletodoId)
         {
             User user = GetUserFromJWT();
-            if (user == null) return BadRequest(new ErrorBadgeVO(new List<string> { "Houve um erro com a sua identidade" }));
+            if (user == null) return BadRequest(new MessageBadgeVO(new List<string> { "Houve um erro com a sua identidade" }));
 
-            var result = _business.GetSingleSimpleTodoByUserId(user.Id, simpletodoId);
-            if (result is ErrorBadgeVO) return BadRequest(result);
+            SimpleTodo result = _business.GetSingleSimpleTodoByUserId(user.Id, simpletodoId);
+            if (result == null) return BadRequest(new MessageBadgeVO(new List<string> { "Não encontramos essas tarefas..." }));
             return Ok(result);
         }
 
@@ -54,10 +54,13 @@ namespace backend.Controllers
         public IActionResult CreateSimpleTodo([FromBody] NewSimpleTodoVO simpletodo)
         {
             User user = GetUserFromJWT();
-            if (user == null) return BadRequest(new ErrorBadgeVO(new List<string>{ "Houve um erro com a sua identidade" }));
-            
-            var result = _business.CreateSimpleTodo(simpletodo, user);
-            if (result is ErrorBadgeVO) return BadRequest(result);
+            if (user == null) return BadRequest(new MessageBadgeVO(new List<string>{ "Houve um erro com a sua identidade" }));
+
+            MessageBadgeVO validationResult = _business.ValidateSimpleTodoInput(simpletodo);
+            if (validationResult != null) return BadRequest(validationResult);
+
+            MessageBadgeVO result = _business.CreateSimpleTodo(simpletodo, user);
+            if (result.isError) return BadRequest(result);
             return Ok(result);
         }
 
@@ -65,9 +68,14 @@ namespace backend.Controllers
         [Route("change-simpletodo-state")]
         public IActionResult ChangeSimpleTodoState([FromBody] long simpletodoId)
         {
-            if (simpletodoId == 0) return BadRequest(new ErrorBadgeVO(new List<string> { "Não foi possível finalizar essa tarefa" }));
-            var result = _business.SetSimpleTodoState(simpletodoId);
-            if (result is ErrorBadgeVO) return BadRequest(result);
+            User user = GetUserFromJWT();
+            if (user == null) return BadRequest(new MessageBadgeVO(new List<string> { "Houve um erro com a sua identidade" }));
+
+            MessageBadgeVO validationResult = _business.ValidateId(simpletodoId);
+            if (validationResult != null) return BadRequest(validationResult);
+
+            dynamic result = _business.SetSimpleTodoState(simpletodoId, user.Id);
+            if (result is MessageBadgeVO ? result.isError : false) return BadRequest(result);
             return Ok(result);
         }
 
@@ -77,10 +85,10 @@ namespace backend.Controllers
         public IActionResult UpdateSimpleTodo([FromBody] SimpleTodoVO simpletodo)
         {
             User user = GetUserFromJWT();
-            if (user == null) return BadRequest(new ErrorBadgeVO(new List<string> { "Houve um erro com a sua identidade" }));
+            if (user == null) return BadRequest(new MessageBadgeVO(new List<string> { "Houve um erro com a sua identidade" }));
 
             var result = _business.UpdateSimpleTodo(simpletodo, user);
-            if (result is ErrorBadgeVO) return BadRequest(result);
+            if (result is MessageBadgeVO) return BadRequest(result);
             return Ok(result);
         }
 
@@ -89,10 +97,13 @@ namespace backend.Controllers
         public IActionResult DeleteSimpleTodo([FromBody] long simpletodoId)
         {
             User user = GetUserFromJWT();
-            if (user == null) return BadRequest(new ErrorBadgeVO(new List<string> { "Houve um erro com a sua identidade" }));
+            if (user == null) return BadRequest(new MessageBadgeVO(new List<string> { "Houve um erro com a sua identidade" }));
 
-            var result = _business.DeleteSimpleTodo(user.Id, simpletodoId);
-            if (result is ErrorBadgeVO) return BadRequest(result);
+            MessageBadgeVO validationResult = _business.ValidateId(simpletodoId);
+            if (validationResult != null) return BadRequest(validationResult);
+
+            MessageBadgeVO result = _business.DeleteSimpleTodo(user.Id, simpletodoId);
+            if (result != null) return BadRequest(result);
             return NoContent();
         }
 

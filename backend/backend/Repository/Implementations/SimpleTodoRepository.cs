@@ -18,14 +18,14 @@ namespace backend.Repository.Implementations
             _context = context;
         }
 
-        public object CreateSimpleTodo(NewSimpleTodoVO simpletodo, User user)
+        public MessageBadgeVO CreateSimpleTodo(NewSimpleTodoVO simpletodo, User user)
         {
             if (simpletodo.CategoryId != 0)
             {
                 var category = _context.Categorys.Where(cat => (cat.CategoryId == simpletodo.CategoryId) & (cat.UserId == user.Id)).SingleOrDefault();
                 if (category == null)
                 {
-                    return new ErrorBadgeVO(new List<string> { "Categoria Inválida" });
+                    return new MessageBadgeVO(new List<string> { "Categoria Inválida" });
                 }
             }
 
@@ -38,24 +38,24 @@ namespace backend.Repository.Implementations
             }
             catch (Exception)
             {
-                return new ErrorBadgeVO(new List<string> { "Não foi possível salvar as modificações" });
+                return new MessageBadgeVO(new List<string> { "Não foi possível salvar as modificações" });
             }
 
-            return new SuccessBadgeVO(new List<string> { "Tarefa criada com sucesso" });
+            return new MessageBadgeVO(new List<string> { "Tarefa criada com sucesso" }, false);
         }
-        public object UpdateSimpleTodo(SimpleTodoVO simpletodo, User user)
+        public MessageBadgeVO UpdateSimpleTodo(SimpleTodoVO simpletodo, User user)
         {
             if (simpletodo.CategoryId != 0)
             {
                 var category = _context.Categorys.Where(cat => (cat.CategoryId == simpletodo.CategoryId) & (cat.UserId == user.Id)).SingleOrDefault();
                 if (category == null)
                 {
-                    return new ErrorBadgeVO(new List<string> { "Categoria Inválida" });
+                    return new MessageBadgeVO(new List<string> { "Categoria Inválida" });
                 }
             }
 
             var task = _context.SimpleTodos.SingleOrDefault(task => (task.Id == simpletodo.Id) & (task.UserId == user.Id));
-            if (task == null) return new ErrorBadgeVO(new List<string> { "Essa tarefa não pode ser alterada pois não existe" });
+            if (task == null) return new MessageBadgeVO(new List<string> { "Essa tarefa não pode ser alterada pois não existe" });
 
             try
             {
@@ -67,30 +67,28 @@ namespace backend.Repository.Implementations
             }
             catch (Exception)
             {
-                return new ErrorBadgeVO(new List<string> { "Não foi possível salvar as modificações" });
+                return new MessageBadgeVO(new List<string> { "Não foi possível salvar as modificações" });
             }
 
-            return new SuccessBadgeVO(new List<string> { "Tarefa atualizada com sucesso" });
+            return new MessageBadgeVO(new List<string> { "Tarefa atualizada com sucesso" }, false);
         }
 
-        public object GetSimpleTodosByUserId(long userId)
+        public List<SimpleTodo> GetSimpleTodosByUserId(long userId)
         {
-            var result = _context.SimpleTodos.Where(task => task.UserId == userId).ToList();
-            if (result == null) return new ErrorBadgeVO(new List<string> { "Não encontramos essas tarefas..." });
+            List<SimpleTodo> result = _context.SimpleTodos.Where(task => task.UserId == userId).ToList();
             return result;
         }
 
-        public object GetSingleSimpleTodoByUserId(long userId, long simpletodoId)
+        public SimpleTodo GetSingleSimpleTodoByUserId(long userId, long simpletodoId)
         {
-            var result = _context.SimpleTodos.Where(task => task.Id == simpletodoId).SingleOrDefault(task => task.UserId == userId);
-            if (result == null) return new ErrorBadgeVO(new List<string> { "Não encontramos essas tarefas..." });
+            SimpleTodo result = _context.SimpleTodos.Where(task => task.Id == simpletodoId).SingleOrDefault(task => task.UserId == userId);
             return result;
         }
 
-        public object SetSimpleTodoState(long simpletodoId)
+        public object SetSimpleTodoState(long simpletodoId, long userId)
         {
-            var task = _context.SimpleTodos.SingleOrDefault(task => task.Id == simpletodoId);
-            if (task == null) return new ErrorBadgeVO(new List<string> { "Essa tarefa não existe" });
+            var task = _context.SimpleTodos.SingleOrDefault(task => task.Id == simpletodoId & task.UserId == userId);
+            if (task == null) return new MessageBadgeVO(new List<string> { "Essa tarefa não existe" });
 
             if (!task.Finished) task.FinishedAt = DateTime.Now;
 
@@ -101,65 +99,19 @@ namespace backend.Repository.Implementations
             return _context.SimpleTodos.SingleOrDefault(task => task.Id == simpletodoId);
         }
 
-        public ErrorBadgeVO ValidateSimpleTodoInput(NewSimpleTodoVO simpletodo)
+        public MessageBadgeVO DeleteSimpleTodo(long userId, long simpletodoId)
         {
-            ErrorBadgeVO errors = new(new List<string>());
-            return ValidateNonNullablesSimpleTodoInputs(errors, typeof(NewSimpleTodoVO), simpletodo);
-        }
-        public ErrorBadgeVO ValidateSimpleTodoInput(SimpleTodoVO simpletodo)
-        {
-            ErrorBadgeVO errors = new(new List<string>());
-            return ValidateNonNullablesSimpleTodoInputs(errors, typeof(SimpleTodoVO), simpletodo);
-        }
-
-        public object DeleteSimpleTodo(long userId, long simpletodoId)
-        {
-            if (userId == 0 || simpletodoId == 0) return new ErrorBadgeVO(new List<string> { "Id de usuário ou tarefa inválidos" });
-            var task = _context.SimpleTodos.SingleOrDefault(task => (task.UserId == userId) & (task.Id == simpletodoId));
             try
             {
+            var task = _context.SimpleTodos.SingleOrDefault(task => (task.UserId == userId) & (task.Id == simpletodoId));
                 _context.SimpleTodos.Remove(task);
                 _context.SaveChanges();
                 return null;
             }
             catch (Exception)
             {
-                return new ErrorBadgeVO(new List<string> { "Não foi possível deletar esta tarefa" });
+                return new MessageBadgeVO(new List<string> { "Não foi possível deletar esta tarefa" });
             }
-        }
-
-
-        private ErrorBadgeVO ValidateNonNullablesSimpleTodoInputs(ErrorBadgeVO errors, Type type, dynamic simpletodo)
-        {
-            foreach (PropertyInfo input in type.GetProperties())
-            {
-                if (!simpletodo.Nullables.Contains(input.Name))
-                {
-                    var inputValue = input.GetValue(simpletodo);
-                    var inputType = input.GetValue(simpletodo).GetType().Name;
-
-                    if (inputType == "String")
-                    {
-                        if (inputValue == null)
-                        {
-                            errors.messages.Add($"O campo {simpletodo.InputsName[input.Name]} não pode ser vazio");
-                            return errors;
-                        }
-                    }
-                    else if (inputType == "Long" || inputType == "Int") {
-                        if (inputValue == 0)
-                        {
-                            errors.messages.Add($"O campo {simpletodo.InputsName[input.Name]} não pode ser vazio");
-                            return errors;
-                        }
-                    }
-                }
-            }
-
-            if (simpletodo.Title.Length > 100) errors.messages.Add("O título não pode ter mais de 100 caracteres");
-            if (simpletodo.Description.Length > 500) errors.messages.Add("A descrição não pode ter mais de 100 caracteres");
-            return errors.messages.Count > 0 ? errors : null;
-
         }
     }
 }

@@ -5,13 +5,15 @@ using System.Threading.Tasks;
 
 namespace backend.Data.VO
 {
-    public class ErrorBadgeVO
+    public class MessageBadgeVO
     {
-        public ErrorBadgeVO(List<string> messages) 
+        public MessageBadgeVO(List<string> messages, bool isError = true) 
         {
             this.messages = messages;
+            this.isError = isError;
         }
 
         public List<string> messages { get; set; }
+        public bool isError { get; set; }
     }
 }

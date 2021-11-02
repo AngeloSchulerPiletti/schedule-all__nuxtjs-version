@@ -26,12 +26,12 @@ namespace backend.Business.Implementations
 
         public object ValidateCredentials(UserVO userCredentials)
         {
-            ErrorBadgeVO error = new(new List<string>());
-            var result = _repository.ValidateUserVO(userCredentials, error);
+            MessageBadgeVO error = new(new List<string>());
+            MessageBadgeVO result = _repository.ValidateUserVO(userCredentials, error);
             if (result != null) return result;
 
             var user = _repository.ValidateCredentials(userCredentials);
-            if (user == null) return new ErrorBadgeVO(new List<string>(new string[] { "email, usuário ou senha incorretos" }));
+            if (user == null) return new MessageBadgeVO(new List<string>(new string[] { "email, usuário ou senha incorretos" }));
 
             var claims = new List<Claim> {
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString("N")),

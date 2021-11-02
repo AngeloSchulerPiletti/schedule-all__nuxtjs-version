@@ -79,7 +79,7 @@ namespace backend.Repository
             return BitConverter.ToString(hashedBytes);
         }
 
-        public ErrorBadgeVO CheckIfUserAlreadyExists(NewUserVO user, ErrorBadgeVO error)
+        public MessageBadgeVO CheckIfUserAlreadyExists(NewUserVO user, MessageBadgeVO error)
         {
             var usernameResult = _context.Users.SingleOrDefault(u => u.UserName.Equals(user.UserName));
             if (usernameResult != null) error.messages.Add("nick de usuário já cadastrado. Escolha outro nick");
@@ -102,7 +102,7 @@ namespace backend.Repository
             return true;
         }
 
-        public ErrorBadgeVO ValidateUserVO(UserVO user, ErrorBadgeVO error)
+        public MessageBadgeVO ValidateUserVO(UserVO user, MessageBadgeVO error)
         {
             foreach (PropertyInfo input in typeof(UserVO).GetProperties())
             {
@@ -132,7 +132,7 @@ namespace backend.Repository
             return null;
         }
 
-        public ErrorBadgeVO ValidateNewUserVO(NewUserVO user, ErrorBadgeVO error)
+        public MessageBadgeVO ValidateNewUserVO(NewUserVO user, MessageBadgeVO error)
         {
             foreach (PropertyInfo input in typeof(NewUserVO).GetProperties())
             {

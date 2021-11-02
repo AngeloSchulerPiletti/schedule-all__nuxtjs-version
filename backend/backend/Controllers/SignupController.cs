@@ -28,7 +28,7 @@ namespace backend.Controllers
         public IActionResult Signup([FromBody] NewUserVO user)
         {
             var userData = _signupBusiness.CreateNewUser(user);
-            if (userData is ErrorBadgeVO) return BadRequest(userData);
+            if (userData is MessageBadgeVO) return BadRequest(userData);
 
             return Ok(userData);
         }

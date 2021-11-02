@@ -4,6 +4,7 @@ using backend.Repository;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace backend.Business.Implementations
@@ -17,39 +18,86 @@ namespace backend.Business.Implementations
             _repository = repository;
         }
 
-        public object CreateSimpleTodo(NewSimpleTodoVO simpletodo, User user)
+        public MessageBadgeVO CreateSimpleTodo(NewSimpleTodoVO simpletodo, User user)
         {
-            var validationResult = _repository.ValidateSimpleTodoInput(simpletodo);
-            if (validationResult != null) return validationResult;
-            var creationResult = _repository.CreateSimpleTodo(simpletodo, user);
+            MessageBadgeVO creationResult = _repository.CreateSimpleTodo(simpletodo, user);
             return creationResult;
         }
         public object UpdateSimpleTodo(SimpleTodoVO simpletodo, User user)
         {
-            var validationResult = _repository.ValidateSimpleTodoInput(simpletodo);
-            if (validationResult != null) return validationResult;
-            var updateResult = _repository.UpdateSimpleTodo(simpletodo, user);
+            MessageBadgeVO updateResult = _repository.UpdateSimpleTodo(simpletodo, user);
             return updateResult;
         }
 
-        public object GetSimpleTodosByUserId(long userId)
+        public List<SimpleTodo> GetSimpleTodosByUserId(long userId)
         {
             return _repository.GetSimpleTodosByUserId(userId);
         }
 
-        public object GetSingleSimpleTodoByUserId(long userId, long simpletodoId)
+        public SimpleTodo GetSingleSimpleTodoByUserId(long userId, long simpletodoId)
         {
-            return _repository.GetSingleSimpleTodoByUserId(userId, simpletodoId);
+            SimpleTodo result = _repository.GetSingleSimpleTodoByUserId(userId, simpletodoId);
+            return result;
         }
 
-        public object SetSimpleTodoState(long simpletodoId)
+        public object SetSimpleTodoState(long simpletodoId, long userId)
         {
-            return _repository.SetSimpleTodoState(simpletodoId);
+            return _repository.SetSimpleTodoState(simpletodoId, userId);
         }
 
-        public object DeleteSimpleTodo(long userId, long simpletodoId)
+        public MessageBadgeVO DeleteSimpleTodo(long userId, long simpletodoId)
         {
             return _repository.DeleteSimpleTodo(userId, simpletodoId);
+        }
+
+        public MessageBadgeVO ValidateId(long id)
+        {
+            if (id <= 0) return new MessageBadgeVO(new List<string> { "Id inválido" });
+            return null;
+        }
+
+        public MessageBadgeVO ValidateSimpleTodoInput(NewSimpleTodoVO simpletodo)
+        {
+            MessageBadgeVO errors = new(new List<string>());
+            return ValidateNonNullablesSimpleTodoInputs(errors, typeof(NewSimpleTodoVO), simpletodo);
+        }
+        public MessageBadgeVO ValidateSimpleTodoInput(SimpleTodoVO simpletodo)
+        {
+            MessageBadgeVO errors = new(new List<string>());
+            return ValidateNonNullablesSimpleTodoInputs(errors, typeof(SimpleTodoVO), simpletodo);
+        }
+        private MessageBadgeVO ValidateNonNullablesSimpleTodoInputs(MessageBadgeVO errors, Type type, dynamic simpletodo)
+        {
+            foreach (PropertyInfo input in type.GetProperties())
+            {
+                if (!simpletodo.Nullables.Contains(input.Name))
+                {
+                    var inputValue = input.GetValue(simpletodo);
+                    var inputType = input.GetValue(simpletodo).GetType().Name;
+
+                    if (inputType == "String")
+                    {
+                        if (inputValue == null)
+                        {
+                            errors.messages.Add($"O campo {simpletodo.InputsName[input.Name]} não pode ser vazio");
+                            return errors;
+                        }
+                    }
+                    else if (inputType == "Long" || inputType == "Int")
+                    {
+                        if (inputValue == 0)
+                        {
+                            errors.messages.Add($"O campo {simpletodo.InputsName[input.Name]} não pode ser vazio");
+                            return errors;
+                        }
+                    }
+                }
+            }
+
+            if (simpletodo.Title.Length > 100) errors.messages.Add("O título não pode ter mais de 100 caracteres");
+            if (simpletodo.Description.Length > 500) errors.messages.Add("A descrição não pode ter mais de 100 caracteres");
+            return errors.messages.Count > 0 ? errors : null;
+
         }
     }
 }

@@ -7,10 +7,10 @@ namespace backend.Repository
     {
         User ValidateCredentials(UserVO user);
         User ValidateCredentials(string userName);
-        ErrorBadgeVO ValidateUserVO(UserVO user, ErrorBadgeVO error);
-        ErrorBadgeVO ValidateNewUserVO(NewUserVO user, ErrorBadgeVO error);
+        MessageBadgeVO ValidateUserVO(UserVO user, MessageBadgeVO error);
+        MessageBadgeVO ValidateNewUserVO(NewUserVO user, MessageBadgeVO error);
         bool SaveNewUserOnDB(NewUserVO user);
-        ErrorBadgeVO CheckIfUserAlreadyExists(NewUserVO user, ErrorBadgeVO error);
+        MessageBadgeVO CheckIfUserAlreadyExists(NewUserVO user, MessageBadgeVO error);
         bool RevokeToken(string userName);
         User RefreshUserInfo(User user);
     }

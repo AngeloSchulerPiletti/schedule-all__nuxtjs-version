@@ -1,5 +1,6 @@
 ﻿using backend.Configurations;
 using backend.Data.VO;
+using backend.Models;
 using backend.Repository;
 using backend.Services;
 using System;
@@ -28,26 +29,26 @@ namespace backend.Business.Implementations
 
         public object CreateNewUser(NewUserVO user)
         {
-            ErrorBadgeVO errors = new(new List<string>());
-            var inputsValidateResult = _repository.ValidateNewUserVO(user, errors);
+            MessageBadgeVO errors = new(new List<string>());
+
+            MessageBadgeVO inputsValidateResult = _repository.ValidateNewUserVO(user, errors);
             if (inputsValidateResult != null) return inputsValidateResult;
 
-            var checkUserExistenceResult = _repository.CheckIfUserAlreadyExists(user, errors);
-            if (checkUserExistenceResult is ErrorBadgeVO) return checkUserExistenceResult;
+            MessageBadgeVO checkUserExistenceResult = _repository.CheckIfUserAlreadyExists(user, errors);
+            if (checkUserExistenceResult is MessageBadgeVO) return checkUserExistenceResult;
 
-            var saveResult = _repository.SaveNewUserOnDB(user);
-            if (!saveResult) errors.messages.Add("Houve um erro ao salvar seu usuário. Tente novamente mais tarde");
+            bool saveResult = _repository.SaveNewUserOnDB(user);
+            if (!saveResult) return new MessageBadgeVO(new List<string> { "Houve um erro ao salvar seu usuário. Tente novamente mais tarde" });
 
-
-            var freshUser = _repository.ValidateCredentials(user.UserName);
+            User freshUser = _repository.ValidateCredentials(user.UserName);
 
             var claims = new List<Claim> {
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString("N")),
                 new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName)
             };
 
-            var accessToken = _tokenService.GenerateAccessToken(claims);
-            var refreshToken = _tokenService.GenerateRefreshToken();
+            string accessToken = _tokenService.GenerateAccessToken(claims);
+            string refreshToken = _tokenService.GenerateRefreshToken();
 
             freshUser.RefreshToken = refreshToken;
             freshUser.RefreshTokenExpiryTime = DateTime.Now.AddDays(_configuration.DaysToExpiry);
@@ -69,5 +70,6 @@ namespace backend.Business.Implementations
 
             return new UserDataVO(user.UserName, user.FullName, user.Email, token);
         }
+
     }
 }

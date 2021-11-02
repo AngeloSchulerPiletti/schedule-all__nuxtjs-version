@@ -29,7 +29,7 @@ namespace backend.Controllers
         {
             if (user == null) return BadRequest("Usuário Inválido");
             var userData = _loginBusiness.ValidateCredentials(user);
-            if (userData is ErrorBadgeVO) return BadRequest(userData);
+            if (userData is MessageBadgeVO) return BadRequest(userData);
          
             return Ok(userData);
         }

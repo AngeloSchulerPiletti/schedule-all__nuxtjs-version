@@ -30,10 +30,14 @@ namespace backend.Controllers
         public IActionResult CreateCategory([FromBody] string title)
         {
             User user = GetUserFromJWT();
-            if (user == null) return BadRequest(new ErrorBadgeVO(new List<string> { "Houve um erro com a sua identidade" }));
+            if (user == null) return BadRequest(new MessageBadgeVO(new List<string> { "Houve um erro com a sua identidade" }));
 
-            var result = _business.CreateCategory(title, user.Id);
-            if (result is ErrorBadgeVO) return BadRequest(result);
+            string trimmedTitle = title.Trim();
+            MessageBadgeVO validateResult = _business.ValidateTitle(trimmedTitle);
+            if (validateResult != null) return BadRequest(validateResult);
+
+            MessageBadgeVO result = _business.CreateCategory(title, user.Id);
+            if (result.isError) return BadRequest(result);
             return Ok(result);
         }
 
@@ -42,10 +46,9 @@ namespace backend.Controllers
         public IActionResult GetUserCategorys()
         {
             User user = GetUserFromJWT();
-            if (user == null) return BadRequest(new ErrorBadgeVO(new List<string> { "Houve um erro com a sua identidade" }));
+            if (user == null) return BadRequest(new MessageBadgeVO(new List<string> { "Houve um erro com a sua identidade" }));
 
-            var result = _business.GetUserCategorys(user.Id);
-            if (result is ErrorBadgeVO) return BadRequest(result);
+            List<Category> result = _business.GetUserCategorys(user.Id);
             return Ok(result);
         }
 
@@ -54,10 +57,13 @@ namespace backend.Controllers
         public IActionResult DeleteCategory([FromBody] long categoryId)
         {
             User user = GetUserFromJWT();
-            if (user == null) return BadRequest(new ErrorBadgeVO(new List<string> { "Houve um erro com a sua identidade" }));
+            if (user == null) return BadRequest(new MessageBadgeVO(new List<string> { "Houve um erro com a sua identidade" }));
 
-            var result = _business.DeleteCategory(categoryId, user.Id);
-            if (result is ErrorBadgeVO) return BadRequest(result);
+            MessageBadgeVO validateResult = _business.ValidateId(categoryId);
+            if (validateResult != null) return BadRequest(validateResult);
+
+            MessageBadgeVO result = _business.DeleteCategory(categoryId, user.Id);
+            if (result != null) return BadRequest(result);
             return NoContent();
         }
 
@@ -67,10 +73,13 @@ namespace backend.Controllers
         public IActionResult ChangeCategory([FromBody] CategoryVO category)
         {
             User user = GetUserFromJWT();
-            if (user == null) return BadRequest(new ErrorBadgeVO(new List<string> { "Houve um erro com a sua identidade" }));
+            if (user == null) return BadRequest(new MessageBadgeVO(new List<string> { "Houve um erro com a sua identidade" }));
+
+            MessageBadgeVO resultValidate = _business.ValidateCategory(category);
+            if (resultValidate != null) return BadRequest(resultValidate);
 
             var result = _business.ChangeCategory(category, user.Id);
-            if (result is ErrorBadgeVO) return BadRequest(result);
+            if (result is MessageBadgeVO) return BadRequest(result);
             return Ok(result);
         }
     }
