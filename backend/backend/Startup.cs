@@ -112,6 +112,8 @@ namespace backend
             services.AddScoped<ISimpleTodoRepository, SimpleTodoRepository>();
             services.AddScoped<ISignupBusiness, SignupBusinessImplementation>();
             services.AddScoped<ILoginBusiness, LoginBusinessImplementation>();
+            services.AddScoped<ICategoryRepository, CategoryRepository>();
+            services.AddScoped<ICategoryBusiness, CategoryBusiness>();
 
             services.AddTransient<ITokenService, TokenService>();
 
