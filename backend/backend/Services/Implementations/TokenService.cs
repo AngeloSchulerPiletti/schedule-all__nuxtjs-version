@@ -67,7 +67,12 @@ namespace backend.Services.Implementations
                         StringComparison.InvariantCulture))
                     throw new SecurityTokenException("Invalid Token");
 
-                return principal;
+                var clone = principal.Clone();
+                var newIdentity = (ClaimsIdentity)clone.Identity;
+                var claim = new Claim("unique_name", principal.Identity.Name);
+                newIdentity.AddClaim(claim);
+
+                return clone;
             }
             catch (Exception)
             {

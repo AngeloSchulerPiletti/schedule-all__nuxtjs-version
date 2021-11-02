@@ -16,6 +16,8 @@ namespace backend.Data.VO
 
             this.Nullables = new();
             this.Nullables.Add("CategoryId");
+            this.Nullables.Add("InputsName");
+            this.Nullables.Add("Nullables");
         }
 
         public Dictionary<string, string> InputsName { get; set; }

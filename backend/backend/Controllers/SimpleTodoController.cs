@@ -31,7 +31,9 @@ namespace backend.Controllers
         {
             User user = GetUserFromJWT();
             if (user == null) return BadRequest(new ErrorBadgeVO(new List<string> { "Houve um erro com a sua identidade" }));
+
             var result = _business.GetSimpleTodosByUserId(user.Id);
+            if (result is ErrorBadgeVO) return BadRequest(result);
             return Ok(result);
         }
 
@@ -41,7 +43,9 @@ namespace backend.Controllers
         {
             User user = GetUserFromJWT();
             if (user == null) return BadRequest(new ErrorBadgeVO(new List<string> { "Houve um erro com a sua identidade" }));
+
             var result = _business.GetSingleSimpleTodoByUserId(user.Id, simpletodoId);
+            if (result is ErrorBadgeVO) return BadRequest(result);
             return Ok(result);
         }
 

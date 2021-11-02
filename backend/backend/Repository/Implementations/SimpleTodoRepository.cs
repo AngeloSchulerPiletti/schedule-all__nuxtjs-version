@@ -55,7 +55,8 @@ namespace backend.Repository.Implementations
             }
 
             var task = _context.SimpleTodos.SingleOrDefault(task => (task.Id == simpletodo.Id) & (task.UserId == user.Id));
-            
+            if (task == null) return new ErrorBadgeVO(new List<string> { "Essa tarefa não pode ser alterada pois não existe" });
+
             try
             {
                 task.Title = simpletodo.Title;
@@ -74,12 +75,16 @@ namespace backend.Repository.Implementations
 
         public object GetSimpleTodosByUserId(long userId)
         {
-            return _context.SimpleTodos.Where(task => task.UserId == userId).ToList();
+            var result = _context.SimpleTodos.Where(task => task.UserId == userId).ToList();
+            if (result == null) return new ErrorBadgeVO(new List<string> { "Não encontramos essas tarefas..." });
+            return result;
         }
 
         public object GetSingleSimpleTodoByUserId(long userId, long simpletodoId)
         {
-            return _context.SimpleTodos.Where(task => task.Id == simpletodoId).SingleOrDefault(task => task.UserId == userId);
+            var result = _context.SimpleTodos.Where(task => task.Id == simpletodoId).SingleOrDefault(task => task.UserId == userId);
+            if (result == null) return new ErrorBadgeVO(new List<string> { "Não encontramos essas tarefas..." });
+            return result;
         }
 
         public object SetSimpleTodoState(long simpletodoId)
@@ -99,38 +104,12 @@ namespace backend.Repository.Implementations
         public ErrorBadgeVO ValidateSimpleTodoInput(NewSimpleTodoVO simpletodo)
         {
             ErrorBadgeVO errors = new(new List<string>());
-
-            foreach (PropertyInfo input in typeof(NewSimpleTodoVO).GetProperties())
-            {
-                if (input.GetValue(simpletodo) == null & !simpletodo.Nullables.Contains(input.Name))
-                {
-                    errors.messages.Add($"O campo {simpletodo.InputsName[input.Name]} não pode ser vazio");
-                    return errors;
-                }
-            }
-
-            if (simpletodo.Title.Length > 100) errors.messages.Add("O título não pode ter mais de 100 caracteres");
-            if (simpletodo.Description.Length > 500) errors.messages.Add("A descrição não pode ter mais de 100 caracteres");
-
-            return errors.messages.Count > 0 ? errors : null;
+            return ValidateNonNullablesSimpleTodoInputs(errors, typeof(NewSimpleTodoVO), simpletodo);
         }
         public ErrorBadgeVO ValidateSimpleTodoInput(SimpleTodoVO simpletodo)
         {
             ErrorBadgeVO errors = new(new List<string>());
-
-            foreach (PropertyInfo input in typeof(SimpleTodoVO).GetProperties())
-            {
-                if (input.GetValue(simpletodo) == null & !simpletodo.Nullables.Contains(input.Name))
-                {
-                    errors.messages.Add($"O campo {simpletodo.InputsName[input.Name]} não pode ser vazio");
-                    return errors;
-                }
-            }
-
-            if (simpletodo.Title.Length > 100) errors.messages.Add("O título não pode ter mais de 100 caracteres");
-            if (simpletodo.Description.Length > 500) errors.messages.Add("A descrição não pode ter mais de 100 caracteres");
-
-            return errors.messages.Count > 0 ? errors : null;
+            return ValidateNonNullablesSimpleTodoInputs(errors, typeof(SimpleTodoVO), simpletodo);
         }
 
         public object DeleteSimpleTodo(long userId, long simpletodoId)
@@ -147,6 +126,40 @@ namespace backend.Repository.Implementations
             {
                 return new ErrorBadgeVO(new List<string> { "Não foi possível deletar esta tarefa" });
             }
+        }
+
+
+        private ErrorBadgeVO ValidateNonNullablesSimpleTodoInputs(ErrorBadgeVO errors, Type type, dynamic simpletodo)
+        {
+            foreach (PropertyInfo input in type.GetProperties())
+            {
+                if (!simpletodo.Nullables.Contains(input.Name))
+                {
+                    var inputValue = input.GetValue(simpletodo);
+                    var inputType = input.GetValue(simpletodo).GetType().Name;
+
+                    if (inputType == "String")
+                    {
+                        if (inputValue == null)
+                        {
+                            errors.messages.Add($"O campo {simpletodo.InputsName[input.Name]} não pode ser vazio");
+                            return errors;
+                        }
+                    }
+                    else if (inputType == "Long" || inputType == "Int") {
+                        if (inputValue == 0)
+                        {
+                            errors.messages.Add($"O campo {simpletodo.InputsName[input.Name]} não pode ser vazio");
+                            return errors;
+                        }
+                    }
+                }
+            }
+
+            if (simpletodo.Title.Length > 100) errors.messages.Add("O título não pode ter mais de 100 caracteres");
+            if (simpletodo.Description.Length > 500) errors.messages.Add("A descrição não pode ter mais de 100 caracteres");
+            return errors.messages.Count > 0 ? errors : null;
+
         }
     }
 }

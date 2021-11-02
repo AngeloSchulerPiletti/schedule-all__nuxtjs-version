@@ -23,8 +23,6 @@ namespace backend.Controllers
             var headers = Request.Headers;
             if (headers.ContainsKey("Authorization"))
             {
-                try
-                {
                     headers.TryGetValue("Authorization", out var stream);
                     AuthenticationHeaderValue.TryParse(stream, out var tokenValue);
 
@@ -32,15 +30,10 @@ namespace backend.Controllers
                     var jsonToken = handler.ReadToken(tokenValue.Parameter);
                     var token = jsonToken as JwtSecurityToken;
 
-                    var userName = token.Claims.First(claim => claim.Type == "unique_name").Value;
+                    var userName = token.Claims.FirstOrDefault(claim => claim.Type == "unique_name").Value;
+                    if (userName == null) return null;
                     var user = _userRepository.ValidateCredentials(userName);
                     return user;
-            }
-                catch (Exception)
-            {
-                return null;
-            }
-
         }
             return null;
         }
