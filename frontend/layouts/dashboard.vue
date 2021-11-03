@@ -4,7 +4,15 @@
     <div id="vertical-container" class="flex_r">
       <menu-lateral />
       <div id="view_container" class="border-soft">
+        <div v-if="$store.state.dashboardPageStatus == 'loading'" class="loading">
+          loading...
+      </div>
+      <div v-else-if="$store.state.dashboardPageStatus == 'error'" class="error">
+        error
+      </div>
+      <div v-show="$store.state.dashboardPageStatus == 'loaded'">
         <Nuxt />
+      </div>
       </div>
     </div>
   </div>

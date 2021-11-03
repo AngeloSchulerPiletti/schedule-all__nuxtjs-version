@@ -1,10 +1,20 @@
 
 export const state = () => ({
-    
+    dashboardPageStatus: 'loading',
+    dashboardSimpleTodos: {
+        categories: {},
+    },
 })
 
 export const mutations = {
-    
+    setDashboardPageStatus(state, setting){
+        state.dashboardPageStatus = setting;
+    },
+    setCategories(state, categories){
+        categories.forEach(category => {
+            state.dashboardSimpleTodos.categories[category.categoryId] = category.title;
+        });
+    }
 }
 
 
