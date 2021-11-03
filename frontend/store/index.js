@@ -24,8 +24,7 @@ export const actions = {
                 })
                 .then((response) => {
                     app.$cookies.set('userData', response.data);
-                    app.$axios.setToken(response.data.accessToken, 'Bearer');
-                    app.$axios.setToken(accessToken, 'Bearer')
+                    app.$axios.setToken(response.data.tokenData.accessToken, 'Bearer');
                 }).catch(err => {
                     console.log(`token inválido: ${err}`);
                     app.$cookies.remove('userData');

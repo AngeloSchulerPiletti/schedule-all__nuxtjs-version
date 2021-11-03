@@ -12,7 +12,7 @@
         fill="black"
       />
     </svg>
-    <span :class="turnItOff">Sair</span>
+    <transition name="fade"><span v-show="turnItOff">Sair</span></transition>
   </div>
 </template>
 
@@ -20,7 +20,7 @@
 export default {
   computed:{
     turnItOff(){
-      return this.turnOff == "close" ? "turnoff": "";
+      return this.turnOff == "close" ? false: true;
     }
   },
   methods: {
@@ -49,10 +49,9 @@ export default {
 
   span {
     transition: transform 300ms;
-    &.turnoff {
-      display: none;
-    }
   }
+  .fade-enter-active, .fade-leave-active { transition: opacity .2s; }
+  .fade-enter, .fade-leave-active { opacity: 0; }
   svg {
     transition: opacity 300ms;
     width: 22px;
