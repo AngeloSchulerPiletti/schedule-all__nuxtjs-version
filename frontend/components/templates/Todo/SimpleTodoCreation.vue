@@ -23,22 +23,25 @@
       <div class="select_container flex_r">
         <div class="category_selection flex_r" @click="openCategoryOptions">
           <span>{{ selectedCategory }}</span
-          ><button :class="`${closedCategories} flex_r`"><arrow-simple /></button>
+          ><button :class="`${closedCategories} flex_r`">
+            <arrow-simple />
+          </button>
         </div>
         <transition name="optionsUp">
-        <ul
-          v-show="!closedCategories"
-          :class="`category_options grid ${closedCategories}`"
-        >
-          <li
-            v-for="(title, id) in $store.state.dashboardSimpleTodos.categories"
-            :key="id"
-            @click="categorySelected(id)"
-            class="link-2_tiny"
+          <ul
+            v-show="!closedCategories"
+            :class="`category_options grid ${closedCategories}`"
           >
-            {{ title }}
-          </li>
-        </ul>
+            <li
+              v-for="(title, id) in $store.state.dashboardSimpleTodos
+                .categories"
+              :key="id"
+              @click="categorySelected(id)"
+              class="link-2_tiny"
+            >
+              {{ title }}
+            </li>
+          </ul>
         </transition>
       </div>
     </div>
@@ -112,6 +115,10 @@ export default {
   z-index: 100;
   padding: 12px;
   gap: 14px;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
 
   &::before {
     border-top-left-radius: 15px;
@@ -181,7 +188,7 @@ export default {
           rgba(0, 0, 0, 0.15),
           rgba(255, 255, 255, 0.2)
         );
-          border-radius: 100px;
+        border-radius: 100px;
 
         span {
           font-weight: 300;
@@ -194,7 +201,7 @@ export default {
           border-top-right-radius: 100px;
           border-bottom-right-radius: 100px;
           transition: box-shadow 200ms;
-          box-shadow: inset 2px 2px 4px 2px #A7A7A7;
+          box-shadow: inset 2px 2px 4px 2px #a7a7a7;
 
           svg {
             width: 17px;
@@ -203,7 +210,7 @@ export default {
             transition: transform 300ms;
           }
           &.true {
-          box-shadow: inset 2px 2px 4px 2px transparent;
+            box-shadow: inset 2px 2px 4px 2px transparent;
             svg {
               transform: rotate(90deg);
             }
@@ -212,11 +219,7 @@ export default {
       }
       .category_options {
         position: absolute;
-        background: linear-gradient(
-          45deg,
-          #AbAbAb,
-          #F0f0f0
-        );
+        background: linear-gradient(45deg, #ababab, #f0f0f0);
         box-shadow: 0 0 10px #707070;
         border-radius: 17px;
         padding: 10px;
@@ -240,7 +243,6 @@ export default {
     height: 80px;
   }
 }
-
 
 .optionsUp-enter-active,
 .optionsUp-leave-active {
