@@ -4,15 +4,24 @@
     <div id="vertical-container" class="flex_r">
       <menu-lateral />
       <div id="view_container" class="border-soft">
-        <div v-if="$store.state.dashboardPageStatus == 'loading'" class="loading">
+        <div
+          v-if="$store.state.dashboardPageStatus == 'loading'"
+          class="loading"
+        >
           loading...
-      </div>
-      <div v-else-if="$store.state.dashboardPageStatus == 'error'" class="error">
-        error
-      </div>
-      <div v-show="$store.state.dashboardPageStatus == 'loaded'">
-        <Nuxt />
-      </div>
+        </div>
+        <div
+          v-else-if="$store.state.dashboardPageStatus == 'error'"
+          class="error"
+        >
+          error
+        </div>
+        <div
+          v-show="$store.state.dashboardPageStatus == 'loaded'"
+          class="nuxt_wrapper"
+        >
+          <Nuxt />
+        </div>
       </div>
     </div>
   </div>
@@ -48,9 +57,16 @@ export default {
     gap: $dashboard_components_spacing;
 
     #view_container {
-      padding: 20px;
+      padding: 20px 0 0 20px;
       flex-grow: 1;
       border-top-left-radius: 15px;
+      position: relative;
+
+      .nuxt_wrapper {
+        position: relative;
+        z-index: 10;
+        height: 100%;
+      }
 
       background: linear-gradient(
         135deg,

@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper">
+  <div class="wrapper grid">
       <div class="card" v-for="(simpletodo, index) in simpletodos" :key="index">
           <div class="category_mark" v-if="simpletodo.categoryId > 0"><span>{{$store.state.dashboardSimpleTodos.categories[simpletodo.categoryId]}}</span></div>
           <div class="left">
@@ -23,5 +23,16 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.wrapper{
+    grid-template-columns: 1fr 1fr;
+    gap: 25px 50px;
+    padding: 0 80px;
+
+    .card{
+        box-shadow: 0 0 10px #000;
+        border-radius: 10px;
+    }
+
+}
 
 </style>

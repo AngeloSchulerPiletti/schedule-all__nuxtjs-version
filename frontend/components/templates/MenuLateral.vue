@@ -8,19 +8,19 @@
       <li>
         <NuxtLink to="/schedule" class="flex_r">
           <span class="menu-icon spare-button pseudo"><grid /></span>
-          <span class="link-legend">Workspace</span>
+          <span class="link-legend link-2">Workspace</span>
         </NuxtLink>
       </li>
       <li>
         <NuxtLink to="/schedule/todo" class="flex_r">
           <span class="menu-icon spare-button pseudo"><todo /></span>
-          <span class="link-legend">Tarefas</span>
+          <span class="link-legend link-2">Tarefas</span>
         </NuxtLink>
       </li>
       <li>
         <NuxtLink to="/schedule/projects" class="flex_r">
           <span class="menu-icon spare-button pseudo"><case /></span>
-          <span class="link-legend">Projetos</span>
+          <span class="link-legend link-2">Projetos</span>
         </NuxtLink>
       </li>
     </ul>
@@ -129,18 +129,6 @@ export default {
           right: -20px;
           top: 50%;
           transform: translate(100%, -50%);
-          font-weight: 300;
-          text-transform: uppercase;
-          font-size: 15px;
-          padding: 6px 14px;
-          border-radius: 10px;
-
-          box-shadow: inset 2px 2px 5px 1px rgba(0, 0, 0, 0),
-            inset -2px -2px 5px 1px rgba(255, 255, 255, 0),
-            2px 2px 5px 1px rgba(0, 0, 0, 0.2),
-            -2px -2px 5px 1px rgba(255, 255, 255, 0.5);
-
-          transition: box-shadow 300ms;
         }
 
         &:hover, &.nuxt-link-exact-active{

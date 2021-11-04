@@ -16,6 +16,7 @@
               :name="input.id"
               :id="input.id"
               :placeholder="input.placeholder ? input.placeholder : ''"
+              class="input_text-1"
               v-model="form_data[input.id]"
             />
           </div>
@@ -93,13 +94,13 @@ export default {
           font-size: 14px;
           font-weight: 300;
         }
-        input {
-          padding: 6px 12px;
-          border-radius: 6px;
-          font-size: 15px;
-          box-shadow: 5px 5px 8px #00000000, -5px -5px 8px #ffffff00,
-            inset 5px 5px 8px #00000040, inset -5px -5px 8px #ffffff40;
-        }
+        // input {
+        //   padding: 6px 12px;
+        //   border-radius: 6px;
+        //   font-size: 15px;
+        //   box-shadow: 5px 5px 8px #00000000, -5px -5px 8px #ffffff00,
+        //     inset 5px 5px 8px #00000040, inset -5px -5px 8px #ffffff40;
+        // }
       }
     }
 

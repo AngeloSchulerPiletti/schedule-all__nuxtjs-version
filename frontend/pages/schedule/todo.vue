@@ -1,10 +1,10 @@
 <template>
-  <div class="wrapper">
+  <div id="todo_wrapper" class="flex_c">
     <div class="categories">
-      <categories-selection :categories="categories"/>
+      <categories-selection :categories="categories" />
     </div>
     <div class="todos">
-      <simple-todo-list :simpletodos="simpletodos"/>
+      <simple-todo-list :simpletodos="simpletodos" />
     </div>
     <div class="creation">
       <simple-todo-creation />
@@ -29,21 +29,21 @@ export default {
     this.$axios
       .get('v1/SimpleTodo/get-all-user-simpletodos')
       .then((res) => {
-        this.simpletodos = res.data;
+        this.simpletodos = res.data
         this.$axios
           .get('v1/Category/get-user-categories')
           .then((res) => {
             this.categories = res.data
-            this.$store.commit('setCategories', res.data);
-            this.$store.commit('setDashboardPageStatus', 'loaded');
+            this.$store.commit('setCategories', res.data)
+            this.$store.commit('setDashboardPageStatus', 'loaded')
           })
           .catch((err) => {
-            this.$store.commit('setDashboardPageStatus', 'error');
-            console.log(err);
+            this.$store.commit('setDashboardPageStatus', 'error')
+            console.log(err)
           })
       })
       .catch((err) => {
-        this.$store.commit('setDashboardPageStatus', 'error');
+        this.$store.commit('setDashboardPageStatus', 'error')
       })
   },
   components: {
@@ -54,4 +54,17 @@ export default {
 }
 </script>
 
-<style></style>
+<style lang="scss" scoped>
+#todo_wrapper {
+  height: 100%;
+  gap: 30px;
+  position: relative;
+
+  .creation {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+}
+</style>

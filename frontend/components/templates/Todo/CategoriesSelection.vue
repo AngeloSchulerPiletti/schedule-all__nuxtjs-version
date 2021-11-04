@@ -1,8 +1,8 @@
 <template>
   <div class="wrapper">
       <div class="categories">
-          <span>Todos</span>
-          <span v-for="(category, index) in categories" :key="index">
+          <span class="link-2">Todos</span>
+          <span class="link-2" v-for="(category, index) in categories" :key="index">
               {{category.title}}
           </span>
       </div>
@@ -22,5 +22,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-
+.wrapper{
+    .categories{
+        
+    }
+}
 </style>
