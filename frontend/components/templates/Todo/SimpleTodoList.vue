@@ -18,6 +18,7 @@
           v-model="simpletodo.title"
         /><!-- Ou um input -->
         <textarea
+          data-enable-grammarly="false"
           class="description"
           type="text"
           autocomplete="off"

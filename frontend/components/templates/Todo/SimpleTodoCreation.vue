@@ -33,8 +33,7 @@
             :class="`category_options grid ${closedCategories}`"
           >
             <li
-              v-for="(title, id) in $store.state.dashboardSimpleTodos
-                .categories"
+              v-for="(title, id) in categoriesFromStore"
               :key="id"
               @click="categorySelected(id)"
               class="link-2_tiny"
@@ -78,6 +77,9 @@ export default {
         ? 'opcional'
         : this.$store.state.dashboardSimpleTodos.categories[id]
     },
+    categoriesFromStore(){
+      return this.$store.state.dashboardSimpleTodos.categories;
+    }
   },
   methods: {
     addClicked() {

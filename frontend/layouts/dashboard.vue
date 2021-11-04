@@ -5,19 +5,19 @@
       <menu-lateral />
       <div id="view_container" class="border-soft">
         <div
-          v-if="$store.state.dashboardPageStatus == 'loading'"
+          v-if="dashboardPageStatus == 'loading'"
           class="loading"
         >
           loading...
         </div>
         <div
-          v-else-if="$store.state.dashboardPageStatus == 'error'"
+          v-else-if="dashboardPageStatus == 'error'"
           class="error"
         >
           error
         </div>
         <div
-          v-show="$store.state.dashboardPageStatus == 'loaded'"
+          v-show="dashboardPageStatus == 'loaded'"
           class="nuxt_wrapper"
         >
           <Nuxt />
@@ -36,6 +36,17 @@ export default {
   computed: {
     userData() {
       return this.$cookies.get('userData')
+    },
+    dashboardRouter(){
+      return this.$route.name;
+    },
+    dashboardPageStatus(){
+      return this.$store.state.dashboardPageStatus;
+    },
+  },
+  watch:{
+    dashboardRouter(oldVal, newVal){
+        this.$store.commit('setDashboardPageStatus', 'loading');
     },
   },
   components: {

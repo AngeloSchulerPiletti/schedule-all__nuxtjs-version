@@ -1,5 +1,5 @@
 <template>
-  <div id="todo_wrapper" class="flex_c">
+  <div id="todo_wrapper" class="flex_c" v-if="dataLoaded">
     <div class="categories">
       <categories-selection />
     </div>
@@ -20,6 +20,7 @@ export default {
   data() {
     return {
       simpletodos: [],
+      dataLoaded: false,
     }
   },
   mounted() {
@@ -30,8 +31,9 @@ export default {
         this.$axios
           .get('v1/Category/get-user-categories')
           .then((res) => {
-            this.$store.commit('setCategories', res.data)
-            this.$store.commit('setDashboardPageStatus', 'loaded')
+            this.$store.commit('setCategories', res.data);
+            this.$store.commit('setDashboardPageStatus', 'loaded');
+            this.dataLoaded = true;
           })
           .catch((err) => {
             this.$store.commit('setDashboardPageStatus', 'error')
