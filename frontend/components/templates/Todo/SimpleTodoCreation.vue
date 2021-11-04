@@ -10,7 +10,7 @@
     >
       <add-icon />
     </button>
-    <div class="top flex_r">
+    <div class="top pullUp flex_r">
       <input
         autocomplete="off"
         class="input_text-1"
@@ -43,7 +43,7 @@
       </div>
     </div>
     <textarea
-      class="bottom input_text-1"
+      class="bottom pullUp input_text-1"
       name="description"
       id="description"
       placeholder="Descrição (opcional)"
@@ -169,8 +169,6 @@ export default {
   }
 
   .top {
-    position: relative;
-    z-index: 10;
     gap: 30px;
     align-items: center;
 
@@ -229,12 +227,6 @@ export default {
         grid-template-rows: auto auto auto;
         grid-auto-columns: auto;
         grid-auto-flow: column;
-
-        li{
-        }
-
-        &.true {
-        }
       }
     }
 
@@ -244,9 +236,8 @@ export default {
     }
   }
   .bottom {
-    position: relative;
-    z-index: 10;
     resize: none;
+    height: 80px;
   }
 }
 
