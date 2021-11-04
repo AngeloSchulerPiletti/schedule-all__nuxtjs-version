@@ -1,7 +1,7 @@
 <template>
   <div id="todo_wrapper" class="flex_c">
     <div class="categories">
-      <categories-selection :categories="categories" />
+      <categories-selection />
     </div>
     <div class="todos">
       <simple-todo-list :simpletodos="simpletodos" />
@@ -22,7 +22,6 @@ export default {
   data() {
     return {
       simpletodos: [],
-      categories: [],
     }
   },
   mounted() {
@@ -33,7 +32,6 @@ export default {
         this.$axios
           .get('v1/Category/get-user-categories')
           .then((res) => {
-            this.categories = res.data
             this.$store.commit('setCategories', res.data)
             this.$store.commit('setDashboardPageStatus', 'loaded')
           })
@@ -57,7 +55,7 @@ export default {
 <style lang="scss" scoped>
 #todo_wrapper {
   height: 100%;
-  gap: 30px;
+  gap: 50px;
   position: relative;
 
   .creation {
