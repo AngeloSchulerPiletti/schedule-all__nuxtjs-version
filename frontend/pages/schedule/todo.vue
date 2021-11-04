@@ -6,9 +6,7 @@
     <div class="todos">
       <simple-todo-list :simpletodos="simpletodos" />
     </div>
-    <div class="creation">
       <simple-todo-creation />
-    </div>
   </div>
 </template>
 
@@ -58,11 +56,5 @@ export default {
   gap: 50px;
   position: relative;
 
-  .creation {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-  }
 }
 </style>
