@@ -6,7 +6,7 @@
     <div class="todos">
       <simple-todo-list :simpletodos="simpletodos" />
     </div>
-      <simple-todo-creation />
+    <simple-todo-creation />
   </div>
 </template>
 
@@ -31,9 +31,9 @@ export default {
         this.$axios
           .get('v1/Category/get-user-categories')
           .then((res) => {
-            this.$store.commit('setCategories', res.data);
-            this.$store.commit('setDashboardPageStatus', 'loaded');
-            this.dataLoaded = true;
+            this.$store.commit('setCategories', res.data)
+            this.$store.commit('setDashboardPageStatus', 'loaded')
+            this.dataLoaded = true
           })
           .catch((err) => {
             this.$store.commit('setDashboardPageStatus', 'error')
@@ -55,8 +55,11 @@ export default {
 <style lang="scss" scoped>
 #todo_wrapper {
   height: 100%;
-  gap: 50px;
   position: relative;
+
+  .todos{
+    block-size: 100%;
+  }
 
 }
 </style>
