@@ -3,7 +3,7 @@
     <div class="categories">
       <categories-selection />
     </div>
-    <div class="todos">
+    <div class="todos flex_c scroll-1">
       <simple-todo-list :simpletodos="simpletodos" />
     </div>
     <simple-todo-creation />
@@ -58,7 +58,10 @@ export default {
   position: relative;
 
   .todos{
-    block-size: 100%;
+    position: relative;
+    overflow-y: auto;
+    height: 100%;
+
   }
 
 }
