@@ -1,19 +1,39 @@
-.pseudo{
-    position: relative;
-    &::before{
+.pseudo {
+  position: relative;
+  &::before {
     position: absolute;
     content: '';
     top: 0;
     bottom: 0;
     left: 0;
     right: 0;
-    }
+  }
 }
 
-.border-soft{
-    position: relative;
+.pseudo_base {
+  position: relative;
+  &::before {
+    position: absolute;
+    content: '';
+  }
+}
 
-    &::before{
+.pseudos_base {
+  position: relative;
+  &::before {
+    position: absolute;
+    content: '';
+  }
+  &::after {
+    position: absolute;
+    content: '';
+  }
+}
+
+.border-soft {
+  position: relative;
+
+  &::before {
     position: absolute;
     content: '';
     filter: blur(1px);
@@ -21,23 +41,22 @@
     bottom: 0;
     left: 0;
     right: 0;
-    }
+  }
 }
 
-.spare-button{
-    box-shadow: 2px 2px 6px #00000060, -2px -2px 6px #ffffff60;
+.spare-button {
+  box-shadow: 2px 2px 6px #00000060, -2px -2px 6px #ffffff60;
+  transition: box-shadow 450ms;
+
+  &::before {
+    box-shadow: inset 2px 2px 6px #ffffff60, inset -2px -2px 6px #00000060;
     transition: box-shadow 450ms;
+  }
 
-    &::before{
-        box-shadow: inset 2px 2px 6px #ffffff60, inset -2px -2px 6px #00000060;
-        transition: box-shadow 450ms;
+  &:hover {
+    box-shadow: 2px 2px 8px #00000060, -2px -2px 8px #ffffff60;
+    &::before {
+      box-shadow: inset 2px 2px 8px #00000060, inset -2px -2px 8px #ffffff60;
     }
-
-    &:hover{
-        box-shadow: 2px 2px 8px #00000060, -2px -2px 8px #ffffff60;
-        &::before{
-            box-shadow: inset 2px 2px 8px #00000060, inset -2px -2px 8px #ffffff60;
-        }
-    }
-    
+  }
 }
