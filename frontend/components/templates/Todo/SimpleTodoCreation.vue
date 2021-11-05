@@ -229,9 +229,13 @@ export default {
         right: 0;
         gap: 10px;
         transform: translateY(-100%);
-        grid-template-rows: auto auto auto;
-        grid-auto-columns: auto;
-        grid-auto-flow: column;
+        grid-template-columns: auto auto auto auto;
+        grid-auto-rows: auto;
+        grid-auto-flow: row;
+
+        li{
+          white-space: nowrap;
+        }
       }
     }
 

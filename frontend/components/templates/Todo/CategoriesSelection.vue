@@ -56,6 +56,10 @@ export default {
     gap: 8px;
     grid-auto-flow: column;
     justify-content: flex-start;
+
+    span{
+      white-space: nowrap;
+    }
   }
 
   .category_creation {

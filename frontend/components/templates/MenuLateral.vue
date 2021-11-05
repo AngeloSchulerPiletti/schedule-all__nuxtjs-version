@@ -68,6 +68,7 @@ export default {
   max-height: 100vh;
   gap: 25px;
   align-items: center;
+  flex-shrink: 0;
   padding: 20px;
   border-top-right-radius: 15px;
   background: linear-gradient(-105deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1));
