@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper flex_r">
-    <div class="categories grid">
+    <div class="categories">
       <span class="link-2 activated_link" @click="categorySelected(0, $event)"
         >Todos</span
       >
@@ -66,20 +66,18 @@ export default {
 <style lang="scss" scoped>
 .wrapper {
   .categories {
-    flex-grow: 1;
-    height: 0%;
-    gap: 8px;
-    grid-auto-flow: column;
-    justify-content: flex-start;
+    width: calc(100% - 300px);
 
     span {
       white-space: nowrap;
+      display: inline-block;
+      margin: 5px;
     }
   }
 
   .category_creation {
-    flex-grow: 0;
     width: 300px;
+    height: fit-content;
     gap: 14px;
     align-items: center;
     justify-content: flex-end;
