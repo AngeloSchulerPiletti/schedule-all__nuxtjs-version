@@ -77,7 +77,11 @@ export default {
     },
     changeSimpletodoState(simpletodoId) {
       console.log(simpletodoId)
-      //Manda um axios pro backend
+      this.$axios
+        .patch('v1/SimpleTodo/change-simpletodo-state', simpletodoId, {
+          headers: { 'Content-Type': 'application/json' },
+        })
+        .then((res) => console.log(res))
     },
     changeSimpletodoImportance(simpletodoId) {
       console.log(simpletodoId)
@@ -111,19 +115,20 @@ export default {
     height: 100%;
     position: relative;
 
-    &.true{
-        &::before, &::after{
-            left: -18px;
-            right: -18px;
-            height: 1px;
-            background-color: #202020C9;
-        }
-        &::before{
-            top: 30%;
-        }
-        &::after{
-            top: 70%;
-        }
+    &.true {
+      &::before,
+      &::after {
+        left: -18px;
+        right: -18px;
+        height: 1px;
+        background-color: #202020c9;
+      }
+      &::before {
+        top: 30%;
+      }
+      &::after {
+        top: 70%;
+      }
     }
 
     .category_mark {

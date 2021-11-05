@@ -1,8 +1,15 @@
 <template>
   <div class="wrapper flex_r">
     <div class="categories grid">
-      <span class="link-2 activated_link" @click="categorySelected(0, $event)">Todos</span>
-      <span class="link-2" @click="categorySelected(id, $event)" v-for="(title, id) in $store.state.dashboardSimpleTodos.categories" :key="id">
+      <span class="link-2 activated_link" @click="categorySelected(0, $event)"
+        >Todos</span
+      >
+      <span
+        class="link-2"
+        @click="categorySelected(id, $event)"
+        v-for="(title, id) in $store.state.dashboardSimpleTodos.categories"
+        :key="id"
+      >
         {{ title }}
       </span>
     </div>
@@ -15,7 +22,9 @@
         placeholder="Nova Categoria"
         v-model="title"
       />
-      <button class="spare-button pseudo" @click="createCategory"><add-icon /></button>
+      <button class="spare-button pseudo" @click="createCategory">
+        <add-icon />
+      </button>
     </div>
   </div>
 </template>
@@ -24,24 +33,30 @@
 import Add from '@/components/icons/Add'
 
 export default {
-    data(){
-        return{
-            title: null,
-        }
-    },
-    methods:{
-        categorySelected(id, event){
-            var lastOne = this.$el.querySelector('.activated_link');
-            lastOne.classList.remove('activated_link');
-            event.target.classList.add('activated_link');
+  data() {
+    return {
+      title: null,
+    }
+  },
+  methods: {
+    categorySelected(id, event) {
+      var lastOne = this.$el.querySelector('.activated_link')
+      lastOne.classList.remove('activated_link')
+      event.target.classList.add('activated_link')
 
-            //Manda request pro backend pra pedir paginação
-        },
-        createCategory(){
-            if(!this.title) return null;
-            //Manda request pra criar
-        },
+      //Manda request pro backend pra pedir paginação por categoria
     },
+    createCategory() {
+      if (!this.title) return null
+      this.$axios
+        .post('v1/Category/create-category', this.title, {
+          headers: {
+            'Content-type': 'application/json',
+          },
+        })
+        .then((res) => console.log(res))
+    },
+  },
   components: {
     'add-icon': Add,
   },
@@ -57,7 +72,7 @@ export default {
     grid-auto-flow: column;
     justify-content: flex-start;
 
-    span{
+    span {
       white-space: nowrap;
     }
   }
