@@ -1,6 +1,6 @@
 <template>
   <div id="dashboard-layout" class="flex_c">
-    <menu-superior :userData="userData" />
+    <menu-superior v-if="userData" :userData="userData" />
     <div id="vertical-container" class="flex_r">
       <menu-lateral />
       <div id="view_container" class="border-soft">
@@ -35,7 +35,7 @@ export default {
   middleware: 'auth',
   computed: {
     userData() {
-      return this.$cookies.get('userData')
+      return this.$cookies.get('userData');
     },
     dashboardRouter(){
       return this.$route.name;
