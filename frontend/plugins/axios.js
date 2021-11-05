@@ -2,6 +2,7 @@ const https = require('https')
 
 export default function ({ $axios, redirect, $cookies }) {
     $axios.defaults.httpsAgent = new https.Agent({ rejectUnauthorized: false });
+    $axios.setHeader('Content-Type', 'application/json');
 
     $axios.onRequest(config => {
         var userData = $cookies.get('userData');
