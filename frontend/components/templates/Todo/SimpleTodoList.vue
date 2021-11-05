@@ -22,8 +22,9 @@
           />
         </div>
         <textarea
+          v-if="simpletodo.description"
           data-enable-grammarly="false"
-          class="description"
+          class="description scroll-1 scroll-tiny"
           type="text"
           autocomplete="off"
           v-model="simpletodo.description"
@@ -31,9 +32,31 @@
           @focusout="fieldOut($event, simpletodo.description, simpletodo)"
         ></textarea>
       </div>
-      <div class="right flex_c">
-        <button class="menu"><three-dots-menu class="icon" /></button>
-        <div class="right-bottom flex_c">
+      <div :class="`right ${simpletodo.description ? 'flex_c' : 'flex_r'}`">
+        <div class="menu_container">
+          <button class="menu_button" @click="cardMenu = simpletodo.id"><three-dots-menu class="icon" /></button>
+          <transition name="fade-down">
+          <ul class="menu_options flex_c" v-show="cardMenu == simpletodo.id" @mouseleave="cardMenu = 0">
+            <li class="flex_r">
+              <trash-icon class="icon trash" /><span>Delete</span>
+            </li>
+            <li class="flex_r">
+              <friends-icon class="icon" /><span>Convidar amigo</span>
+            </li>
+            <li class="flex_r">
+              <edit-icon class="icon" /><span>Trocar de categoria</span>
+            </li>
+            <li class="flex_r" @click="simpletodo.description = ' '">
+              <edit-icon class="icon" /><span>Adicionar descrição</span>
+            </li>
+          </ul>
+          </transition>
+        </div>
+        <div
+          :class="`options_container  ${
+            simpletodo.description ? 'flex_c' : 'flex_r'
+          }`"
+        >
           <button
             class="important"
             @click="changeSimpletodoImportance(simpletodo.id)"
@@ -53,12 +76,16 @@
 import Star from '@/components/icons/Star'
 import ThreeDotsMenu from '@/components/icons/ThreeDotsMenu'
 import Check from '@/components/icons/Check'
+import Trash from '@/components/icons/Trash'
+import Edit2 from '@/components/icons/Edit2'
+import Friends from '@/components/icons/Friends'
 
 export default {
   data() {
     return {
       clicked: false,
       fieldCache: '',
+      cardMenu: 0,
     }
   },
   methods: {
@@ -72,8 +99,9 @@ export default {
       this.fieldCache = ''
     },
     callToSave(simpletodo) {
-      console.log('saving')
-      //manda um axios
+      this.$axios
+        .put('v1/SimpleTodo/update-simpletodo', simpletodo)
+        .then((res) => console.log(res))
     },
     changeSimpletodoState(simpletodoId) {
       console.log(simpletodoId)
@@ -95,16 +123,30 @@ export default {
     'star-icon': Star,
     ThreeDotsMenu,
     'check-icon': Check,
+    'trash-icon': Trash,
+    'edit-icon': Edit2,
+    'friends-icon': Friends,
   },
 }
 </script>
 
 <style lang="scss" scoped>
+.fade-down-enter-active,
+.fade-down-leave-active{
+    transition: opacity 180ms;
+}
+.fade-down-enter{
+    opacity: 0;
+}
+
+
 .wrapper {
+  position: absolute;
+  width: 100%;
+  top: 15px;
   grid-template-columns: 1fr 1fr;
   gap: 40px 50px;
-  padding: 50px 80px;
-  block-size: 100%;
+  padding: 0 80px 20px 80px;
 
   .card {
     padding: 12px 6px 12px 12px;
@@ -112,11 +154,11 @@ export default {
     background: linear-gradient(160deg, #cfcfcf, #eaeaea);
     box-shadow: 5px 5px 10px #707070, -3px -3px 10px #fff;
     border-radius: 10px;
-    height: 100%;
+    height: fit-content;
     position: relative;
 
     &.true {
-        opacity: 0.7;
+      opacity: 0.7;
       &::before,
       &::after {
         left: -18px;
@@ -135,7 +177,7 @@ export default {
     .category_mark {
       position: absolute;
       top: 0;
-      padding: 2px 7px;
+      padding: 0 7px 2px 7px;
       border-top-left-radius: 10px;
       border-top-right-radius: 10px;
       right: 20px;
@@ -145,7 +187,9 @@ export default {
       cursor: pointer;
 
       span {
-        font-size: 12px;
+        font-size: 10px;
+        font-weight: 300;
+        text-transform: uppercase;
       }
       transition: box-shadow 200ms;
 
@@ -193,20 +237,13 @@ export default {
         overflow-y: auto;
         resize: none;
         cursor: default;
-
-        &::-webkit-scrollbar {
-          width: 4px;
-        }
-        &::-webkit-scrollbar-thumb {
-          background-color: #a0a0a0;
-          border-radius: 10px;
-        }
-        &::-webkit-scrollbar-track {
-          background-color: transparent;
-        }
       }
     }
     .right {
+      &.flex_r {
+        width: fit-content;
+        padding-right: 12px;
+      }
       width: 30px;
       align-items: center;
       justify-content: space-between;
@@ -217,10 +254,49 @@ export default {
           height: 16px;
         }
       }
-      .menu {
-        justify-self: flex-start;
+      .menu_container {
+        position: relative;
+
+        .menu_options {
+          position: absolute;
+          z-index: 10;
+          bottom: 0;
+          right: 0;
+          transform: translateY(100%);
+          background: linear-gradient(160deg, #cfcfcf, #eaeaea);
+          box-shadow: -2px -2px 4px #acacac;
+          border-radius: 6px;
+          padding: 7px 0;
+          gap: 8px;
+
+          li {
+            padding: 0 6px;
+            width: 100%;
+            grid-template-columns: auto auto;
+            flex-wrap: 1;
+            gap: 5px;
+            align-items: center;
+            cursor: pointer;
+
+            .icon {
+              width: 14px;
+              height: 14px;
+
+              &.trash::v-deep {
+                path {
+                  stroke: rgb(143, 5, 5);
+                }
+              }
+            }
+            span {
+              font-size: 12px;
+              font-weight: 300;
+              white-space: nowrap;
+            }
+          }
+        }
       }
-      .right-bottom {
+      .options_container {
         align-items: center;
         gap: 6px;
 

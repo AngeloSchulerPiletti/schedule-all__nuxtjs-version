@@ -7,10 +7,17 @@
       <span
         class="link-2"
         @click="categorySelected(id, $event)"
+        @mouseover="categoryHovered = id"
+        @mouseleave="categoryHovered = 0"
         v-for="(title, id) in $store.state.dashboardSimpleTodos.categories"
         :key="id"
       >
         {{ title }}
+        <transition name="slide">
+          <button v-show="categoryHovered == id" @click="deleteCategory(id)">
+            X
+          </button>
+        </transition>
       </span>
     </div>
     <div class="category_creation flex_r">
@@ -36,6 +43,7 @@ export default {
   data() {
     return {
       title: null,
+      categoryHovered: 0,
     }
   },
   methods: {
@@ -49,12 +57,11 @@ export default {
     createCategory() {
       if (!this.title) return null
       this.$axios
-        .post('v1/Category/create-category', this.title, {
-          headers: {
-            'Content-type': 'application/json',
-          },
-        })
+        .post('v1/Category/create-category', JSON.stringify(this.title))
         .then((res) => console.log(res))
+    },
+    deleteCategory(categoryId) {
+      this.$axios.delete('v1/Category/delete-category', {data: categoryId})
     },
   },
   components: {
@@ -64,7 +71,18 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.slide-enter-active,
+.slide-leave-active {
+  transition: margin-left 200ms, opacity 200ms;
+}
+.slide-enter,
+.slide-leave-to {
+  margin-left: 0 !important;
+  opacity: 0;
+}
+
 .wrapper {
+  padding-bottom: 20px;
   .categories {
     width: calc(100% - 300px);
 
@@ -72,6 +90,12 @@ export default {
       white-space: nowrap;
       display: inline-block;
       margin: 5px;
+
+      button {
+        font-weight: 400;
+        font-size: 0.8em;
+        margin-left: 6px;
+      }
     }
   }
 

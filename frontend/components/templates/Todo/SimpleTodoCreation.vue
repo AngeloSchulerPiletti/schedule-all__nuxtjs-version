@@ -84,7 +84,8 @@ export default {
   methods: {
     addClicked() {
       if (!this.closed && this.simpletodo.title) {
-        console.log('criando novo item')
+        this.description = this.description == null ? '' : this.description;  
+        this.$axios.post('v1/SimpleTodo/create-simpletodo', this.simpletodo).then(res => console.log(res))
         this.simpletodo = { title: null, description: null, categoryId: 0 }
         this.closedCategories = true
       }
