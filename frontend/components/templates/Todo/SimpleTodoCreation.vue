@@ -194,7 +194,7 @@ export default {
 
         span {
           font-weight: 300;
-          font-size: 15px;
+          font-size: 14px;
           padding: 7px 7px 7px 14px;
           text-transform: uppercase;
         }
@@ -221,9 +221,9 @@ export default {
       }
       .category_options {
         position: absolute;
-        background: linear-gradient(45deg, #ababab, #f0f0f0);
+        background: linear-gradient(45deg, #ccc, #f0f0f0);
         box-shadow: 0 0 10px #707070;
-        border-radius: 17px;
+        border-radius: 5px;
         padding: 10px;
         top: -6px;
         right: 0;
@@ -235,6 +235,7 @@ export default {
 
         li{
           white-space: nowrap;
+          border-radius: 4px !important;
         }
       }
     }

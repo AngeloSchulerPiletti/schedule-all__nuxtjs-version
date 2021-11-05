@@ -109,13 +109,14 @@ export default {
   .card {
     padding: 12px 6px 12px 12px;
     gap: 6px;
-    background: linear-gradient(160deg, #c9c9c9, #eaeaea);
+    background: linear-gradient(160deg, #cfcfcf, #eaeaea);
     box-shadow: 5px 5px 10px #707070, -3px -3px 10px #fff;
     border-radius: 10px;
     height: 100%;
     position: relative;
 
     &.true {
+        opacity: 0.7;
       &::before,
       &::after {
         left: -18px;
