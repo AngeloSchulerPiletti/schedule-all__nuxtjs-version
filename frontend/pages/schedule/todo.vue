@@ -57,12 +57,11 @@ export default {
   height: 100%;
   position: relative;
 
-  .todos{
+  .todos {
     position: relative;
     overflow-y: auto;
+    overflow-x: hidden;
     height: 100%;
-
   }
-
 }
 </style>

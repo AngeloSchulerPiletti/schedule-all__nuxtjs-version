@@ -40,9 +40,10 @@
           </button>
           <transition name="fade-down">
             <menu
-              class="menu_options menu-1 flex_c"
-              v-show="cardMenu == simpletodo.id"
+              class=" menu_options menu-1 flex_c"
+              v-if="cardMenu == simpletodo.id"
               @mouseleave="cardMenu = 0"
+              @updated="test($event)"
             >
               <li class="flex_r" @click="deleteSimpletodo(simpletodo.id)">
                 <trash-icon class="icon trash" /><span>Delete</span>
@@ -65,8 +66,13 @@
                 <transition name="fade-down">
                   <menu
                     v-if="simpletodoSubOptionId == simpletodo.id"
-                    class="flex_c menu_suboptions upper menu-1"
-                    @mouseenter="test($event)"
+                    class="
+                      flex_c
+                      menu_suboptions
+                      upper
+                      menu-1
+                      scroll-1 scroll-tiny
+                    "
                   >
                     <li
                       v-for="(title, id) in $store.state.dashboardSimpleTodos
@@ -158,9 +164,11 @@ export default {
     },
   },
   methods: {
-      test(event){
-          console.log(event.target.offsetLeft);
-      },
+    test(event) {
+      console.log('CHAMOU')
+      console.log(event.target.getBoundingClientRect().right)
+      console.log(document.body.offsetWidth)
+    },
     fieldIn(event, oldValue) {
       event.path[1].classList.add('focused')
       this.fieldCache = oldValue
@@ -340,12 +348,6 @@ export default {
         position: relative;
 
         .menu_options {
-          position: absolute;
-          z-index: 10;
-          bottom: 0;
-          right: 0;
-          transform: translateY(100%);
-
           li {
             .icon {
               &.trash::v-deep {
