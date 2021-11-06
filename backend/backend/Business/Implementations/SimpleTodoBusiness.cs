@@ -23,8 +23,9 @@ namespace backend.Business.Implementations
             MessageBadgeVO creationResult = _repository.CreateSimpleTodo(simpletodo, user);
             return creationResult;
         }
-        public object UpdateSimpleTodo(SimpleTodoVO simpletodo, User user)
+        public MessageBadgeVO UpdateSimpleTodo(SimpleTodoVO simpletodo, User user)
         {
+
             MessageBadgeVO updateResult = _repository.UpdateSimpleTodo(simpletodo, user);
             return updateResult;
         }
@@ -95,7 +96,7 @@ namespace backend.Business.Implementations
             }
 
             if (simpletodo.Title.Length > 100) errors.messages.Add("O título não pode ter mais de 100 caracteres");
-            if (simpletodo.Description.Length > 500) errors.messages.Add("A descrição não pode ter mais de 100 caracteres");
+            if (simpletodo.Description?.Length > 500) errors.messages.Add("A descrição não pode ter mais de 100 caracteres");
             return errors.messages.Count > 0 ? errors : null;
 
         }

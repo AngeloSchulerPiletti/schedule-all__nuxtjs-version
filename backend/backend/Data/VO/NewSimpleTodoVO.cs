@@ -16,6 +16,7 @@ namespace backend.Data.VO
 
             this.Nullables = new();
             this.Nullables.Add("CategoryId");
+            this.Nullables.Add("Description");
             this.Nullables.Add("InputsName");
             this.Nullables.Add("Nullables");
         }

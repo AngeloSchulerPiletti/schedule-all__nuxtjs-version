@@ -87,8 +87,8 @@ namespace backend.Controllers
             User user = GetUserFromJWT();
             if (user == null) return BadRequest(new MessageBadgeVO(new List<string> { "Houve um erro com a sua identidade" }));
 
-            var result = _business.UpdateSimpleTodo(simpletodo, user);
-            if (result is MessageBadgeVO) return BadRequest(result);
+            MessageBadgeVO result = _business.UpdateSimpleTodo(simpletodo, user);
+            if (result.isError) return BadRequest(result);
             return Ok(result);
         }
 

@@ -31,6 +31,7 @@
         id="title"
         placeholder="Nova Categoria"
         v-model="title"
+        autocomplete="off"
       />
       <button class="spare-button pseudo" @click="createCategory">
         <add-icon />
