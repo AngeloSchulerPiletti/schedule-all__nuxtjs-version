@@ -220,10 +220,11 @@ export default {
 .wrapper {
   position: absolute;
   width: 100%;
-  top: 15px;
+  top: 25px;
+  height: 130%;
   grid-template-columns: 1fr 1fr;
   gap: 40px 50px;
-  padding: 0 80px 20px 80px;
+  padding: 0 80px;
 
   .card {
     padding: 12px 6px 12px 12px;
