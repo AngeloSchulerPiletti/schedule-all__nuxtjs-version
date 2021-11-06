@@ -4,6 +4,9 @@
       <span class="link-2 activated_link" @click="categorySelected(0, $event)"
         >Todos</span
       >
+      <span class="link-2" @click="categorySelected(null, $event)"
+        >Importantes</span
+      >
       <span
         class="link-2"
         @click="categorySelected(id, $event)"
@@ -44,7 +47,31 @@ export default {
     return {
       title: null,
       categoryHovered: 0,
+      modalSubjects: {
+        onDelete: 'deleteCategory',
+      },
+      categoryOnDelete: 0,
     }
+  },
+  computed: {
+    deleteAnswer() {
+      if (
+        this.$store.state.confirmationModal.subject ==
+        this.modalSubjects.onDelete
+      ) {
+        return this.$store.state.confirmationModal.answer
+      }
+    },
+  },
+  watch: {
+    deleteAnswer(oldValue, newValue) {
+      if (newValue) {
+        this.$axios.delete('v1/Category/delete-category', {
+          data: this.categoryOnDelete,
+        })
+      }
+      this.$store.commit('cleanAnswer');
+    },
   },
   methods: {
     categorySelected(id, event) {
@@ -52,6 +79,7 @@ export default {
       lastOne.classList.remove('activated_link')
       event.target.classList.add('activated_link')
 
+      //id == null é pra pegar só os importantes
       //Manda request pro backend pra pedir paginação por categoria
     },
     createCategory() {
@@ -61,7 +89,8 @@ export default {
         .then((res) => console.log(res))
     },
     deleteCategory(categoryId) {
-      this.$axios.delete('v1/Category/delete-category', {data: categoryId})
+      this.$store.commit('openModal', this.modalSubjects.onDelete);
+      this.categoryOnDelete = categoryId
     },
   },
   components: {

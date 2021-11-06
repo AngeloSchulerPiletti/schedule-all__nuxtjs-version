@@ -4,6 +4,7 @@
       :class="`card pseudos_base flex_r ${simpletodo.finished}`"
       v-for="(simpletodo, index) in simpletodos"
       :key="index"
+      @mouseleave="cardMenu = 0"
     >
       <div class="category_mark" v-if="simpletodo.categoryId > 0">
         <span>{{
@@ -34,22 +35,64 @@
       </div>
       <div :class="`right ${simpletodo.description ? 'flex_c' : 'flex_r'}`">
         <div class="menu_container">
-          <button class="menu_button" @click="cardMenu = simpletodo.id"><three-dots-menu class="icon" /></button>
+          <button class="menu_button" @click="cardMenu = simpletodo.id">
+            <three-dots-menu class="icon" />
+          </button>
           <transition name="fade-down">
-          <ul class="menu_options flex_c" v-show="cardMenu == simpletodo.id" @mouseleave="cardMenu = 0">
-            <li class="flex_r">
-              <trash-icon class="icon trash" /><span>Delete</span>
-            </li>
-            <li class="flex_r">
-              <friends-icon class="icon" /><span>Convidar amigo</span>
-            </li>
-            <li class="flex_r">
-              <edit-icon class="icon" /><span>Trocar de categoria</span>
-            </li>
-            <li class="flex_r" @click="simpletodo.description = ' '">
-              <edit-icon class="icon" /><span>Adicionar descrição</span>
-            </li>
-          </ul>
+            <ul
+              class="menu_options menu-1 flex_c"
+              v-show="cardMenu == simpletodo.id"
+              @mouseleave="cardMenu = 0"
+            >
+              <li class="flex_r" @click="deleteSimpletodo(simpletodo.id)">
+                <trash-icon class="icon trash" /><span>Delete</span>
+              </li>
+              <li v-if="!simpletodo.finished" class="flex_r">
+                <friends-icon class="icon" /><span>Convidar amigo</span>
+              </li>
+              <li
+                v-if="!simpletodo.finished"
+                class="flex_r extensible"
+                @mouseleave="simpletodoSubOptionId = 0"
+                @mouseenter="simpletodoSubOptionId = simpletodo.id"
+              >
+                <edit-icon class="icon" /><span
+                  >{{
+                    simpletodo.categoryId != 0 ? 'Alterar' : 'Adicionar'
+                  }}
+                  categoria</span
+                >
+                <transition name="fade-down">
+                  <ul
+                    v-if="simpletodoSubOptionId == simpletodo.id"
+                    class="flex_c menu_suboptions upper menu-1"
+                  >
+                    <li
+                      v-for="(title, id) in $store.state.dashboardSimpleTodos
+                        .categories"
+                      :key="id"
+                      @click="changeSimpletodoCategory(id, simpletodo)"
+                    >
+                      <span>{{ title }}</span>
+                    </li>
+                  </ul>
+                </transition>
+              </li>
+              <li
+                v-if="!simpletodo.finished && simpletodo.categoryId != 0"
+                class="flex_r"
+                @click="changeSimpletodoCategory(0, simpletodo)"
+              >
+                <edit-icon class="icon" /><span>Remover categoria</span>
+              </li>
+              <li
+                v-if="!simpletodo.finished && !simpletodo.description"
+                class="flex_r"
+                @click="simpletodo.description = ' '"
+              >
+                <edit-icon class="icon" /><span>Adicionar descrição</span>
+              </li>
+            </ul>
           </transition>
         </div>
         <div
@@ -86,7 +129,32 @@ export default {
       clicked: false,
       fieldCache: '',
       cardMenu: 0,
+      simpletodoSubOptionId: 0,
+      modalSubjects: {
+        onDelete: 'deleteSimpletodo',
+      },
+      simpletodoOnDelete: 0,
     }
+  },
+  computed: {
+    deleteAnswer() {
+      if (
+        this.$store.state.confirmationModal.subject ==
+        this.modalSubjects.onDelete
+      ) {
+        return this.$store.state.confirmationModal.answer
+      }
+    },
+  },
+  watch: {
+    deleteAnswer(oldValue, newValue) {
+      if (newValue) {
+        this.$axios.delete('v1/SimpleTodo/delete-simpletodo', {
+          data: this.simpletodoOnDelete,
+        })
+      }
+      this.$store.commit('cleanAnswer')
+    },
   },
   methods: {
     fieldIn(event, oldValue) {
@@ -115,6 +183,17 @@ export default {
       console.log(simpletodoId)
       //Manda um axios pro backend
     },
+    changeSimpletodoCategory(newCategoryId, simpletodo) {
+      let newSimpletodo = simpletodo
+      newSimpletodo.categoryId = newCategoryId
+      this.$axios
+        .put('v1/SimpleTodo/update-simpletodo', newSimpletodo)
+        .then(console.log)
+    },
+    deleteSimpletodo(simpletodoId) {
+      this.$store.commit('openModal', this.modalSubjects.onDelete)
+      this.simpletodoOnDelete = simpletodoId
+    },
   },
   props: {
     simpletodos: Array,
@@ -131,14 +210,12 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.fade-down-enter-active,
-.fade-down-leave-active{
-    transition: opacity 180ms;
+.fade-down-enter-active {
+  transition: opacity 180ms;
 }
-.fade-down-enter{
-    opacity: 0;
+.fade-down-enter {
+  opacity: 0;
 }
-
 
 .wrapper {
   position: absolute;
@@ -263,35 +340,14 @@ export default {
           bottom: 0;
           right: 0;
           transform: translateY(100%);
-          background: linear-gradient(160deg, #cfcfcf, #eaeaea);
-          box-shadow: -2px -2px 4px #acacac;
-          border-radius: 6px;
-          padding: 7px 0;
-          gap: 8px;
 
           li {
-            padding: 0 6px;
-            width: 100%;
-            grid-template-columns: auto auto;
-            flex-wrap: 1;
-            gap: 5px;
-            align-items: center;
-            cursor: pointer;
-
             .icon {
-              width: 14px;
-              height: 14px;
-
               &.trash::v-deep {
                 path {
                   stroke: rgb(143, 5, 5);
                 }
               }
-            }
-            span {
-              font-size: 12px;
-              font-weight: 300;
-              white-space: nowrap;
             }
           }
         }

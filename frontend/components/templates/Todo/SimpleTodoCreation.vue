@@ -1,5 +1,8 @@
 <template>
-  <div :class="`wrapper border-soft flex_c ${closed}`">
+  <div
+    :class="`wrapper border-soft flex_c ${closed}`"
+    @mouseleave="closedCategories = true"
+  >
     <button id="new_simpletodo" class="border-soft flex_c" @click="addClicked">
       <add-icon />
     </button>
@@ -21,7 +24,10 @@
         placeholder="Título"
       />
       <div class="select_container flex_r">
-        <div class="category_selection flex_r" @click="openCategoryOptions">
+        <div
+          class="category_selection flex_r"
+          @click="changeCategoryOptionsState"
+        >
           <span>{{ selectedCategory }}</span
           ><button :class="`${closedCategories} flex_r`">
             <arrow-simple />
@@ -31,6 +37,7 @@
           <ul
             v-show="!closedCategories"
             :class="`category_options grid ${closedCategories}`"
+            @mouseleave="closedCategories = true"
           >
             <li
               v-for="(title, id) in categoriesFromStore"
@@ -77,15 +84,17 @@ export default {
         ? 'opcional'
         : this.$store.state.dashboardSimpleTodos.categories[id]
     },
-    categoriesFromStore(){
-      return this.$store.state.dashboardSimpleTodos.categories;
-    }
+    categoriesFromStore() {
+      return this.$store.state.dashboardSimpleTodos.categories
+    },
   },
   methods: {
     addClicked() {
       if (!this.closed && this.simpletodo.title) {
-        this.description = this.description == null ? '' : this.description;  
-        this.$axios.post('v1/SimpleTodo/create-simpletodo', this.simpletodo).then(res => console.log(res))
+        this.description = this.description == null ? '' : this.description
+        this.$axios
+          .post('v1/SimpleTodo/create-simpletodo', this.simpletodo)
+          .then((res) => console.log(res))
         this.simpletodo = { title: null, description: null, categoryId: 0 }
         this.closedCategories = true
       }
@@ -95,12 +104,12 @@ export default {
       this.closed = true
       this.closedCategories = true
     },
-    openCategoryOptions() {
+    changeCategoryOptionsState() {
       this.closedCategories = !this.closedCategories
     },
     categorySelected(categoryId) {
       this.simpletodo.categoryId = categoryId
-      this.openCategoryOptions()
+      this.changeCategoryOptionsState()
     },
   },
   components: {
@@ -234,7 +243,7 @@ export default {
         grid-auto-rows: auto;
         grid-auto-flow: row;
 
-        li{
+        li {
           white-space: nowrap;
           border-radius: 4px !important;
         }
