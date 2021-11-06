@@ -4,6 +4,7 @@
     <div id="vertical-container" class="flex_r">
       <menu-lateral />
       <div id="view_container" class="border-soft">
+        <confirmation-modal/>
         <div
           v-if="dashboardPageStatus == 'loading'"
           class="loading"
@@ -28,8 +29,9 @@
 </template>
 
 <script>
-import MenuLateral from '@/components/templates/MenuLateral'
-import MenuSuperior from '@/components/templates/MenuSuperior'
+import MenuLateral from '@/components/templates/MenuLateral';
+import MenuSuperior from '@/components/templates/MenuSuperior';
+import ConfirmationModal from "@/components/templates/Modals/ConfirmationModal";
 
 export default {
   middleware: 'auth',
@@ -52,6 +54,7 @@ export default {
   components: {
     MenuLateral,
     MenuSuperior,
+    ConfirmationModal,
   },
 }
 </script>
