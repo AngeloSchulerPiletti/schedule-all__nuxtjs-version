@@ -4,7 +4,7 @@
       :class="`card pseudos_base flex_r ${simpletodo.finished}`"
       v-for="(simpletodo, index) in simpletodos"
       :key="index"
-      @mouseleave="cardMenu = 0"
+      @mouseleave="hideMenu"
     >
       <div class="category_mark" v-if="simpletodo.categoryId > 0">
         <span>{{
@@ -35,15 +35,15 @@
       </div>
       <div :class="`right ${simpletodo.description ? 'flex_c' : 'flex_r'}`">
         <div class="menu_container">
-          <button class="menu_button" @click="cardMenu = simpletodo.id">
+          <button class="menu_button" @click="showMenu(simpletodo.id, $event)">
             <three-dots-menu class="icon" />
           </button>
           <transition name="fade-down">
             <menu
-              class=" menu_options menu-1 flex_c"
-              v-if="cardMenu == simpletodo.id"
-              @mouseleave="cardMenu = 0"
-              @updated="test($event)"
+              class="menu_options menu-1 flex_c"
+              v-show="cardMenu == simpletodo.id"
+              :id="`menu-${simpletodo.id}`"
+              @mouseleave="hideMenu"
             >
               <li class="flex_r" @click="deleteSimpletodo(simpletodo.id)">
                 <trash-icon class="icon trash" /><span>Delete</span>
@@ -54,8 +54,8 @@
               <li
                 v-if="!simpletodo.finished"
                 class="flex_r extensible"
-                @mouseleave="simpletodoSubOptionId = 0"
-                @mouseenter="simpletodoSubOptionId = simpletodo.id"
+                @mouseleave="hideSubMenu"
+                @mouseenter="showSubMenu(simpletodo.id, $event)"
               >
                 <edit-icon class="icon" /><span
                   >{{
@@ -65,7 +65,7 @@
                 >
                 <transition name="fade-down">
                   <menu
-                    v-if="simpletodoSubOptionId == simpletodo.id"
+                    v-show="simpletodoSubOptionId == simpletodo.id"
                     class="
                       flex_c
                       menu_suboptions
@@ -73,6 +73,7 @@
                       menu-1
                       scroll-1 scroll-tiny
                     "
+                    :id="`submenu-${simpletodo.id}`"
                   >
                     <li
                       v-for="(title, id) in $store.state.dashboardSimpleTodos
@@ -141,6 +142,8 @@ export default {
         onDelete: 'deleteSimpletodo',
       },
       simpletodoOnDelete: 0,
+      menuElementCache: null,
+      submenuElementCache: null,
     }
   },
   computed: {
@@ -164,10 +167,48 @@ export default {
     },
   },
   methods: {
-    test(event) {
-      console.log('CHAMOU')
-      console.log(event.target.getBoundingClientRect().right)
-      console.log(document.body.offsetWidth)
+    showMenu(simpletodoId) {
+      this.cardMenu = simpletodoId
+      let element = this.$el.querySelector(`#menu-${simpletodoId}`)
+      this.menuElementCache = element
+      this.checkMenuPositionOnScreen(element)
+    },
+    hideMenu() {
+      this.cardMenu = 0
+      this.menuElementCache
+        ? this.menuElementCache.classList.remove('normal')
+        : null
+      this.menuElementCache = null
+    },
+    showSubMenu(simpletodoId) {
+      this.simpletodoSubOptionId = simpletodoId
+      let element = this.$el.querySelector(`#submenu-${simpletodoId}`)
+      this.submenuElementCache = element
+      this.checkMenuPositionOnScreen(element)
+    },
+    hideSubMenu() {
+      this.simpletodoSubOptionId = 0
+      this.submenuElementCache
+        ? this.submenuElementCache.classList.remove('normal')
+        : null
+      this.submenuElementCache = null
+    },
+    checkMenuPositionOnScreen(element) {
+      setTimeout(() => {
+        let elRight = element.getBoundingClientRect().right,
+          elBottom = element.getBoundingClientRect().bottom,
+          bodyRight = document.body.offsetWidth,
+          bodyBottom = document.body.offsetHeight
+
+        if (elRight > bodyRight && elBottom > bodyBottom) {
+          element.classList.add('goBoth')
+        } else if (elBottom > bodyBottom) {
+          element.classList.add('goTop')
+        } else if (elRight > bodyRight) {
+          element.classList.add('goLeft')
+        } 
+        element.classList.add('normal')
+      }, 1)
     },
     fieldIn(event, oldValue) {
       event.path[1].classList.add('focused')
@@ -184,7 +225,6 @@ export default {
         .then((res) => console.log(res))
     },
     changeSimpletodoState(simpletodoId) {
-      console.log(simpletodoId)
       this.$axios
         .patch('v1/SimpleTodo/change-simpletodo-state', simpletodoId, {
           headers: { 'Content-Type': 'application/json' },
@@ -222,13 +262,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.fade-down-enter-active {
-  transition: opacity 180ms;
-}
-.fade-down-enter {
-  opacity: 0;
-}
-
 .wrapper {
   position: absolute;
   width: 100%;
