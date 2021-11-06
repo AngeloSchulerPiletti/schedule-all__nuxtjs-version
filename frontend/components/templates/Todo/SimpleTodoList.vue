@@ -39,7 +39,7 @@
             <three-dots-menu class="icon" />
           </button>
           <transition name="fade-down">
-            <ul
+            <menu
               class="menu_options menu-1 flex_c"
               v-show="cardMenu == simpletodo.id"
               @mouseleave="cardMenu = 0"
@@ -63,9 +63,10 @@
                   categoria</span
                 >
                 <transition name="fade-down">
-                  <ul
+                  <menu
                     v-if="simpletodoSubOptionId == simpletodo.id"
                     class="flex_c menu_suboptions upper menu-1"
+                    @mouseenter="test($event)"
                   >
                     <li
                       v-for="(title, id) in $store.state.dashboardSimpleTodos
@@ -75,7 +76,7 @@
                     >
                       <span>{{ title }}</span>
                     </li>
-                  </ul>
+                  </menu>
                 </transition>
               </li>
               <li
@@ -92,7 +93,7 @@
               >
                 <edit-icon class="icon" /><span>Adicionar descrição</span>
               </li>
-            </ul>
+            </menu>
           </transition>
         </div>
         <div
@@ -157,6 +158,9 @@ export default {
     },
   },
   methods: {
+      test(event){
+          console.log(event.target.offsetLeft);
+      },
     fieldIn(event, oldValue) {
       event.path[1].classList.add('focused')
       this.fieldCache = oldValue
