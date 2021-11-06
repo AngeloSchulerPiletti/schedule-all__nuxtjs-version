@@ -4,13 +4,40 @@ export const state = () => ({
     dashboardSimpleTodos: {
         categories: {},
     },
+    confirmationModal: {
+        called: false,
+        subject: null,
+        data: {
+            title: null,
+            paragraph: null,
+        },
+        answer: null,
+    },
 })
 
 export const mutations = {
-    setDashboardPageStatus(state, setting){
+    openModal(state, subject, title = null, paragraph = null) {
+        console.log(subject, state.confirmationModal.subject);
+
+        console.log('else');
+        state.confirmationModal.called = true;
+        state.confirmationModal.subject = subject;
+        state.confirmationModal.data.title = title;
+        state.confirmationModal.data.paragraph = paragraph;
+
+    },
+    closeModal(state, answer) {
+        console.log('close is been called');
+        state.confirmationModal.called = false;
+        state.confirmationModal.answer = answer;
+    },
+    cleanAnswer(state){
+        state.confirmationModal.answer = null;
+    },
+    setDashboardPageStatus(state, setting) {
         state.dashboardPageStatus = setting;
     },
-    setCategories(state, categories){
+    setCategories(state, categories) {
         categories.forEach(category => {
             state.dashboardSimpleTodos.categories[category.categoryId] = category.title;
         });
@@ -20,7 +47,7 @@ export const mutations = {
 
 
 export const actions = {
-    async nuxtServerInit(vuexContext, {app, redirect}) {
+    async nuxtServerInit(vuexContext, { app, redirect }) {
         var userData_obj = app.$cookies.get('userData')
         if (userData_obj) {
             var refreshToken = userData_obj.tokenData.refreshToken,
@@ -40,7 +67,7 @@ export const actions = {
                     app.$cookies.remove('userData');
                 });
         }
-        else{
+        else {
             console.log('sem token nos cookies');
         }
     }
