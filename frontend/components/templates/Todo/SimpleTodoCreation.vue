@@ -36,7 +36,7 @@
         <transition name="optionsUp">
           <ul
             v-show="!closedCategories"
-            :class="`category_options grid ${closedCategories}`"
+            :class="`category_options  ${closedCategories}`"
             @mouseleave="closedCategories = true"
           >
             <li
@@ -237,15 +237,16 @@ export default {
         padding: 10px;
         top: -6px;
         right: 0;
-        gap: 10px;
         transform: translateY(-100%);
-        grid-template-columns: auto auto auto auto;
-        grid-auto-rows: auto;
-        grid-auto-flow: row;
+        width: 80vw;
+        max-width: 420px;
 
         li {
           white-space: nowrap;
           border-radius: 4px !important;
+          width: fit-content;
+          display: inline-block;
+          margin: 5px;
         }
       }
     }
