@@ -8,7 +8,7 @@
         >Importantes</span
       >
       <span
-        class="link-2"
+        class="link-2 deletable"
         @click="categorySelected(id, $event)"
         @mouseover="categoryHovered = id"
         @mouseleave="categoryHovered = 0"
@@ -70,7 +70,7 @@ export default {
           data: this.categoryOnDelete,
         })
       }
-      this.$store.commit('cleanAnswer');
+      this.$store.commit('cleanAnswer')
     },
   },
   methods: {
@@ -89,7 +89,7 @@ export default {
         .then((res) => console.log(res))
     },
     deleteCategory(categoryId) {
-      this.$store.commit('openModal', this.modalSubjects.onDelete);
+      this.$store.commit('openModal', this.modalSubjects.onDelete)
       this.categoryOnDelete = categoryId
     },
   },
@@ -119,11 +119,18 @@ export default {
       white-space: nowrap;
       display: inline-block;
       margin: 5px;
+    }
+    .deletable {
+      padding-right: 26px;
+      position: relative;
 
       button {
+        position: absolute;
+        right: 10px;
+        top: 5px;
+        transform: translateY(25%);
         font-weight: 400;
         font-size: 0.8em;
-        margin-left: 6px;
       }
     }
   }
