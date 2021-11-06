@@ -1,0 +1,46 @@
+.menu-1 {
+  background: linear-gradient(160deg, #cfcfcf, #eaeaea);
+  box-shadow: -2px -2px 4px #acacac;
+  border-radius: 6px;
+  padding: 7px 0;
+  gap: 8px;
+
+  li {
+    padding: 0 6px;
+    width: 100%;
+    grid-template-columns: auto auto;
+    flex-wrap: 1;
+    gap: 5px;
+    align-items: center;
+    cursor: pointer;
+    &.extensible {
+      position: relative;
+
+      .menu_suboptions{
+          position: absolute;
+          z-index: 10;
+          top: 0;
+          right: 0;
+          transform: translateX(100%);
+          box-shadow: 2px 2px 4px #acacac !important;
+      }
+
+      &::after {
+        vertical-align: middle;
+        content: '>';
+        transform: scaleX(0.6);
+      }
+    }
+
+    .icon {
+      width: 14px;
+      height: 14px;
+    }
+
+    span {
+      font-size: 12px;
+      font-weight: 300;
+      white-space: nowrap;
+    }
+  }
+}
