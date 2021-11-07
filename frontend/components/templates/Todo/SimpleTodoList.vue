@@ -5,6 +5,7 @@
       v-for="(simpletodo, index) in simpletodosDataStoreArray[0]"
       :key="index"
       @mouseleave="hideMenu"
+      :id="`task-${simpletodo.id}`"
     >
       <div class="category_mark" v-if="simpletodo.categoryId > 0">
         <span>{{
@@ -169,7 +170,12 @@ export default {
       if (newValue) {
         this.$axios.delete('v1/SimpleTodo/delete-simpletodo', {
           data: this.simpletodoOnDelete,
-        })
+        });
+        this.$el.querySelector(`#task-${this.simpletodoOnDelete}`).classList.add('being_removed');
+        setTimeout(() => {
+          this.$store.commit('deleteSimpletodo', this.simpletodoOnDelete);
+        }, 210);
+
       }
       this.$store.commit('cleanAnswer')
     },
@@ -257,7 +263,7 @@ export default {
     },
     deleteSimpletodo(simpletodoId) {
       this.$store.commit('openModal', this.modalSubjects.onDelete)
-      this.simpletodoOnDelete = simpletodoId
+      this.simpletodoOnDelete = simpletodoId;
     },
   },
   components: {
@@ -291,7 +297,7 @@ export default {
     height: fit-content;
     position: relative;
 
-    transition: opacity 200ms;
+    transition: opacity 200ms, transform 200ms;
     &::before, &::after{
       left: 0;
       right: 100%;
@@ -313,6 +319,11 @@ export default {
       &::after {
         top: 70%;
       }
+    }
+
+    &.being_removed{
+      transform: scale(0.3);
+      opacity: 0;
     }
 
     .category_mark {

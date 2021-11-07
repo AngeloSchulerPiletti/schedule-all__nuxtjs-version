@@ -48,12 +48,24 @@ export const mutations = {
     },
     setSimpletodos(state, simpletodos) {
         state.dashboardSimpleTodos.simpletodos.data = simpletodos;
+        state.dashboardSimpleTodos.simpletodos.updated++;
     },
     updateSimpletodo(state, simpletodo) {
         state.dashboardSimpleTodos.simpletodos.data.forEach((task, index) => {
             if (task.id == simpletodo.id) {
                 state.dashboardSimpleTodos.simpletodos.data[index] = simpletodo;
-
+            }
+        });
+        state.dashboardSimpleTodos.simpletodos.updated++;
+    },
+    addSimpletodo(state, simpletodo){
+        //Para isso funcionar, o backend precisa retornar o simpletodo adicionado;
+        state.dashboardSimpleTodos.simpletodos.updated++;
+    },
+    deleteSimpletodo(state, simpletodoId){
+        state.dashboardSimpleTodos.simpletodos.data.forEach((task, index) => {
+            if (task.id == simpletodoId) {
+                state.dashboardSimpleTodos.simpletodos.data.splice(index, 1);
             }
         });
         state.dashboardSimpleTodos.simpletodos.updated++;
