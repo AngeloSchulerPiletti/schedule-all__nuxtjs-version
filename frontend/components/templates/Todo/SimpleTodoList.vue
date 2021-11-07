@@ -2,7 +2,7 @@
   <div class="wrapper grid">
     <div
       :class="`card pseudos_base flex_r ${simpletodo.finished}`"
-      v-for="(simpletodo, index) in simpletodos"
+      v-for="(simpletodo, index) in simpletodosDataStoreArray[0]"
       :key="index"
       @mouseleave="hideMenu"
     >
@@ -155,8 +155,16 @@ export default {
         return this.$store.state.confirmationModal.answer
       }
     },
+    simpletodosDataStoreArray() {
+      let pref = this.$store.state.dashboardSimpleTodos.simpletodos;
+      return [pref.data, pref.updated];
+    },
   },
   watch: {
+    simpletodosDataStoreArray: {
+      immediate: true,
+      handler(oldValue, newValue) {}
+    },
     deleteAnswer(oldValue, newValue) {
       if (newValue) {
         this.$axios.delete('v1/SimpleTodo/delete-simpletodo', {
@@ -206,7 +214,7 @@ export default {
           element.classList.add('goTop')
         } else if (elRight > bodyRight) {
           element.classList.add('goLeft')
-        } 
+        }
         element.classList.add('normal')
       }, 1)
     },
@@ -229,7 +237,12 @@ export default {
         .patch('v1/SimpleTodo/change-simpletodo-state', simpletodoId, {
           headers: { 'Content-Type': 'application/json' },
         })
-        .then((res) => console.log(res))
+        .then((res) => {
+          this.$store.commit('updateSimpletodo', res.data);
+        })
+        .catch((err) => {
+          //Futuramente irá throw notificação de erro
+        })
     },
     changeSimpletodoImportance(simpletodoId) {
       console.log(simpletodoId)
@@ -246,9 +259,6 @@ export default {
       this.$store.commit('openModal', this.modalSubjects.onDelete)
       this.simpletodoOnDelete = simpletodoId
     },
-  },
-  props: {
-    simpletodos: Array,
   },
   components: {
     'star-icon': Star,
@@ -280,6 +290,13 @@ export default {
     border-radius: 10px;
     height: fit-content;
     position: relative;
+
+    transition: opacity 200ms;
+    &::before, &::after{
+      left: 0;
+      right: 100%;
+      transition: left 350ms, right 350ms;
+    }
 
     &.true {
       opacity: 0.7;

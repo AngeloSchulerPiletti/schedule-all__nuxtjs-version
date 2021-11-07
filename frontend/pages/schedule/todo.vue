@@ -4,7 +4,7 @@
       <categories-selection />
     </div>
     <div class="todos flex_c scroll-1">
-      <simple-todo-list :simpletodos="simpletodos" />
+      <simple-todo-list />
     </div>
     <simple-todo-creation />
   </div>
@@ -19,7 +19,6 @@ export default {
   layout: 'dashboard',
   data() {
     return {
-      simpletodos: [],
       dataLoaded: false,
     }
   },
@@ -27,7 +26,7 @@ export default {
     this.$axios
       .get('v1/SimpleTodo/get-all-user-simpletodos')
       .then((res) => {
-        this.simpletodos = res.data
+        this.$store.commit('setSimpletodos', res.data);
         this.$axios
           .get('v1/Category/get-user-categories')
           .then((res) => {

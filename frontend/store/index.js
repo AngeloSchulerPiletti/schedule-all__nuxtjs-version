@@ -3,6 +3,10 @@ export const state = () => ({
     dashboardPageStatus: 'loading',
     dashboardSimpleTodos: {
         categories: {},
+        simpletodos: {
+            updated: 0,
+            data: [],
+        },
     },
     confirmationModal: {
         called: false,
@@ -31,7 +35,7 @@ export const mutations = {
         state.confirmationModal.called = false;
         state.confirmationModal.answer = answer;
     },
-    cleanAnswer(state){
+    cleanAnswer(state) {
         state.confirmationModal.answer = null;
     },
     setDashboardPageStatus(state, setting) {
@@ -41,7 +45,20 @@ export const mutations = {
         categories.forEach(category => {
             state.dashboardSimpleTodos.categories[category.categoryId] = category.title;
         });
-    }
+    },
+    setSimpletodos(state, simpletodos) {
+        state.dashboardSimpleTodos.simpletodos.data = simpletodos;
+    },
+    updateSimpletodo(state, simpletodo) {
+        state.dashboardSimpleTodos.simpletodos.data.forEach((task, index) => {
+            if (task.id == simpletodo.id) {
+                state.dashboardSimpleTodos.simpletodos.data[index] = simpletodo;
+
+            }
+        });
+        state.dashboardSimpleTodos.simpletodos.updated++;
+    },
+
 }
 
 
