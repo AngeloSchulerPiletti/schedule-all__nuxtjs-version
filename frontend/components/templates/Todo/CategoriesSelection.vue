@@ -12,8 +12,9 @@
         @click="categorySelected(id, $event)"
         @mouseover="categoryHovered = id"
         @mouseleave="categoryHovered = 0"
-        v-for="(title, id) in $store.state.dashboardSimpleTodos.categories"
+        v-for="(title, id) in $store.state.dashboardSimpleTodos.categories.data"
         :key="id"
+        :id="`category-${id}`"
       >
         {{ title }}
         <transition name="slide">
@@ -63,13 +64,25 @@ export default {
         return this.$store.state.confirmationModal.answer
       }
     },
+    categoriesDataStoreArray() {
+      let pref = this.$store.state.dashboardSimpleTodos.categories;
+      return [pref.data, pref.updated];
+    },
   },
   watch: {
+    categoriesDataStoreArray: {
+      immediate: true,
+      handler(oldValue, newValue) {}
+    },
     deleteAnswer(oldValue, newValue) {
       if (newValue) {
         this.$axios.delete('v1/Category/delete-category', {
           data: this.categoryOnDelete,
         })
+        this.$el.querySelector(`#category-${this.categoryOnDelete}`).classList.add('being_removed');
+        setTimeout(() => {
+          this.$store.commit('deleteCategory', this.categoryOnDelete);
+        }, 210);
       }
       this.$store.commit('cleanAnswer')
     },
@@ -120,6 +133,7 @@ export default {
       white-space: nowrap;
       display: inline-block;
       margin: 5px;
+
     }
     .deletable {
       padding-right: 26px;
@@ -132,6 +146,13 @@ export default {
         transform: translateY(25%);
         font-weight: 400;
         font-size: 0.8em;
+      }
+
+      transition: opacity 200ms, transform 200ms;
+
+      &.being_removed{
+        opacity: 0;
+        transform: scaleX(0.1);
       }
     }
   }

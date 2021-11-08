@@ -2,7 +2,10 @@
 export const state = () => ({
     dashboardPageStatus: 'loading',
     dashboardSimpleTodos: {
-        categories: {},
+        categories: {
+            updated: 0,
+            data:{},
+        },
         simpletodos: {
             updated: 0,
             data: [],
@@ -43,7 +46,7 @@ export const mutations = {
     },
     setCategories(state, categories) {
         categories.forEach(category => {
-            state.dashboardSimpleTodos.categories[category.categoryId] = category.title;
+            state.dashboardSimpleTodos.categories.data[category.categoryId] = category.title;
         });
     },
     setSimpletodos(state, simpletodos) {
@@ -70,7 +73,10 @@ export const mutations = {
         });
         state.dashboardSimpleTodos.simpletodos.updated++;
     },
-
+    deleteCategory(state, categoryId){
+        if (state.dashboardSimpleTodos.categories.data[categoryId]) delete state.dashboardSimpleTodos.categories.data[categoryId];
+        state.dashboardSimpleTodos.categories.updated++;
+    }
 }
 
 

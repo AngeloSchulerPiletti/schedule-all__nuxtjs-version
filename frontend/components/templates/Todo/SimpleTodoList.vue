@@ -9,7 +9,7 @@
     >
       <div class="category_mark" v-if="simpletodo.categoryId > 0">
         <span>{{
-          $store.state.dashboardSimpleTodos.categories[simpletodo.categoryId]
+          $store.state.dashboardSimpleTodos.categories.data[simpletodo.categoryId]
         }}</span>
       </div>
       <div class="left flex_c">
@@ -78,7 +78,7 @@
                   >
                     <li
                       v-for="(title, id) in $store.state.dashboardSimpleTodos
-                        .categories"
+                        .categories.data"
                       :key="id"
                       @click="changeSimpletodoCategory(id, simpletodo)"
                     >
@@ -160,9 +160,17 @@ export default {
       let pref = this.$store.state.dashboardSimpleTodos.simpletodos;
       return [pref.data, pref.updated];
     },
+    categoriesDataStoreArray() {
+      let pref = this.$store.state.dashboardSimpleTodos.categories;
+      return [pref.data, pref.updated];
+    },
   },
   watch: {
     simpletodosDataStoreArray: {
+      immediate: true,
+      handler(oldValue, newValue) {}
+    },
+    categoriesDataStoreArray: {
       immediate: true,
       handler(oldValue, newValue) {}
     },
