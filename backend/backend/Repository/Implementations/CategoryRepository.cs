@@ -33,16 +33,33 @@ namespace backend.Repository.Implementations
             }
         }
 
-        public MessageBadgeVO CreateCategory(string title, long userId)
+        public MessageBadgeVO CheckCategoryAlreadyExists(string title, long userId)
         {
             var categoryExists = _context.Categorys.FirstOrDefault(task => task.Title.ToLower() == title.ToLower());
             if (categoryExists != null) return new MessageBadgeVO(new List<string> { "Essa categoria já existe na sua conta" });
+            return null;
+        }
 
-            Category category = new(userId, title);
-            _context.Categorys.Add(category);
-            _context.SaveChanges();
+        public Category GetLastCategoryByUserId(long userId)
+        {
+            var category = _context.Categorys.OrderByDescending(c => c.CategoryId).FirstOrDefault(c => c.UserId == userId);
+            return category;
+        }
 
-            return new MessageBadgeVO(new List<string> { "Categoria criada com sucesso" }, false);
+        public MessageBadgeVO CreateCategory(string title, long userId)
+        {
+            try
+            {
+                Category category = new(userId, title);
+                _context.Categorys.Add(category);
+                _context.SaveChanges();
+
+                return new MessageBadgeVO(new List<string> { "Categoria criada com sucesso" }, false);
+            }
+            catch (Exception)
+            {
+                return new MessageBadgeVO(new List<string> { "Categoria não pôde ser criada" });
+            }
         }
 
         public MessageBadgeVO DeleteCategory(long categoryId, long userId)

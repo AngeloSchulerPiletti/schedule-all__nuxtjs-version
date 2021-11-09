@@ -36,8 +36,8 @@ namespace backend.Controllers
             MessageBadgeVO validateResult = _business.ValidateTitle(trimmedTitle);
             if (validateResult != null) return BadRequest(validateResult);
 
-            MessageBadgeVO result = _business.CreateCategory(title, user.Id);
-            if (result.isError) return BadRequest(result);
+            object result = _business.CreateCategory(title, user.Id);
+            if (result is MessageBadgeVO) return BadRequest(result);
             return Ok(result);
         }
 

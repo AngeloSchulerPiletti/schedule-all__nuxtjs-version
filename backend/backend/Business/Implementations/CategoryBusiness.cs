@@ -23,9 +23,15 @@ namespace backend.Business.Implementations
             return _repository.ChangeCategory(category, userId);
         }
 
-        public MessageBadgeVO CreateCategory(string title, long userId)
+        public object CreateCategory(string title, long userId)
         {
-            return _repository.CreateCategory(title, userId);
+            MessageBadgeVO categoryExistsResult = _repository.CheckCategoryAlreadyExists(title, userId);
+            if (categoryExistsResult != null) return categoryExistsResult;
+
+            MessageBadgeVO categoryCreationResult = _repository.CreateCategory(title, userId);
+            if (categoryCreationResult.isError) return categoryCreationResult;
+
+            return _repository.GetLastCategoryByUserId(userId);
         }
 
         public MessageBadgeVO DeleteCategory(long categoryId, long userId)
@@ -58,7 +64,7 @@ namespace backend.Business.Implementations
             if (title == null) error.messages.Add("Adicione um título para a tarefa");
             if (title.Length > 100) error.messages.Add("Essa categoria é grande demais. No máximo 100 caracteres");
 
-            var match = Regex.Match(title, @"[^A-Za-z0-9 ]+");
+            var match = Regex.Match(title, @"[^ÁÀÂÃÉÈÊÍÏÓÔÕÖÚÇÑáàâãéèêíïóôõöúçñA-Za-z0-9 ]+");
             if (match.Success) error.messages.Add("Use apenas letras, números e espaço para categorias");
 
             return error.messages.Count > 0 ? error : null;

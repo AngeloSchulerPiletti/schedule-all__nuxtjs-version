@@ -13,5 +13,7 @@ namespace backend.Repository
         public List<Category> GetUserCategorys(long userId);
         public MessageBadgeVO DeleteCategory(long categoryId, long userId);
         public object ChangeCategory(CategoryVO category, long userId);
+        public MessageBadgeVO CheckCategoryAlreadyExists(string title, long userId);
+        public Category GetLastCategoryByUserId(long userId);
     }
 }

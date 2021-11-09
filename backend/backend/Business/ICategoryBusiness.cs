@@ -9,7 +9,7 @@ namespace backend.Business
 {
     public interface ICategoryBusiness
     {
-        public MessageBadgeVO CreateCategory(string title, long userId);
+        public object CreateCategory(string title, long userId);
         public List<Category> GetUserCategorys(long userId);
         public MessageBadgeVO DeleteCategory(long categoryId, long userId);
         public object ChangeCategory(CategoryVO category, long userId);
