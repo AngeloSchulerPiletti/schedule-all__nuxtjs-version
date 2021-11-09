@@ -17,6 +17,9 @@ import SimpleTodoCreation from '@/components/templates/Todo/SimpleTodoCreation.v
 
 export default {
   layout: 'dashboard',
+  head:{
+    title: "Tarefas",
+  },
   data() {
     return {
       dataLoaded: false,

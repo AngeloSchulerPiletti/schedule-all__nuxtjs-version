@@ -6,6 +6,9 @@
 <script>
 export default {
     layout: "dashboard",
+  head:{
+    title: "Dashboard",
+  },
 }
 </script>
 

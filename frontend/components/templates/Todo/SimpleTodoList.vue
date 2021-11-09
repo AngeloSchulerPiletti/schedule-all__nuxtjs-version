@@ -301,7 +301,7 @@ export default {
   width: 100%;
   top: 25px;
   height: 130%;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 40px 50px;
   padding: 0 80px;
   grid-auto-rows: min-content;

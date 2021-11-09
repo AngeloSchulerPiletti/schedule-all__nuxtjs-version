@@ -11,6 +11,9 @@ import FormPage from '@/components/containers/FormPage.vue'
 
 export default {
   middleware: 'auth_not_allowed',
+  head:{
+    title: "Cadastro",
+  },
   data() {
     return {
       errors: [],

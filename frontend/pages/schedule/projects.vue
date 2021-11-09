@@ -5,6 +5,9 @@
 <script>
 export default {
   layout: "dashboard",
+  head:{
+    title: "Projetos",
+  },
 
 }
 </script>
