@@ -10,6 +10,7 @@ namespace backend.Repository
         public MessageBadgeVO UpdateSimpleTodo(SimpleTodoVO simpletodo, User user);
         public List<SimpleTodo> GetSimpleTodosByUserId(long userId);
         public object SetSimpleTodoState(long simpletodoId, long userId);
+        public object SetSimpleTodoImportance(long simpletodoId, long userId);
         public SimpleTodo GetSingleSimpleTodoByUserId(long userId, long simpletodoId);
         public MessageBadgeVO DeleteSimpleTodo(long userId, long simpletodoId);
         public MessageBadgeVO CategoryExistsInUser(long categoryId, long userId);

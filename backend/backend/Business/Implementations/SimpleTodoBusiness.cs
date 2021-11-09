@@ -82,6 +82,11 @@ namespace backend.Business.Implementations
             return _repository.DeleteSimpleTodo(userId, simpletodoId);
         }
 
+        public object SetSimpleTodoImportance(long simpletodoId, long userId)
+        {
+            return _repository.SetSimpleTodoImportance(simpletodoId, userId);
+        }
+
         public MessageBadgeVO ValidateId(long id)
         {
             if (id <= 0) return new MessageBadgeVO(new List<string> { "Id inválido" });

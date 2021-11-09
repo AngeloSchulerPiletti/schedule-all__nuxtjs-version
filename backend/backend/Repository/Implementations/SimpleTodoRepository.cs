@@ -117,6 +117,18 @@ namespace backend.Repository.Implementations
             return _context.SimpleTodos.SingleOrDefault(task => task.Id == simpletodoId);
         }
 
+        public object SetSimpleTodoImportance(long simpletodoId, long userId)
+        {
+            var task = _context.SimpleTodos.SingleOrDefault(task => task.Id == simpletodoId & task.UserId == userId);
+            if (task == null) return new MessageBadgeVO(new List<string> { "Essa tarefa não existe" });
+
+            task.Important = !task.Important;
+
+            _context.SaveChanges();
+
+            return _context.SimpleTodos.SingleOrDefault(task => task.Id == simpletodoId);
+        }
+
         public MessageBadgeVO DeleteSimpleTodo(long userId, long simpletodoId)
         {
             try

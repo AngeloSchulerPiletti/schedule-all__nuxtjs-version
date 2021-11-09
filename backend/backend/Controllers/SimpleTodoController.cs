@@ -89,6 +89,20 @@ namespace backend.Controllers
             return Ok(result);
         }
 
+        [HttpPatch]
+        [Route("change-simpletodo-importance")]
+        public IActionResult ChangeSimpleTodoImportance([FromBody] long simpletodoId)
+        {
+            User user = GetUserFromJWT();
+            if (user == null) return BadRequest(new MessageBadgeVO(new List<string> { "Houve um erro com a sua identidade" }));
+
+            MessageBadgeVO validationResult = _business.ValidateId(simpletodoId);
+            if (validationResult != null) return BadRequest(validationResult);
+
+            dynamic result = _business.SetSimpleTodoImportance(simpletodoId, user.Id);
+            if (result is MessageBadgeVO ? result.isError : false) return BadRequest(result);
+            return Ok(result);
+        }
 
         [HttpPut]
         [Route("update-simpletodo")]
