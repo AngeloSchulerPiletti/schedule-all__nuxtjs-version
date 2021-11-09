@@ -112,7 +112,7 @@
             class="important"
             @click="changeSimpletodoImportance(simpletodo.id)"
           >
-            <star-icon :class="`icon ${true}`" />
+            <star-icon :class="`icon ${simpletodo.important}`" />
           </button>
           <button class="finish" @click="changeSimpletodoState(simpletodo.id)">
             <check-icon :class="`icon ${simpletodo.finished}`" />
@@ -247,9 +247,7 @@ export default {
     },
     changeSimpletodoState(simpletodoId) {
       this.$axios
-        .patch('v1/SimpleTodo/change-simpletodo-state', simpletodoId, {
-          headers: { 'Content-Type': 'application/json' },
-        })
+        .patch('v1/SimpleTodo/change-simpletodo-state', simpletodoId)
         .then((res) => {
           this.$store.commit('updateSimpletodo', res.data)
         })
@@ -258,8 +256,14 @@ export default {
         })
     },
     changeSimpletodoImportance(simpletodoId) {
-      console.log(simpletodoId)
-      //Manda um axios pro backend
+      this.$axios
+        .patch('v1/SimpleTodo/change-simpletodo-importance', simpletodoId)
+        .then((res) => {
+          this.$store.commit('updateSimpletodo', res.data);
+        })
+        .catch((err) => {
+          //Futuramente irá throw notificação de erro
+        })
     },
     changeSimpletodoCategory(newCategoryId, simpletodo) {
       let newSimpletodo = { ...simpletodo }
@@ -446,6 +450,7 @@ export default {
             fill: transparent;
             stroke: rgb(185, 155, 17);
             stroke-width: 30px;
+            transition: fill 300ms;
           }
           .true::v-deep path {
             fill: rgb(185, 155, 17);
@@ -455,13 +460,16 @@ export default {
           svg {
             border-radius: 100%;
             border: 1px solid #202020;
+            transition: border 300ms;
             &::v-deep polyline {
               stroke: transparent;
+              transition: stroke 300ms;
             }
 
             &.true {
               border: 1px solid transparent;
               transform: scale(1.3);
+
               &::v-deep polyline {
                 stroke: #202020;
               }
