@@ -40,7 +40,7 @@
             @mouseleave="closedCategories = true"
           >
             <li
-              v-for="(title, id) in categoriesDataStoreArray[0]"
+              v-for="(title, id) in categories[0]"
               :key="id"
               @click="categorySelected(id)"
               class="link-2_tiny"
@@ -84,16 +84,6 @@ export default {
         ? 'opcional'
         : this.$store.state.dashboardSimpleTodos.categories.data[id]
     },
-    categoriesDataStoreArray() {
-      let pref = this.$store.state.dashboardSimpleTodos.categories;
-      return [pref.data, pref.updated];
-    },
-  },
-  watch: {
-    categoriesDataStoreArray: {
-      immediate: true,
-      handler(oldValue, newValue) {}
-    },
   },
   methods: {
     addClicked() {
@@ -123,6 +113,9 @@ export default {
       this.simpletodo.categoryId = categoryId
       this.changeCategoryOptionsState()
     },
+  },
+  props:{
+    categories: Array,
   },
   components: {
     'add-icon': Add,

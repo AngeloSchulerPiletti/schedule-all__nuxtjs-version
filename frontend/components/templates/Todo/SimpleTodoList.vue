@@ -2,15 +2,13 @@
   <div class="wrapper grid">
     <div
       :class="`card pseudos_base flex_r ${simpletodo.finished}`"
-      v-for="(simpletodo, index) in simpletodosDataStoreArray[0]"
+      v-for="(simpletodo, index) in simpletodos[0]"
       :key="index"
       @mouseleave="hideMenu"
       :id="`task-${simpletodo.id}`"
     >
       <div class="category_mark" v-if="simpletodo.categoryId > 0">
-        <span>{{
-          categoriesDataStoreArray[0][simpletodo.categoryId]
-        }}</span>
+        <span>{{ categories[0][simpletodo.categoryId] }}</span>
       </div>
       <div class="left flex_c">
         <div class="title_container pseudo_base">
@@ -18,20 +16,22 @@
             class="title"
             type="text"
             autocomplete="off"
-            v-model="simpletodo.title"
+            :id="`title-${simpletodo.id}`"
+            :value="simpletodo.title"
             @focusin="fieldIn($event, simpletodo.title)"
-            @focusout="fieldOut($event, simpletodo.title, simpletodo)"
+            @focusout="fieldOut($event, simpletodo, 'title')"
           />
         </div>
         <textarea
           v-if="simpletodo.description"
           data-enable-grammarly="false"
           class="description scroll-1 scroll-tiny"
+          :id="`description-${simpletodo.id}`"
           type="text"
           autocomplete="off"
-          v-model="simpletodo.description"
+          :value="simpletodo.description"
           @focusin="fieldIn($event, simpletodo.description)"
-          @focusout="fieldOut($event, simpletodo.description, simpletodo)"
+          @focusout="fieldOut($event, simpletodo, 'description')"
         ></textarea>
       </div>
       <div :class="`right ${simpletodo.description ? 'flex_c' : 'flex_r'}`">
@@ -77,7 +77,7 @@
                     :id="`submenu-${simpletodo.id}`"
                   >
                     <li
-                      v-for="(title, id) in categoriesDataStoreArray[0]"
+                      v-for="(title, id) in categories[0]"
                       :key="id"
                       @click="changeSimpletodoCategory(id, simpletodo)"
                     >
@@ -155,34 +155,28 @@ export default {
         return this.$store.state.confirmationModal.answer
       }
     },
-    simpletodosDataStoreArray() {
-      let pref = this.$store.state.dashboardSimpleTodos.simpletodos;
-      return [pref.data, pref.updated];
-    },
-    categoriesDataStoreArray() {
-      let pref = this.$store.state.dashboardSimpleTodos.categories;
-      return [pref.data, pref.updated];
-    },
   },
   watch: {
-    simpletodosDataStoreArray: {
-      immediate: true,
-      handler(oldValue, newValue) {}
-    },
-    categoriesDataStoreArray: {
-      immediate: true,
-      handler(oldValue, newValue) {}
-    },
     deleteAnswer(oldValue, newValue) {
       if (newValue) {
-        this.$axios.delete('v1/SimpleTodo/delete-simpletodo', {
-          data: this.simpletodoOnDelete,
-        });
-        this.$el.querySelector(`#task-${this.simpletodoOnDelete}`).classList.add('being_removed');
-        setTimeout(() => {
-          this.$store.commit('deleteSimpletodo', this.simpletodoOnDelete);
-        }, 210);
-
+        this.$axios
+          .delete('v1/SimpleTodo/delete-simpletodo', {
+            data: this.simpletodoOnDelete,
+          })
+          .then((res) => {
+            this.$el
+              .querySelector(`#task-${this.simpletodoOnDelete}`)
+              .classList.add('being_removed');
+            setTimeout(() => {
+            this.$el
+              .querySelector(`#task-${this.simpletodoOnDelete}`)
+              .classList.remove('being_removed');
+              this.$store.commit('deleteSimpletodo', this.simpletodoOnDelete)
+            }, 210);
+          })
+          .catch(err => {
+            //joga o erro para as notificações
+          })
       }
       this.$store.commit('cleanAnswer')
     },
@@ -235,14 +229,20 @@ export default {
       event.path[1].classList.add('focused')
       this.fieldCache = oldValue
     },
-    fieldOut(event, newValue, simpletodo) {
+    fieldOut(event, simpletodo, fieldName) {
+      var descriptionNewValue = this.$el.querySelector(
+        `#${fieldName}-${simpletodo.id}`
+      ).value
       event.path[1].classList.remove('focused')
-      if (newValue != this.fieldCache) this.callToSave(simpletodo)
+      if (descriptionNewValue != this.fieldCache)
+        this.callToSave(descriptionNewValue, simpletodo)
       this.fieldCache = ''
     },
-    callToSave(simpletodo) {
+    callToSave(descriptionNewValue, simpletodo) {
+      let newSimpletodo = { ...simpletodo }
+      newSimpletodo.description = descriptionNewValue
       this.$axios
-        .put('v1/SimpleTodo/update-simpletodo', simpletodo)
+        .put('v1/SimpleTodo/update-simpletodo', newSimpletodo)
         .then((res) => console.log(res))
     },
     changeSimpletodoState(simpletodoId) {
@@ -251,7 +251,7 @@ export default {
           headers: { 'Content-Type': 'application/json' },
         })
         .then((res) => {
-          this.$store.commit('updateSimpletodo', res.data);
+          this.$store.commit('updateSimpletodo', res.data)
         })
         .catch((err) => {
           //Futuramente irá throw notificação de erro
@@ -262,19 +262,23 @@ export default {
       //Manda um axios pro backend
     },
     changeSimpletodoCategory(newCategoryId, simpletodo) {
-      let newSimpletodo = {...simpletodo};
-      newSimpletodo.categoryId = newCategoryId;
+      let newSimpletodo = { ...simpletodo }
+      newSimpletodo.categoryId = newCategoryId
       this.$axios
         .put('v1/SimpleTodo/update-simpletodo', newSimpletodo)
-        .then(res => {
-          this.hideMenu();
-          this.$store.commit("updateSimpletodo", newSimpletodo);
-        });
+        .then((res) => {
+          this.hideMenu()
+          this.$store.commit('updateSimpletodo', newSimpletodo)
+        })
     },
     deleteSimpletodo(simpletodoId) {
       this.$store.commit('openModal', this.modalSubjects.onDelete)
       this.simpletodoOnDelete = simpletodoId;
     },
+  },
+  props: {
+    simpletodos: Array,
+    categories: Array,
   },
   components: {
     'star-icon': Star,
@@ -308,7 +312,8 @@ export default {
     position: relative;
 
     transition: opacity 200ms, transform 200ms;
-    &::before, &::after{
+    &::before,
+    &::after {
       left: 0;
       right: 100%;
       transition: left 350ms, right 350ms;
@@ -331,7 +336,7 @@ export default {
       }
     }
 
-    &.being_removed{
+    &.being_removed {
       transform: scale(0.3);
       opacity: 0;
     }
@@ -372,6 +377,7 @@ export default {
           cursor: default;
           width: 100%;
           transition: margin-left 100ms;
+          text-overflow: ellipsis;
         }
         &.focused .title {
           margin-left: 10px;

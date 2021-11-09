@@ -71,6 +71,7 @@ export const mutations = {
         state.dashboardSimpleTodos.simpletodos.updated++;
     },
     deleteSimpletodo(state, simpletodoId) {
+        console.log(state.dashboardSimpleTodos.simpletodos.data);
         state.dashboardSimpleTodos.simpletodos.data.forEach((task, index) => {
             if (task.id == simpletodoId) {
                 state.dashboardSimpleTodos.simpletodos.data.splice(index, 1);
@@ -80,7 +81,6 @@ export const mutations = {
     },
     deleteCategory(state, categoryId) {
         if (state.dashboardSimpleTodos.categories.data[categoryId]) delete state.dashboardSimpleTodos.categories.data[categoryId];
-        console.log(state.dashboardSimpleTodos.categories.data[categoryId]);
         state.dashboardSimpleTodos.categories.updated++;
     }
 }

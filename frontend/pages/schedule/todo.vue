@@ -1,12 +1,12 @@
 <template>
   <div id="todo_wrapper" class="flex_c" v-if="dataLoaded">
     <div class="categories">
-      <categories-selection />
+      <categories-selection :categories="categoriesDataStoreArray"/>
     </div>
     <div class="todos flex_c scroll-1">
-      <simple-todo-list />
+      <simple-todo-list :simpletodos="simpletodosDataStoreArray" :categories="categoriesDataStoreArray"/>
     </div>
-    <simple-todo-creation />
+    <simple-todo-creation :categories="categoriesDataStoreArray"/>
   </div>
 </template>
 
@@ -22,11 +22,31 @@ export default {
       dataLoaded: false,
     }
   },
+  computed: {
+    simpletodosDataStoreArray() {
+      let pref = this.$store.state.dashboardSimpleTodos.simpletodos
+      return [pref.data, pref.updated]
+    },
+    categoriesDataStoreArray() {
+      let pref = this.$store.state.dashboardSimpleTodos.categories
+      return [pref.data, pref.updated]
+    },
+  },
+  watch: {
+    simpletodosDataStoreArray: {
+      immediate: true,
+      handler(oldValue, newValue) {},
+    },
+    categoriesDataStoreArray: {
+      immediate: true,
+      handler(oldValue, newValue) {},
+    },
+  },
   mounted() {
     this.$axios
       .get('v1/SimpleTodo/get-all-user-simpletodos')
       .then((res) => {
-        this.$store.commit('setSimpletodos', res.data);
+        this.$store.commit('setSimpletodos', res.data)
         this.$axios
           .get('v1/Category/get-user-categories')
           .then((res) => {

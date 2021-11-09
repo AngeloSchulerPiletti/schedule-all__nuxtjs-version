@@ -12,7 +12,7 @@
         @click="categorySelected(id, $event)"
         @mouseover="categoryHovered = id"
         @mouseleave="categoryHovered = 0"
-        v-for="(title, id) in categoriesDataStoreArray[0]"
+        v-for="(title, id) in categories[0]"
         :key="id"
         :id="`category-${id}`"
       >
@@ -64,16 +64,8 @@ export default {
         return this.$store.state.confirmationModal.answer
       }
     },
-    categoriesDataStoreArray() {
-      let pref = this.$store.state.dashboardSimpleTodos.categories
-      return [pref.data, pref.updated]
-    },
   },
   watch: {
-    categoriesDataStoreArray: {
-      immediate: true,
-      handler(oldValue, newValue) {},
-    },
     deleteAnswer(oldValue, newValue) {
       if (newValue) {
         this.$axios
@@ -86,7 +78,6 @@ export default {
               .classList.add('being_removed')
             setTimeout(() => {
               this.$store.commit('deleteCategory', this.categoryOnDelete)
-              console.log('timeout ran')
             }, 210)
           })
           .catch((err) => {
@@ -124,6 +115,9 @@ export default {
       this.$store.commit('openModal', this.modalSubjects.onDelete)
       this.categoryOnDelete = categoryId
     },
+  },
+  props:{
+    categories: Array,
   },
   components: {
     'add-icon': Add,
