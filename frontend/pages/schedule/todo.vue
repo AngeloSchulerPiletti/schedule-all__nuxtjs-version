@@ -46,7 +46,7 @@ export default {
     this.$axios
       .get('v1/SimpleTodo/get-all-user-simpletodos')
       .then((res) => {
-        this.$store.commit('setSimpletodos', res.data)
+        this.$store.commit('setSimpletodos', res.data);
         this.$axios
           .get('v1/Category/get-user-categories')
           .then((res) => {

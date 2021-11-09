@@ -1,10 +1,12 @@
 <template>
   <div class="wrapper flex_r">
     <div class="categories">
-      <span class="link-2 activated_link" @click="categorySelected(0, $event)"
+      <span
+        class="link-2 activated_link"
+        @click="categorySelected(null, $event)"
         >Todos</span
       >
-      <span class="link-2" @click="categorySelected(null, $event)"
+      <span class="link-2" @click="categorySelected(0, $event)"
         >Importantes</span
       >
       <span
@@ -93,10 +95,16 @@ export default {
       if (event.target.tagName == 'SPAN') {
         lastOne.classList.remove('activated_link')
         event.target.classList.add('activated_link')
-      }
 
-      //id == null é pra pegar só os importantes
-      //Manda request pro backend pra pedir paginação por categoria
+        this.$axios
+          .get('v1/SimpleTodo/get-user-simpletodos-by-category', {
+            params: { pagination: id },
+          })
+          .then((res) => {
+            this.$store.commit('setSimpletodos', res.data)
+            console.log(res)
+          })
+      }
     },
     createCategory() {
       if (!this.title) return null
@@ -116,7 +124,7 @@ export default {
       this.categoryOnDelete = categoryId
     },
   },
-  props:{
+  props: {
     categories: Array,
   },
   components: {
