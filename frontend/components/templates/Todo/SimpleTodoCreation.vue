@@ -99,9 +99,14 @@ export default {
     addClicked() {
       if (!this.closed && this.simpletodo.title) {
         this.description = this.description == null ? '' : this.description
+        //Para isso funcionar, o backend precisa retornar o simpletodo adicionado;
         this.$axios
           .post('v1/SimpleTodo/create-simpletodo', this.simpletodo)
-          .then((res) => console.log(res))
+          .then((res) => {
+            this.$store.commit("addSimpletodo", res.data);
+          }).catch(err =>{
+            //printa o erro nas notificações de erro
+          })
         this.simpletodo = { title: null, description: null, categoryId: 0 }
         this.closedCategories = true
       }

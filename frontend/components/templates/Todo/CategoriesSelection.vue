@@ -101,6 +101,7 @@ export default {
       this.$axios
         .post('v1/Category/create-category', JSON.stringify(this.title))
         .then((res) => console.log(res))
+        //Para isso funcionar, o backend precisa retornar a category adicionado;
     },
     deleteCategory(categoryId) {
       this.$store.commit('openModal', this.modalSubjects.onDelete)

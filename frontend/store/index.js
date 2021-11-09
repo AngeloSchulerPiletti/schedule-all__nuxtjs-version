@@ -4,7 +4,7 @@ export const state = () => ({
     dashboardSimpleTodos: {
         categories: {
             updated: 0,
-            data:{},
+            data: {},
         },
         simpletodos: {
             updated: 0,
@@ -48,6 +48,7 @@ export const mutations = {
         categories.forEach(category => {
             state.dashboardSimpleTodos.categories.data[category.categoryId] = category.title;
         });
+        state.dashboardSimpleTodos.categories.updated++;
     },
     setSimpletodos(state, simpletodos) {
         state.dashboardSimpleTodos.simpletodos.data = simpletodos;
@@ -61,11 +62,11 @@ export const mutations = {
         });
         state.dashboardSimpleTodos.simpletodos.updated++;
     },
-    addSimpletodo(state, simpletodo){
-        //Para isso funcionar, o backend precisa retornar o simpletodo adicionado;
+    addSimpletodo(state, simpletodo) {
+        state.dashboardSimpleTodos.simpletodos.data.push(simpletodo);
         state.dashboardSimpleTodos.simpletodos.updated++;
     },
-    deleteSimpletodo(state, simpletodoId){
+    deleteSimpletodo(state, simpletodoId) {
         state.dashboardSimpleTodos.simpletodos.data.forEach((task, index) => {
             if (task.id == simpletodoId) {
                 state.dashboardSimpleTodos.simpletodos.data.splice(index, 1);
@@ -73,7 +74,7 @@ export const mutations = {
         });
         state.dashboardSimpleTodos.simpletodos.updated++;
     },
-    deleteCategory(state, categoryId){
+    deleteCategory(state, categoryId) {
         if (state.dashboardSimpleTodos.categories.data[categoryId]) delete state.dashboardSimpleTodos.categories.data[categoryId];
         state.dashboardSimpleTodos.categories.updated++;
     }

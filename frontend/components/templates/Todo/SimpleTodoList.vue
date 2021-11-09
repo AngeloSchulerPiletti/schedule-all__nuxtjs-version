@@ -9,7 +9,7 @@
     >
       <div class="category_mark" v-if="simpletodo.categoryId > 0">
         <span>{{
-          $store.state.dashboardSimpleTodos.categories.data[simpletodo.categoryId]
+          categoriesDataStoreArray[0][simpletodo.categoryId]
         }}</span>
       </div>
       <div class="left flex_c">
@@ -77,8 +77,7 @@
                     :id="`submenu-${simpletodo.id}`"
                   >
                     <li
-                      v-for="(title, id) in $store.state.dashboardSimpleTodos
-                        .categories.data"
+                      v-for="(title, id) in categoriesDataStoreArray[0]"
                       :key="id"
                       @click="changeSimpletodoCategory(id, simpletodo)"
                     >
@@ -263,11 +262,14 @@ export default {
       //Manda um axios pro backend
     },
     changeSimpletodoCategory(newCategoryId, simpletodo) {
-      let newSimpletodo = simpletodo
-      newSimpletodo.categoryId = newCategoryId
+      let newSimpletodo = {...simpletodo};
+      newSimpletodo.categoryId = newCategoryId;
       this.$axios
         .put('v1/SimpleTodo/update-simpletodo', newSimpletodo)
-        .then(console.log)
+        .then(res => {
+          this.hideMenu();
+          this.$store.commit("updateSimpletodo", newSimpletodo);
+        });
     },
     deleteSimpletodo(simpletodoId) {
       this.$store.commit('openModal', this.modalSubjects.onDelete)
