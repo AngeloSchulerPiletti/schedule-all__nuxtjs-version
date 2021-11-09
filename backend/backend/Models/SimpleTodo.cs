@@ -10,13 +10,14 @@ namespace backend.Models
     [Table("simpletodos")]
     public class SimpleTodo
     {
-        public SimpleTodo(DateTime createdAt, string title, string description, long categoryId, long userId)
+        public SimpleTodo(DateTime createdAt, string title, string description, long categoryId, long userId, bool important = false)
         {
             CreatedAt = createdAt;
             Title = title;
             Description = description;
             CategoryId = categoryId;
             UserId = userId;
+            Important = important;
         }
 
         [Key]
@@ -36,5 +37,7 @@ namespace backend.Models
         public long CategoryId { get; set; }
         [Column("user_id")]
         public long UserId { get; set; }
+        [Column("important")]
+        public bool Important { get; set; }
     }
 }

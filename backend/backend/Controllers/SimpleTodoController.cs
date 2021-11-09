@@ -49,6 +49,16 @@ namespace backend.Controllers
             return Ok(result);
         }
 
+        [HttpGet]
+        [Route("get-user-simpletodos-by-category")]
+        public IActionResult GetUserSimpleTodosByCategory([FromQuery] int? pagination)
+        {
+            User user = GetUserFromJWT();
+            if (user == null) return BadRequest(new MessageBadgeVO(new List<string> { "Houve um erro com a sua identidade" }));
+
+            return Ok(_business.GetUserSimpleTodosByCategory(pagination, user.Id));
+        }
+
         [HttpPost]
         [Route("create-simpletodo")]
         public IActionResult CreateSimpleTodo([FromBody] NewSimpleTodoVO simpletodo)

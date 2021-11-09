@@ -80,6 +80,17 @@ namespace backend.Repository.Implementations
             return result;
         }
 
+        public List<SimpleTodo> GetImportantSimpleTodos(long userId)
+        {
+            List<SimpleTodo> result = _context.SimpleTodos.Where(task => task.UserId == userId && task.Important).ToList();
+            return result;
+        }
+        public List<SimpleTodo> GetSimpleTodosByCategory(int pagination, long userId)
+        {
+            List<SimpleTodo> result = _context.SimpleTodos.Where(task => task.UserId == userId && task.CategoryId == pagination).ToList();
+            return result;
+        }
+
         public SimpleTodo GetSingleSimpleTodoByUserId(long userId, long simpletodoId)
         {
             SimpleTodo result = _context.SimpleTodos.Where(task => task.Id == simpletodoId).SingleOrDefault(task => task.UserId == userId);

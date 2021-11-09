@@ -42,6 +42,25 @@ namespace backend.Business.Implementations
             return updateResult;
         }
 
+        public List<SimpleTodo> GetUserSimpleTodosByCategory(int? pagination, long userId)
+        {
+            List<SimpleTodo> simpletodos;
+
+            if(pagination == null)
+            {
+                simpletodos = _repository.GetSimpleTodosByUserId(userId);
+            }
+            else if (pagination == 0)
+            {
+                simpletodos = _repository.GetImportantSimpleTodos(userId);
+            }
+            else
+            {
+                simpletodos = _repository.GetSimpleTodosByCategory(pagination.Value, userId);
+            }
+            return simpletodos;
+        }
+
         public List<SimpleTodo> GetSimpleTodosByUserId(long userId)
         {
             return _repository.GetSimpleTodosByUserId(userId);

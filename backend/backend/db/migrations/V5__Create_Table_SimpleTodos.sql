@@ -5,6 +5,7 @@ CREATE TABLE `simpletodos` (
 	`finished` TINYINT NOT NULL DEFAULT '0',
 	`title` VARCHAR(100) NOT NULL DEFAULT '0',
 	`description` VARCHAR(500) NULL DEFAULT NULL,
+	`important` TINYINT NOT NULL DEFAULT '0',
 	`category_id` INT NULL DEFAULT NULL,
 	`user_id` INT NOT NULL,
 	PRIMARY KEY (`id`)

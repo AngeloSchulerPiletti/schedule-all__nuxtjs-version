@@ -15,5 +15,6 @@ namespace backend.Business
         public MessageBadgeVO DeleteSimpleTodo(long userId, long simpletodoId);
         public MessageBadgeVO ValidateSimpleTodoInput(NewSimpleTodoVO simpletodo);
         public MessageBadgeVO ValidateSimpleTodoInput(SimpleTodoVO simpletodo);
+        public List<SimpleTodo> GetUserSimpleTodosByCategory(int? pagination, long userId);
     }
 }

@@ -14,5 +14,7 @@ namespace backend.Repository
         public MessageBadgeVO DeleteSimpleTodo(long userId, long simpletodoId);
         public MessageBadgeVO CategoryExistsInUser(long categoryId, long userId);
         public SimpleTodo GetLastSimpleTodoByUserId(long userId);
+        public List<SimpleTodo> GetImportantSimpleTodos(long userId);
+        public List<SimpleTodo> GetSimpleTodosByCategory(int pagination, long userId);
     }
 }
