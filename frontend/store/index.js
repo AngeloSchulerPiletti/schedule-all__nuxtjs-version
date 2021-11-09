@@ -44,6 +44,10 @@ export const mutations = {
     setDashboardPageStatus(state, setting) {
         state.dashboardPageStatus = setting;
     },
+    addCategory(state, category) {
+        state.dashboardSimpleTodos.categories.data[category.categoryId] = category.title;
+        state.dashboardSimpleTodos.categories.updated++;
+    },
     setCategories(state, categories) {
         categories.forEach(category => {
             state.dashboardSimpleTodos.categories.data[category.categoryId] = category.title;
@@ -76,6 +80,7 @@ export const mutations = {
     },
     deleteCategory(state, categoryId) {
         if (state.dashboardSimpleTodos.categories.data[categoryId]) delete state.dashboardSimpleTodos.categories.data[categoryId];
+        console.log(state.dashboardSimpleTodos.categories.data[categoryId]);
         state.dashboardSimpleTodos.categories.updated++;
     }
 }

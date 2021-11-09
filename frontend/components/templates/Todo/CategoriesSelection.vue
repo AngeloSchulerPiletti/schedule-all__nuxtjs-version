@@ -12,7 +12,7 @@
         @click="categorySelected(id, $event)"
         @mouseover="categoryHovered = id"
         @mouseleave="categoryHovered = 0"
-        v-for="(title, id) in $store.state.dashboardSimpleTodos.categories.data"
+        v-for="(title, id) in categoriesDataStoreArray[0]"
         :key="id"
         :id="`category-${id}`"
       >
@@ -65,24 +65,33 @@ export default {
       }
     },
     categoriesDataStoreArray() {
-      let pref = this.$store.state.dashboardSimpleTodos.categories;
-      return [pref.data, pref.updated];
+      let pref = this.$store.state.dashboardSimpleTodos.categories
+      return [pref.data, pref.updated]
     },
   },
   watch: {
     categoriesDataStoreArray: {
       immediate: true,
-      handler(oldValue, newValue) {}
+      handler(oldValue, newValue) {},
     },
     deleteAnswer(oldValue, newValue) {
       if (newValue) {
-        this.$axios.delete('v1/Category/delete-category', {
-          data: this.categoryOnDelete,
-        })
-        this.$el.querySelector(`#category-${this.categoryOnDelete}`).classList.add('being_removed');
-        setTimeout(() => {
-          this.$store.commit('deleteCategory', this.categoryOnDelete);
-        }, 210);
+        this.$axios
+          .delete('v1/Category/delete-category', {
+            data: this.categoryOnDelete,
+          })
+          .then((res) => {
+            this.$el
+              .querySelector(`#category-${this.categoryOnDelete}`)
+              .classList.add('being_removed')
+            setTimeout(() => {
+              this.$store.commit('deleteCategory', this.categoryOnDelete)
+              console.log('timeout ran')
+            }, 210)
+          })
+          .catch((err) => {
+            //adiciona o erro nas notificções
+          })
       }
       this.$store.commit('cleanAnswer')
     },
@@ -90,8 +99,10 @@ export default {
   methods: {
     categorySelected(id, event) {
       var lastOne = this.$el.querySelector('.activated_link')
-      lastOne.classList.remove('activated_link')
-      event.target.classList.add('activated_link')
+      if (event.target.tagName == 'SPAN') {
+        lastOne.classList.remove('activated_link')
+        event.target.classList.add('activated_link')
+      }
 
       //id == null é pra pegar só os importantes
       //Manda request pro backend pra pedir paginação por categoria
@@ -100,8 +111,14 @@ export default {
       if (!this.title) return null
       this.$axios
         .post('v1/Category/create-category', JSON.stringify(this.title))
-        .then((res) => console.log(res))
-        //Para isso funcionar, o backend precisa retornar a category adicionado;
+        .then((res) => {
+          this.$store.commit('addCategory', res.data)
+          this.title = ''
+        })
+        .catch((err) => {
+          //Adiciona o erro nas notificações e tal
+        })
+      //Para isso funcionar, o backend precisa retornar a category adicionado;
     },
     deleteCategory(categoryId) {
       this.$store.commit('openModal', this.modalSubjects.onDelete)
@@ -134,7 +151,6 @@ export default {
       white-space: nowrap;
       display: inline-block;
       margin: 5px;
-
     }
     .deletable {
       padding-right: 26px;
@@ -151,7 +167,7 @@ export default {
 
       transition: opacity 200ms, transform 200ms;
 
-      &.being_removed{
+      &.being_removed {
         opacity: 0;
         transform: scaleX(0.1);
       }
