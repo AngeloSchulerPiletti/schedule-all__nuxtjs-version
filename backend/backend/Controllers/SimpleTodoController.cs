@@ -59,8 +59,8 @@ namespace backend.Controllers
             MessageBadgeVO validationResult = _business.ValidateSimpleTodoInput(simpletodo);
             if (validationResult != null) return BadRequest(validationResult);
 
-            MessageBadgeVO result = _business.CreateSimpleTodo(simpletodo, user);
-            if (result.isError) return BadRequest(result);
+            object result = _business.CreateSimpleTodo(simpletodo, user);
+            if (result is MessageBadgeVO) return BadRequest(result);
             return Ok(result);
         }
 

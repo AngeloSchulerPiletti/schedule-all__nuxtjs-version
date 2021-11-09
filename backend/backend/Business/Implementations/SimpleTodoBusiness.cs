@@ -18,10 +18,22 @@ namespace backend.Business.Implementations
             _repository = repository;
         }
 
-        public MessageBadgeVO CreateSimpleTodo(NewSimpleTodoVO simpletodo, User user)
+        public object CreateSimpleTodo(NewSimpleTodoVO simpletodo, User user)
         {
+            if (simpletodo.CategoryId != 0)
+            {
+                MessageBadgeVO categoryExistsResult = _repository.CategoryExistsInUser(simpletodo.CategoryId, user.Id);
+                if (categoryExistsResult != null) return categoryExistsResult;
+            }
             MessageBadgeVO creationResult = _repository.CreateSimpleTodo(simpletodo, user);
-            return creationResult;
+            if (!creationResult.isError)
+            {
+                return _repository.GetLastSimpleTodoByUserId(user.Id);
+            }
+            else
+            {
+                return creationResult;
+            }
         }
         public MessageBadgeVO UpdateSimpleTodo(SimpleTodoVO simpletodo, User user)
         {

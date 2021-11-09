@@ -18,17 +18,18 @@ namespace backend.Repository.Implementations
             _context = context;
         }
 
-        public MessageBadgeVO CreateSimpleTodo(NewSimpleTodoVO simpletodo, User user)
+        public MessageBadgeVO CategoryExistsInUser(long categoryId, long userId)
         {
-            if (simpletodo.CategoryId != 0)
-            {
-                var category = _context.Categorys.Where(cat => (cat.CategoryId == simpletodo.CategoryId) & (cat.UserId == user.Id)).SingleOrDefault();
+                var category = _context.Categorys.Where(cat => (cat.CategoryId == categoryId) & (cat.UserId == userId)).SingleOrDefault();
                 if (category == null)
                 {
                     return new MessageBadgeVO(new List<string> { "Categoria Inválida" });
-                }
             }
+            return null;
+        }
 
+        public MessageBadgeVO CreateSimpleTodo(NewSimpleTodoVO simpletodo, User user)
+        {
             DateTime createdAt = DateTime.Now;
 
             _context.SimpleTodos.Add(new SimpleTodo(createdAt, simpletodo.Title, simpletodo.Description, simpletodo.CategoryId, user.Id));
@@ -82,6 +83,12 @@ namespace backend.Repository.Implementations
         public SimpleTodo GetSingleSimpleTodoByUserId(long userId, long simpletodoId)
         {
             SimpleTodo result = _context.SimpleTodos.Where(task => task.Id == simpletodoId).SingleOrDefault(task => task.UserId == userId);
+            return result;
+        }
+
+        public SimpleTodo GetLastSimpleTodoByUserId(long userId)
+        {
+            SimpleTodo result = _context.SimpleTodos.OrderByDescending(t => t.Id).Where(t=> t.UserId == userId).FirstOrDefault();
             return result;
         }
 

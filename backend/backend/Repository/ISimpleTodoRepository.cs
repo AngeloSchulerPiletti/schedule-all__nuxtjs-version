@@ -12,5 +12,7 @@ namespace backend.Repository
         public object SetSimpleTodoState(long simpletodoId, long userId);
         public SimpleTodo GetSingleSimpleTodoByUserId(long userId, long simpletodoId);
         public MessageBadgeVO DeleteSimpleTodo(long userId, long simpletodoId);
+        public MessageBadgeVO CategoryExistsInUser(long categoryId, long userId);
+        public SimpleTodo GetLastSimpleTodoByUserId(long userId);
     }
 }

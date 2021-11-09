@@ -6,7 +6,7 @@ namespace backend.Business
 {
     public interface ISimpleTodoBusiness
     {
-        public MessageBadgeVO CreateSimpleTodo(NewSimpleTodoVO simpletodo, User user);
+        public object CreateSimpleTodo(NewSimpleTodoVO simpletodo, User user);
         public MessageBadgeVO ValidateId(long id);
         public MessageBadgeVO UpdateSimpleTodo(SimpleTodoVO simpletodo, User user);
         public List<SimpleTodo> GetSimpleTodosByUserId(long userId);
