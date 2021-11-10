@@ -79,7 +79,7 @@ export default {
               .querySelector(`#category-${this.categoryOnDelete}`)
               .classList.add('being_removed')
             setTimeout(() => {
-              this.$store.commit('deleteCategory', this.categoryOnDelete)
+              this.$store.commit('simpletodo/deleteCategory', this.categoryOnDelete)
             }, 210)
           })
           .catch((err) => {
@@ -101,7 +101,7 @@ export default {
             params: { pagination: id },
           })
           .then((res) => {
-            this.$store.commit('setSimpletodos', res.data)
+            this.$store.commit('simpletodo/setSimpletodos', res.data)
             console.log(res)
           })
       }
@@ -109,9 +109,9 @@ export default {
     createCategory() {
       if (!this.title) return null
       this.$axios
-        .post('v1/Category/create-category', JSON.stringify(this.title))
+        .post('v1/Category/create-category', this.title)
         .then((res) => {
-          this.$store.commit('addCategory', res.data)
+          this.$store.commit('simpletodo/addCategory', res.data)
           this.title = ''
         })
         .catch((err) => {

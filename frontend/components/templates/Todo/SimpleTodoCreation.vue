@@ -82,7 +82,7 @@ export default {
       let id = this.simpletodo.categoryId
       return id == 0
         ? 'opcional'
-        : this.$store.state.dashboardSimpleTodos.categories.data[id]
+        : this.$store.state.simpletodo.dashboardSimpleTodos.categories.data[id]
     },
   },
   methods: {
@@ -93,7 +93,7 @@ export default {
         this.$axios
           .post('v1/SimpleTodo/create-simpletodo', this.simpletodo)
           .then((res) => {
-            this.$store.commit("addSimpletodo", res.data);
+            this.$store.commit("simpletodo/addSimpletodo", res.data);
           }).catch(err =>{
             //printa o erro nas notificações de erro
           })

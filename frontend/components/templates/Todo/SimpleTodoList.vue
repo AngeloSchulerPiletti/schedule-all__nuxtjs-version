@@ -23,7 +23,7 @@
           />
         </div>
         <textarea
-          v-if="simpletodo.description"
+          v-show="simpletodo.description"
           data-enable-grammarly="false"
           class="description scroll-1 scroll-tiny"
           :id="`description-${simpletodo.id}`"
@@ -96,7 +96,7 @@
               <li
                 v-if="!simpletodo.finished && !simpletodo.description"
                 class="flex_r"
-                @click="simpletodo.description = ' '"
+                @click="addDescription(simpletodo)"
               >
                 <edit-icon class="icon" /><span>Adicionar descrição</span>
               </li>
@@ -171,7 +171,7 @@ export default {
             this.$el
               .querySelector(`#task-${this.simpletodoOnDelete}`)
               .classList.remove('being_removed');
-              this.$store.commit('deleteSimpletodo', this.simpletodoOnDelete)
+              this.$store.commit('simpletodo/deleteSimpletodo', this.simpletodoOnDelete)
             }, 210);
           })
           .catch(err => {
@@ -182,6 +182,9 @@ export default {
     },
   },
   methods: {
+    addDescription(simpletodo){
+      this.callToSave(" ", simpletodo);
+    },
     showMenu(simpletodoId) {
       this.cardMenu = simpletodoId
       let element = this.$el.querySelector(`#menu-${simpletodoId}`)
@@ -249,7 +252,7 @@ export default {
       this.$axios
         .patch('v1/SimpleTodo/change-simpletodo-state', simpletodoId)
         .then((res) => {
-          this.$store.commit('updateSimpletodo', res.data)
+          this.$store.commit('simpletodo/updateSimpletodo', res.data)
         })
         .catch((err) => {
           //Futuramente irá throw notificação de erro
@@ -259,7 +262,7 @@ export default {
       this.$axios
         .patch('v1/SimpleTodo/change-simpletodo-importance', simpletodoId)
         .then((res) => {
-          this.$store.commit('updateSimpletodo', res.data);
+          this.$store.commit('simpletodo/updateSimpletodo', res.data);
         })
         .catch((err) => {
           //Futuramente irá throw notificação de erro
@@ -272,7 +275,7 @@ export default {
         .put('v1/SimpleTodo/update-simpletodo', newSimpletodo)
         .then((res) => {
           this.hideMenu()
-          this.$store.commit('updateSimpletodo', newSimpletodo)
+          this.$store.commit('simpletodo/updateSimpletodo', newSimpletodo)
         })
     },
     deleteSimpletodo(simpletodoId) {

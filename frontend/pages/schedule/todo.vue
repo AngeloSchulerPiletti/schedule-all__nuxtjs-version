@@ -27,11 +27,11 @@ export default {
   },
   computed: {
     simpletodosDataStoreArray() {
-      let pref = this.$store.state.dashboardSimpleTodos.simpletodos
+      let pref = this.$store.state.simpletodo.dashboardSimpleTodos.simpletodos
       return [pref.data, pref.updated]
     },
     categoriesDataStoreArray() {
-      let pref = this.$store.state.dashboardSimpleTodos.categories
+      let pref = this.$store.state.simpletodo.dashboardSimpleTodos.categories
       return [pref.data, pref.updated]
     },
   },
@@ -49,11 +49,11 @@ export default {
     this.$axios
       .get('v1/SimpleTodo/get-all-user-simpletodos')
       .then((res) => {
-        this.$store.commit('setSimpletodos', res.data);
+        this.$store.commit('simpletodo/setSimpletodos', res.data);
         this.$axios
           .get('v1/Category/get-user-categories')
           .then((res) => {
-            this.$store.commit('setCategories', res.data)
+            this.$store.commit('simpletodo/setCategories', res.data)
             this.$store.commit('setDashboardPageStatus', 'loaded')
             this.dataLoaded = true
           })
