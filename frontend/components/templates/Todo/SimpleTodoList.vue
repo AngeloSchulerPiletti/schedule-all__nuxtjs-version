@@ -16,25 +16,28 @@
             class="title"
             type="text"
             autocomplete="off"
-            :id="`title-${simpletodo.id}`"
             :value="simpletodo.title"
             @focusin="fieldIn($event, simpletodo.title)"
             @focusout="fieldOut($event, simpletodo, 'title')"
           />
         </div>
         <textarea
-          v-show="simpletodo.description"
+          v-show="checkIfHaveDescription(simpletodo)"
           data-enable-grammarly="false"
           class="description scroll-1 scroll-tiny"
-          :id="`description-${simpletodo.id}`"
           type="text"
           autocomplete="off"
+          :ref="`description-${simpletodo.id}`"
           :value="simpletodo.description"
           @focusin="fieldIn($event, simpletodo.description)"
           @focusout="fieldOut($event, simpletodo, 'description')"
         ></textarea>
       </div>
-      <div :class="`right ${simpletodo.description ? 'flex_c' : 'flex_r'}`">
+      <div
+        :class="`right ${
+          checkIfHaveDescription(simpletodo) ? 'flex_c' : 'flex_r'
+        }`"
+      >
         <div class="menu_container">
           <button class="menu_button" @click="showMenu(simpletodo.id, $event)">
             <three-dots-menu class="icon" />
@@ -94,9 +97,11 @@
                 <edit-icon class="icon" /><span>Remover categoria</span>
               </li>
               <li
-                v-if="!simpletodo.finished && !simpletodo.description"
+                v-if="
+                  !simpletodo.finished && !checkIfHaveDescription(simpletodo)
+                "
                 class="flex_r"
-                @click="addDescription(simpletodo)"
+                @click="addDescription(simpletodo.id)"
               >
                 <edit-icon class="icon" /><span>Adicionar descrição</span>
               </li>
@@ -105,7 +110,7 @@
         </div>
         <div
           :class="`options_container  ${
-            simpletodo.description ? 'flex_c' : 'flex_r'
+            checkIfHaveDescription(simpletodo) ? 'flex_c' : 'flex_r'
           }`"
         >
           <button
@@ -144,6 +149,7 @@ export default {
       simpletodoOnDelete: 0,
       menuElementCache: null,
       submenuElementCache: null,
+      descriptionOnShowId: 0,
     }
   },
   computed: {
@@ -166,15 +172,18 @@ export default {
           .then((res) => {
             this.$el
               .querySelector(`#task-${this.simpletodoOnDelete}`)
-              .classList.add('being_removed');
+              .classList.add('being_removed')
             setTimeout(() => {
-            this.$el
-              .querySelector(`#task-${this.simpletodoOnDelete}`)
-              .classList.remove('being_removed');
-              this.$store.commit('simpletodo/deleteSimpletodo', this.simpletodoOnDelete)
-            }, 210);
+              this.$el
+                .querySelector(`#task-${this.simpletodoOnDelete}`)
+                .classList.remove('being_removed')
+              this.$store.commit(
+                'simpletodo/deleteSimpletodo',
+                this.simpletodoOnDelete
+              )
+            }, 210)
           })
-          .catch(err => {
+          .catch((err) => {
             //joga o erro para as notificações
           })
       }
@@ -182,8 +191,20 @@ export default {
     },
   },
   methods: {
-    addDescription(simpletodo){
-      this.callToSave(" ", simpletodo);
+    checkIfHaveDescription(simpletodo) {
+      if (simpletodo.description || this.descriptionOnShowId == simpletodo.id) {
+        return true
+      }
+    },
+    addDescription(simpletodoId) {
+      this.descriptionOnShowId = simpletodoId
+      setTimeout(() => {
+        this.$refs[`description-${simpletodoId}`][0].focus()
+      }, 0)
+      this.hideMenu()
+    },
+    closeDescription(fieldValue) {
+      if (fieldValue == '') this.descriptionOnShowId = 0
     },
     showMenu(simpletodoId) {
       this.cardMenu = simpletodoId
@@ -233,20 +254,35 @@ export default {
       this.fieldCache = oldValue
     },
     fieldOut(event, simpletodo, fieldName) {
-      var descriptionNewValue = this.$el.querySelector(
-        `#${fieldName}-${simpletodo.id}`
-      ).value
+      var fieldValue = event.target.value
       event.path[1].classList.remove('focused')
-      if (descriptionNewValue != this.fieldCache)
-        this.callToSave(descriptionNewValue, simpletodo)
+
+
+      if (fieldValue != this.fieldCache) {
+        this.callToSaveSimpletodo(fieldValue, simpletodo, fieldName).then(
+          (res) => {
+            if (fieldName == 'description') {
+              this.closeDescription(fieldValue)
+            }
+          }
+        )
+      } else if (fieldName == 'description') {
+        this.closeDescription(fieldValue)
+      }
+
       this.fieldCache = ''
     },
-    callToSave(descriptionNewValue, simpletodo) {
+    async callToSaveSimpletodo(fieldNewValue, simpletodo, fieldName) {
       let newSimpletodo = { ...simpletodo }
-      newSimpletodo.description = descriptionNewValue
-      this.$axios
+      newSimpletodo[fieldName] = fieldNewValue
+      await this.updateSimpletodo(newSimpletodo)
+    },
+    async updateSimpletodo(newSimpletodo) {
+      await this.$axios
         .put('v1/SimpleTodo/update-simpletodo', newSimpletodo)
-        .then((res) => console.log(res))
+        .then((res) => {
+          this.$store.commit('simpletodo/updateSimpletodo', newSimpletodo)
+        })
     },
     changeSimpletodoState(simpletodoId) {
       this.$axios
@@ -262,7 +298,7 @@ export default {
       this.$axios
         .patch('v1/SimpleTodo/change-simpletodo-importance', simpletodoId)
         .then((res) => {
-          this.$store.commit('simpletodo/updateSimpletodo', res.data);
+          this.$store.commit('simpletodo/updateSimpletodo', res.data)
         })
         .catch((err) => {
           //Futuramente irá throw notificação de erro
@@ -271,16 +307,13 @@ export default {
     changeSimpletodoCategory(newCategoryId, simpletodo) {
       let newSimpletodo = { ...simpletodo }
       newSimpletodo.categoryId = newCategoryId
-      this.$axios
-        .put('v1/SimpleTodo/update-simpletodo', newSimpletodo)
-        .then((res) => {
-          this.hideMenu()
-          this.$store.commit('simpletodo/updateSimpletodo', newSimpletodo)
-        })
+      this.updateSimpletodo(newSimpletodo).then((res) => {
+        this.hideMenu()
+      })
     },
     deleteSimpletodo(simpletodoId) {
       this.$store.commit('openModal', this.modalSubjects.onDelete)
-      this.simpletodoOnDelete = simpletodoId;
+      this.simpletodoOnDelete = simpletodoId
     },
   },
   props: {

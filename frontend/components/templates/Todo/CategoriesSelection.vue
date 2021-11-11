@@ -117,7 +117,6 @@ export default {
         .catch((err) => {
           //Adiciona o erro nas notificações e tal
         })
-      //Para isso funcionar, o backend precisa retornar a category adicionado;
     },
     deleteCategory(categoryId) {
       this.$store.commit('openModal', this.modalSubjects.onDelete)
