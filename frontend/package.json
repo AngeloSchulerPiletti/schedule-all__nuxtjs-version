@@ -16,7 +16,8 @@
     "js-cookie": "^3.0.1",
     "nuxt": "^2.15.7",
     "vuetify": "^2.5.5",
-    "vuex-persistedstate": "^4.1.0"
+    "vuex-persistedstate": "^4.1.0",
+    "web3": "^1.6.1"
   },
   "devDependencies": {
     "@nuxtjs/style-resources": "^1.2.1",
