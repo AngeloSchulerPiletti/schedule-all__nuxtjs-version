@@ -47,7 +47,7 @@ export default {
       if (this.show) {
         setTimeout(() => {
           this.showClass = 'ended'
-        }, 100)
+        }, 10)
       }
       return
     },
@@ -90,11 +90,11 @@ export default {
     input {
       flex-grow: 1;
       opacity: 0;
-      transition: opacity 300ms;
+      transition: opacity 350ms;
     }
     button {
-      transform: translateX(-100%);
-      transition: transform 300ms ease;
+      transform: translateX(-150%);
+      transition: transform 250ms ease, box-shadow 300ms;
     }
 
     &.ended {
