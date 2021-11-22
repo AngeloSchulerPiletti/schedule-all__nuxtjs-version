@@ -1,7 +1,13 @@
 const TaskToken = artifacts.require("TaskToken");
 
+require('chai')
+  .use(require('chai-as-promised'))
+  .should()
+
 contract("TaskToken", ([owner, investor]) => {
     var taskToken;
+    const other_investor = '0x4B2582c96b0A86444dD2dc60a5bdf2eB074e8E7A';
+
     before(async () => {
         taskToken = await TaskToken.new()
     })
@@ -10,18 +16,60 @@ contract("TaskToken", ([owner, investor]) => {
         const name = await taskToken.name();
         assert.equal(name, "TaskToken", "Contract not deployed");
     });
+    
+    it("Checking Initial Values", async()=>{
+        const contractBalance = await taskToken.balanceOf.call(taskToken.address);
+        const ownerBalance = await taskToken.balanceOf.call(owner);
 
-    it("Refill Verify", async () => {
-        await taskToken.refill(10, {from: owner});
-        var balanceResult = await taskToken.taskTokenBalance(taskToken.address);
-        assert.equal(balanceResult.toString(), '1000010', "Invalid amount");
+        var result = false;
+        if(contractBalance == 70000000 && ownerBalance == 30000000){
+            result = true;
+        }
+        assert.equal(result, true, `Balances aren't correct. Gave: ${contractBalance} and ${ownerBalance}`);
+    })
+
+    it("Transfering TaskToken From Owner", async () => {
+        await taskToken.transfer(investor, 1000000, {from: owner});
+        var balanceResult = await taskToken.balanceOf(investor);
+        assert.equal(balanceResult.toString(), '1000000', `Investor should has 1.000.000 but actually has ${balanceResult}`);
+    });
+    
+    it("Transfering TaskToken Back To Owner From Investor", async () => {
+        await taskToken.transfer(owner, 1000000, {from: investor});
+        var balanceResult = await taskToken.balanceOf(investor);
+        assert.equal(balanceResult.toString(), '0', `Investor should has 0 but actually has ${balanceResult}`);
     });
 
-    it("Purchase Verify", async () => {
-        await taskToken.purchase(100, {from: investor, value: 10**15});
-        var balanceResult = await taskToken.taskTokenBalance(investor);
-        assert.equal(balanceResult.toString(), '100', "Invalid amount");
+    it("TransferFrom Test", async () => {
+        await taskToken.approve(investor, 1000, {from: owner});
+        await taskToken.transferFrom(owner, investor, 1000, {from: investor});
+        var balanceResult = await taskToken.balanceOf(investor);
+        assert.equal(balanceResult.toString(), '1000', `Investor should has 1000 but actually has ${balanceResult}`);
     })
+
+    it("Buying From The Contract", async () => {
+        await taskToken.buyFromContract(1000, {from: investor, value: 1000*(10**15)});
+        var balanceResult = await taskToken.balanceOf(investor);
+        assert.equal(balanceResult.toString(), '2000', `Investor should has 2000 but actually has ${balanceResult}`);
+    })
+
+    it("Buying From The Contract, Without Permission", async () => {
+        await taskToken.changeBuyAvailability({from: owner});
+        await taskToken.buyFromContract(100, {from: other_investor, value: 100*(10**15)}).should.be.rejected;
+        var balanceResult = await taskToken.balanceOf(other_investor);
+        assert.equal(balanceResult.toString(), '0', `Investor should has 0 but actually has ${balanceResult}`);
+    })
+
+    it("Buying From The Contract, With Old Price", async () => {
+        await taskToken.changeBuyAvailability({from: owner}); //Turn availability back
+        await taskToken.changeTokenOfferCotation(BigInt(10**16), {from: owner});
+        await taskToken.buyFromContract(100, {from: other_investor, value: 100*(10**15)}).should.be.rejected;
+        var balanceResult = await taskToken.balanceOf(other_investor);
+        assert.equal(balanceResult.toString(), '0', `Investor should has 0 but actually has ${balanceResult}`);
+    })
+
+    
+
 
 });
 
