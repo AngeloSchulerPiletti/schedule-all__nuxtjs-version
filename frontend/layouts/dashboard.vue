@@ -5,6 +5,7 @@
       <menu-lateral />
       <div id="view_container" class="border-soft">
         <confirmation-modal/>
+        <invite-friend-modal/>
         <div
           v-if="dashboardPageStatus == 'loading'"
           class="loading"
@@ -32,6 +33,7 @@
 import MenuLateral from '@/components/templates/MenuLateral';
 import MenuSuperior from '@/components/templates/MenuSuperior';
 import ConfirmationModal from "@/components/templates/Modals/ConfirmationModal";
+import InviteFriendModal from '@/components/templates/Modals/InviteFriendModal.vue';
 
 export default {
   middleware: 'auth',
@@ -55,6 +57,7 @@ export default {
     MenuLateral,
     MenuSuperior,
     ConfirmationModal,
+    InviteFriendModal,
   },
 }
 </script>

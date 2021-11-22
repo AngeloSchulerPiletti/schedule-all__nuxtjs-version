@@ -10,6 +10,9 @@ export const state = () => ({
         },
         answer: null,
     },
+    inviteFriendModal:{
+        called: false,
+    },
 })
 
 export const mutations = {
@@ -34,6 +37,9 @@ export const mutations = {
     setDashboardPageStatus(state, setting) {
         state.dashboardPageStatus = setting;
     },
+    changeInviteFriendModalVisibility(state){
+        state.inviteFriendModal.called = !state.inviteFriendModal.called;
+    }
 }
 
 
