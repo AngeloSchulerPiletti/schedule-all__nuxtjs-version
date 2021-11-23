@@ -7,15 +7,15 @@ using System.Threading.Tasks;
 
 namespace backend.Models
 {
-    public class SimpleTodoBond
+    public class Friendship
     {
         [Key]
         [Column("id")]
-        public int Id { get; set; }
-        [Column("simpletodo_id")]
-        public int SimpleTodoId { get; set; }
-        [Column("user_id")]
-        public long UserId { get; set; }
+        public long Id { get; set; }
+        [Column("sender_id")]
+        public long SenderId { get; set; }
+        [Column("receiver_id")]
+        public long ReceiverId { get; set; }
         [Column("invite_accepted")]
         public bool InviteAccepted { get; set; }
     }
