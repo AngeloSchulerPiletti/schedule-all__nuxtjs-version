@@ -87,7 +87,7 @@ namespace backend.Controllers
             dynamic result = _business.SetSimpleTodoState(simpletodoId, user.Id);
             if (result is MessageBadgeVO ? result.isError : false) return BadRequest(result);
             return Ok(result);
-        
+        }
 
         [HttpPatch]
         [Route("change-simpletodo-importance")]

@@ -9,6 +9,12 @@ namespace backend.Models
 {
     public class Friendship
     {
+        public Friendship(long senderId, long receiverId)
+        {
+            SenderId = senderId;
+            ReceiverId = receiverId;
+        }
+
         [Key]
         [Column("id")]
         public long Id { get; set; }

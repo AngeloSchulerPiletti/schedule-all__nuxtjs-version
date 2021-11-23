@@ -9,5 +9,6 @@ namespace backend.Data.VO.Friendship
     {
         public bool Answer { get; set; }
         public long InviteId { get; set; }
+
     }
 }

@@ -114,6 +114,8 @@ namespace backend
             services.AddScoped<ILoginBusiness, LoginBusinessImplementation>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<ICategoryBusiness, CategoryBusiness>();
+            services.AddScoped<IFriendshipBusiness, FriendshipBusinessImplementation>();
+            services.AddScoped<IFriendshipRepository, FriendshipRepository>();
 
             services.AddTransient<ITokenService, TokenService>();
 

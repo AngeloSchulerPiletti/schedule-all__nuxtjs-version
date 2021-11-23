@@ -27,13 +27,19 @@ namespace backend.Controllers
 
         [HttpPost]
         [Route("invite-friend")]
-        public IActionResult InviteFriend(string friendUserName)
+        public IActionResult InviteFriend([FromBody] string friendUserName)
         {
             User user = GetUserFromJWT();
             if (user == null) return BadRequest(new MessageBadgeVO(new List<string> { "Houve um erro com a sua identidade" }));
 
             MessageBadgeVO checkResult = _business.CheckIfUserExists(friendUserName);
             if (checkResult.isError) return BadRequest(checkResult);
+
+            MessageBadgeVO checkI = _business.CheckIfFriendIsI(user.UserName, friendUserName);
+            if (checkI.isError) return BadRequest(checkI);
+
+            MessageBadgeVO alreadyFriendResult = _business.CheckIfIsAlreadyFriend(friendUserName, user.Id);
+            if (alreadyFriendResult.isError) return BadRequest(alreadyFriendResult);
 
             long friendId = _business.GetIdFromUserName(friendUserName);
             MessageBadgeVO sendResult = _business.SendInvite(user.Id, friendId);
@@ -42,9 +48,9 @@ namespace backend.Controllers
 
         } 
 
-        [HttpDelete]
+        [HttpPut]
         [Route("answer-invite")]
-        public IActionResult AnswerInvite(FriendshipAnswerVO inviteAnswer)
+        public IActionResult AnswerInvite([FromBody] FriendshipAnswerVO inviteAnswer)
         {
             User user = GetUserFromJWT();
             if (user == null) return BadRequest(new MessageBadgeVO(new List<string> { "Houve um erro com a sua identidade" }));
@@ -53,9 +59,21 @@ namespace backend.Controllers
             if (checkResult.isError) return BadRequest(checkResult);
 
             MessageBadgeVO answerResult = _business.AnswerTheInvite(inviteAnswer, user.Id);
-            if (answerResult.isError) return BadRequest(answerResult);
+            if (answerResult.isError) return StatusCode(500, answerResult);
             return Ok(answerResult);
 
+        }
+
+        [HttpDelete]
+        [Route("delete-friendship")]
+        public IActionResult DeleteFriendship([FromBody] long friendshipId)
+        {
+            MessageBadgeVO checkResult = _business.CheckIfInviteExists(friendshipId);
+            if (checkResult.isError) return BadRequest(checkResult);
+
+            MessageBadgeVO deleteResult = _business.DeleteFriendship(friendshipId);
+            if (deleteResult.isError) return BadRequest(deleteResult);
+            return Ok(deleteResult);
         }
 
         [HttpGet]
@@ -65,10 +83,20 @@ namespace backend.Controllers
             User user = GetUserFromJWT();
             if (user == null) return BadRequest(new MessageBadgeVO(new List<string> { "Houve um erro com a sua identidade" }));
 
-            FriendshipInviteVO invites = _business.GetAllUserInvites(user.Id);
-
+            List<FriendshipInviteVO> invites = _business.GetAllUserInvites(user.Id);
             return Ok(invites);
         }
 
+        [HttpGet]
+        [Route("get-all-friends")]
+        public IActionResult GetAllFriends()
+        {
+            User user = GetUserFromJWT();
+            if (user == null) return BadRequest(new MessageBadgeVO(new List<string> { "Houve um erro com a sua identidade" }));
+
+            List<FriendshipInviteVO> invites = _business.GetAllUserFriends(user.Id);
+
+            return Ok(invites);
+        }
     }
 }

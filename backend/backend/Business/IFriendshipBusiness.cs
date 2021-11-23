@@ -13,8 +13,11 @@ namespace backend.Business
         MessageBadgeVO CheckIfInviteExists(long inviteId);
         long GetIdFromUserName(string friendUserName);
         MessageBadgeVO SendInvite(long senderId, long receiverId);
-        FriendshipInviteVO GetAllUserInvites(long receiverId);
+        List<FriendshipInviteVO> GetAllUserInvites(long receiverId);
         MessageBadgeVO AnswerTheInvite(FriendshipAnswerVO inviteAnswer, long userId);
-
+        List<FriendshipInviteVO> GetAllUserFriends(long userId);
+        MessageBadgeVO CheckIfFriendIsI(string userName, string friendUserName);
+        MessageBadgeVO CheckIfIsAlreadyFriend(string friendUserName, long userId);
+        MessageBadgeVO DeleteFriendship( long friendshipId);
     }
 }
