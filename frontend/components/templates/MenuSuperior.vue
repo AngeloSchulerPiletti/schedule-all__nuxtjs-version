@@ -1,12 +1,12 @@
 <template>
   <div class="wrapper flex_r border-soft">
-    <div id="user-profile-menu_container" class="flex_r">
+    <div id="user-profile-menu_container" class="flex_r"><NuxtLink to="/schedule/profile">
       <div class="pic_container pseudo spare-button">
         <img
           :src="`https://avatars.dicebear.com/api/human/${userData.userName}.svg`"
           alt=""
         />
-      </div>
+      </div></NuxtLink>
       <div class="flex_c user_info">
         <span>{{ userData.userName }}</span>
         <span>{{ userData.fullName }}</span>
