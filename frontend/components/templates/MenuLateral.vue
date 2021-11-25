@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper border-soft flex_c" :data-state="menuState">
     <div class="close-open up flex_r">
-      <span @click="changeMenuState"><go-back-arrows /></span>
+      <button @click="changeMenuState"><go-back-arrows /></button>
     </div>
     <hr class="division_3d"/>
     <ul class="page-list up flex_c">
@@ -77,11 +77,6 @@ export default {
     border-top-right-radius: 15px;
     box-shadow: 6px 6px 14px #a9a8b7, -6px -6px 14px #ffffff,
       inset -4px -4px 14px #ffffff, inset 4px 4px 14px #a9a8b7;
-  }
-
-  .up{
-    position: relative;
-    z-index: 5;
   }
 
   .close-open {
