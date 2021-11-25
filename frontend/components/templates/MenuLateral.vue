@@ -1,26 +1,12 @@
 <template>
   <div class="wrapper border-soft flex_c" :data-state="menuState">
-    <div class="close-open up flex_r">
-      <button @click="changeMenuState"><go-back-arrows /></button>
-    </div>
+  <pressable-button @state="listenState" :goRight="true"><go-back-arrows /></pressable-button>
     <hr class="division_3d"/>
     <ul class="page-list up flex_c">
-      <li>
-        <NuxtLink to="/schedule" class="flex_r">
-          <span class="menu-icon spare-button pseudo"><grid /></span>
-          <span class="link-legend link-2">Workspace</span>
-        </NuxtLink>
-      </li>
-      <li>
-        <NuxtLink to="/schedule/todo" class="flex_r">
-          <span class="menu-icon spare-button pseudo"><todo /></span>
-          <span class="link-legend link-2">Tarefas</span>
-        </NuxtLink>
-      </li>
-      <li>
-        <NuxtLink to="/schedule/projects" class="flex_r">
-          <span class="menu-icon spare-button pseudo"><case /></span>
-          <span class="link-legend link-2">Projetos</span>
+      <li v-for="link in links" :key="link[0]">
+        <NuxtLink :to="link[1]" class="flex_r">
+          <span class="menu-icon spare-button pseudo"><component :is="link[2]"/></span>
+          <span class="link-legend link-2">{{link[0]}}</span>
         </NuxtLink>
       </li>
     </ul>
@@ -37,20 +23,23 @@ import Arrows from '@/components/icons/Arrows';
 import Case from '@/components/icons/Case';
 import Grid from '@/components/icons/Grid';
 import Logout from "@/components/Logout";
+import PressableButton from '@/components/PressableButton.vue';
 
 export default {
   data() {
     return {
       menuState: 'close',
+      links:[
+        //[PageName, Link, Icon],
+        ["Workspace", "/schedule", Grid],
+        ["Tarefas", "/schedule/todo", Todo],
+        ["Projetos", "/schedule/projects", Case],
+      ],
     }
   },
   methods: {
-    changeMenuState() {
-      if (this.menuState == 'open') {
-        this.menuState = 'close'
-        return
-      }
-      this.menuState = 'open'
+    listenState(state) {
+      if (state) this.menuState = state
     },
   },
   components: {
@@ -59,6 +48,7 @@ export default {
     Case,
     Grid,
     Logout,
+    PressableButton,
   },
 }
 </script>
@@ -77,25 +67,6 @@ export default {
     border-top-right-radius: 15px;
     box-shadow: 6px 6px 14px #a9a8b7, -6px -6px 14px #ffffff,
       inset -4px -4px 14px #ffffff, inset 4px 4px 14px #a9a8b7;
-  }
-
-  .close-open {
-    justify-content: flex-end;
-    width: 100%;
-
-    svg {
-      width: 35px;
-      height: 35px;
-      cursor: pointer;
-      padding: 5px;
-      border-radius: 100%;
-      box-shadow: inset 0 0 12px #00000060;
-      transition: 200ms box-shadow;
-
-      &:hover {
-        box-shadow: inset 0 0 12px #000000a0;
-      }
-    }
   }
 
   .page-list {
@@ -196,17 +167,6 @@ export default {
   }
   &[data-state='close'] {
     animation: close_anim 300ms ease 0ms 1 normal forwards;
-
-    .close-open {
-      svg {
-        box-shadow: 0 0 12px #00000060;
-        transition: 200ms box-shadow;
-
-        &:hover {
-          box-shadow: 0 0 12px transparent;
-        }
-      }
-    }
 
     .link-legend {
       display: none;

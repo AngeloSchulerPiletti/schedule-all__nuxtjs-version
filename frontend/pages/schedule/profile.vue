@@ -2,11 +2,7 @@
   <div class="flex_r" id="profile-container">
     <div id="profile-configs"></div>
     <div id="friends-list" class="border-soft flex_c" :data-state="menuState">
-      <div class="close-open up flex_r">
-        <button @click="changeMenuState">
-          <friends />
-        </button>
-      </div>
+      <pressable-button @state="listenState"><friends /></pressable-button>
       <hr class="division_3d" />
       <div v-if="fetchError" id="fetch-error">Houve um erro</div>
       <div v-if="haveFriends == false" id="no-friends">Você não tem amigos</div>
@@ -30,6 +26,7 @@
 <script>
 import Friends from '@/components/icons/Friends.vue'
 import ThreeDotsMenu from '@/components/icons/ThreeDotsMenu.vue'
+import PressableButton from '@/components/PressableButton'
 
 export default {
   layout: 'dashboard',
@@ -52,12 +49,8 @@ export default {
     this.getFriendsList()
   },
   methods: {
-    changeMenuState() {
-      if (this.menuState == 'open') {
-        this.menuState = 'close'
-        return
-      }
-      this.menuState = 'open'
+    listenState(state) {
+      if (state) this.menuState = state
     },
     getFriendsList() {
       this.$axios
@@ -74,6 +67,7 @@ export default {
   components: {
     Friends,
     ThreeDotsMenu,
+    PressableButton,
   },
 }
 </script>
@@ -108,21 +102,6 @@ export default {
     }
 
     $open-width: 300px;
-    .close-open {
-      svg {
-        width: 35px;
-        height: 35px;
-        cursor: pointer;
-        padding: 5px;
-        border-radius: 100%;
-        box-shadow: inset 0 0 12px #00000060;
-        transition: 200ms box-shadow;
-
-        &:hover {
-          box-shadow: inset 0 0 12px #000000a0;
-        }
-      }
-    }
 
     @keyframes open_anim {
       0% {
@@ -149,17 +128,6 @@ export default {
     }
     &[data-state='close'] {
       animation: close_anim 300ms ease 0ms 1 normal forwards;
-
-      .close-open {
-        svg {
-          box-shadow: 0 0 12px #00000060;
-          transition: 200ms box-shadow;
-
-          &:hover {
-            box-shadow: 0 0 12px transparent;
-          }
-        }
-      }
       #friend-card-container {
         opacity: 0;
       }
