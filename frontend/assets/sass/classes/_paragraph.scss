@@ -16,4 +16,12 @@
   }
 
 
+.advice{
+  font-style: italic;
+  &::first-letter{
+    text-transform: uppercase;
+  }
+  font-size: 14px;
+}
+
 

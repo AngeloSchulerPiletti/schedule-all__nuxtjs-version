@@ -131,7 +131,7 @@
     </div>
     <div class="error-container flex_c" v-else>
       <img src="~/assets/images/errors/sad-baby.png" />
-      <p>Você ainda não tem nenhuma tarefa...</p>
+      <p class="advice">Você ainda não tem nenhuma tarefa...</p>
     </div>
   </div>
 </template>
@@ -530,9 +530,6 @@ export default {
       opacity: 0.6;
       width: 180px;
       max-width: 80%;
-    }
-    p {
-      font-style: italic;
     }
   }
 }

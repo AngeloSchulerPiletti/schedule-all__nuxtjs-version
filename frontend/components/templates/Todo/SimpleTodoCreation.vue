@@ -39,6 +39,9 @@
             :class="`category_options  ${closedCategories}`"
             @mouseleave="closedCategories = true"
           >
+            <li v-if="Object.values(this.categories[0]).length == 0" class="advice">
+              Primeiro, crie uma categoria
+            </li>
             <li
               v-for="(title, id) in categories[0]"
               :key="id"
