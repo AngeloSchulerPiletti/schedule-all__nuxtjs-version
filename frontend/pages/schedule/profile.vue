@@ -5,11 +5,7 @@
       <pressable-button @state="listenState"><friends /></pressable-button>
       <hr class="division_3d" />
       <div id="friends-view-container" class="up scroll-1">
-        <div v-if="fetchError" id="fetch-error">Houve um erro</div>
-        <div v-if="haveFriends == false" id="no-friends">
-          Você não tem amigos
-        </div>
-        <div v-else id="friend-cards-container" class="flex_c">
+        <div v-if="haveFriends" id="friend-cards-container" class="flex_c">
           <div
             class="friend-card flex_r"
             v-for="(user, index) in friendsList"
@@ -26,6 +22,11 @@
             </div>
           </div>
         </div>
+        <creative-img-error
+          v-else-if="haveFriends == false || fetchError"
+          imgName="alone-man.jpg"
+          :text="fetchError ? 'Houve um erro' : 'Você ainda não tem amigos'"
+        />
       </div>
     </div>
   </div>
@@ -36,6 +37,7 @@ import Friends from '@/components/icons/Friends.vue'
 import PressableButton from '@/components/PressableButton'
 import DropMenuList from '@/components/DropMenuList'
 import Trash from '@/components/icons/Trash.vue'
+import CreativeImgError from '@/components/errors/CreativeImgError'
 
 export default {
   layout: 'dashboard',
@@ -142,6 +144,7 @@ export default {
     PressableButton,
     DropMenuList,
     Trash,
+    CreativeImgError,
   },
 }
 </script>
@@ -170,7 +173,7 @@ export default {
 
     &::before {
       border-top-left-radius: 15px;
-    border-bottom-left-radius: 15px;
+      border-bottom-left-radius: 15px;
       box-shadow: 6px 6px 14px #a9a8b7, -6px -6px 14px #ffffff,
         inset -4px -4px 14px #ffffff, inset 4px 4px 14px #a9a8b7;
     }
@@ -209,13 +212,12 @@ export default {
     #friends-view-container {
       transition: opacity 200ms;
       height: 100%;
-        overflow-y: auto;
-        overflow-x: hidden;
+      overflow-y: auto;
+      overflow-x: hidden;
 
       #friend-cards-container {
         gap: 16px;
 
-        #fetch-error,
         #no-friends {
           position: absolute;
           width: $open-width;

@@ -129,10 +129,7 @@
         </div>
       </div>
     </div>
-    <div class="error-container flex_c" v-else>
-      <img src="~/assets/images/errors/sad-baby.png" />
-      <p class="advice">Você ainda não tem nenhuma tarefa...</p>
-    </div>
+    <creative-img-error imgName="sad-baby.png" text="Você ainda não tem nenhuma tarefa..." v-else/>
   </div>
 </template>
 
@@ -143,6 +140,7 @@ import Check from '@/components/icons/Check'
 import Trash from '@/components/icons/Trash'
 import Edit2 from '@/components/icons/Edit2'
 import Friends from '@/components/icons/Friends'
+import CreativeImgError from "@/components/errors/CreativeImgError";
 
 export default {
   data() {
@@ -334,6 +332,7 @@ export default {
     'trash-icon': Trash,
     'edit-icon': Edit2,
     'friends-icon': Friends,
+    CreativeImgError,
   },
 }
 </script>
@@ -519,18 +518,6 @@ export default {
           }
         }
       }
-    }
-  }
-  .error-container {
-    align-items: center;
-    gap: 20px;
-    height: 100%;
-
-    img {
-      opacity: 0.6;
-      width: 180px;
-      height: 180px;
-      max-width: 80%;
     }
   }
 }
