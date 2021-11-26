@@ -78,6 +78,14 @@ export default {
         z-index: 5;
         border-radius: 100%;
       }
+      $img_scale: 1.1;
+      img{
+        transform: scale($img_scale);
+        transition: transform 200ms;
+      }
+      &:hover img{
+        transform: scale($img_scale) translate(3px, 3px);
+      }
     }
     .user_info {
       justify-content: center;
