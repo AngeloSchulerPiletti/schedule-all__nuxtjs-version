@@ -529,6 +529,7 @@ export default {
     img {
       opacity: 0.6;
       width: 180px;
+      height: 180px;
       max-width: 80%;
     }
   }

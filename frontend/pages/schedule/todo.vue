@@ -83,6 +83,7 @@ export default {
     overflow-y: auto;
     overflow-x: hidden;
     height: fit-content;
+    min-height: 100%;
   }
 }
 </style>
