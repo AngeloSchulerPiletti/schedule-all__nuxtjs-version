@@ -4,12 +4,12 @@
     <div id="friends-list" class="border-soft flex_c" :data-state="menuState">
       <pressable-button @state="listenState"><friends /></pressable-button>
       <hr class="division_3d" />
-      <div id="friends-view-container" class="up">
+      <div id="friends-view-container" class="up scroll-1">
         <div v-if="fetchError" id="fetch-error">Houve um erro</div>
         <div v-if="haveFriends == false" id="no-friends">
           Você não tem amigos
         </div>
-        <div v-else id="friend-cards-container" class="scroll-1 flex_c">
+        <div v-else id="friend-cards-container" class="flex_c">
           <div
             class="friend-card flex_r"
             v-for="(user, index) in friendsList"
@@ -148,16 +148,18 @@ export default {
 
 <style lang="scss" scoped>
 #profile-container {
-  position: relative;
   width: 100%;
   height: 100%;
 
   #profile-configs {
-    width: 100%;
+    flex-grow: 1;
     height: 100%;
   }
   #friends-list {
+    height: fit-content;
+    max-height: calc(100% - 50px);
     border-top-left-radius: 15px;
+    border-bottom-left-radius: 15px;
     padding: 20px 18px;
     gap: 20px;
     box-sizing: content-box;
@@ -168,6 +170,7 @@ export default {
 
     &::before {
       border-top-left-radius: 15px;
+    border-bottom-left-radius: 15px;
       box-shadow: 6px 6px 14px #a9a8b7, -6px -6px 14px #ffffff,
         inset -4px -4px 14px #ffffff, inset 4px 4px 14px #a9a8b7;
     }
@@ -206,11 +209,10 @@ export default {
     #friends-view-container {
       transition: opacity 200ms;
       height: 100%;
-
-      #friend-cards-container {
-        height: 100%;
         overflow-y: auto;
         overflow-x: hidden;
+
+      #friend-cards-container {
         gap: 16px;
 
         #fetch-error,

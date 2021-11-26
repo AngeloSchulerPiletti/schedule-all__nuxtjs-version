@@ -71,6 +71,7 @@ export default {
 
   #vertical-container {
     flex-grow: 1;
+    overflow: hidden;
     gap: $dashboard_components_spacing;
 
     #view_container {
