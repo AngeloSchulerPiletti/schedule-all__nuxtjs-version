@@ -1,47 +1,51 @@
 <template>
-  <div class="wrapper grid">
-    <div
-      :class="`card pseudos_base flex_r ${simpletodo.finished}`"
-      v-for="(simpletodo, index) in simpletodos[0]"
-      :key="index"
-      @mouseleave="hideMenu"
-      :id="`task-${simpletodo.id}`"
-    >
-      <div class="category_mark" v-if="simpletodo.categoryId > 0">
-        <span>{{ categories[0][simpletodo.categoryId] }}</span>
-      </div>
-      <div class="left flex_c">
-        <div class="title_container pseudo_base">
-          <input
-            class="title"
+  <div class="wrapper">
+    <div v-if="simpletodos[0].length > 0" class="cards-container grid">
+      <div
+        :class="`card pseudos_base flex_r ${simpletodo.finished}`"
+        v-for="(simpletodo, index) in simpletodos[0]"
+        :key="index"
+        @mouseleave="hideMenu"
+        :id="`task-${simpletodo.id}`"
+      >
+        <div class="category_mark" v-if="simpletodo.categoryId > 0">
+          <span>{{ categories[0][simpletodo.categoryId] }}</span>
+        </div>
+        <div class="left flex_c">
+          <div class="title_container pseudo_base">
+            <input
+              class="title"
+              type="text"
+              autocomplete="off"
+              :value="simpletodo.title"
+              @focusin="fieldIn($event, simpletodo.title)"
+              @focusout="fieldOut($event, simpletodo, 'title')"
+            />
+          </div>
+          <textarea
+            v-show="checkIfHaveDescription(simpletodo)"
+            data-enable-grammarly="false"
+            class="description scroll-1 scroll-tiny"
             type="text"
             autocomplete="off"
-            :value="simpletodo.title"
-            @focusin="fieldIn($event, simpletodo.title)"
-            @focusout="fieldOut($event, simpletodo, 'title')"
-          />
+            :ref="`description-${simpletodo.id}`"
+            :value="simpletodo.description"
+            @focusin="fieldIn($event, simpletodo.description)"
+            @focusout="fieldOut($event, simpletodo, 'description')"
+          ></textarea>
         </div>
-        <textarea
-          v-show="checkIfHaveDescription(simpletodo)"
-          data-enable-grammarly="false"
-          class="description scroll-1 scroll-tiny"
-          type="text"
-          autocomplete="off"
-          :ref="`description-${simpletodo.id}`"
-          :value="simpletodo.description"
-          @focusin="fieldIn($event, simpletodo.description)"
-          @focusout="fieldOut($event, simpletodo, 'description')"
-        ></textarea>
-      </div>
-      <div
-        :class="`right ${
-          checkIfHaveDescription(simpletodo) ? 'flex_c' : 'flex_r'
-        }`"
-      >
-        <div class="menu_container">
-          <button class="menu_button" @click="showMenu(simpletodo.id, $event)">
-            <three-dots-menu class="icon" />
-          </button>
+        <div
+          :class="`right ${
+            checkIfHaveDescription(simpletodo) ? 'flex_c' : 'flex_r'
+          }`"
+        >
+          <div class="menu_container">
+            <button
+              class="menu_button"
+              @click="showMenu(simpletodo.id, $event)"
+            >
+              <three-dots-menu class="icon" />
+            </button>
             <menu
               class="menu_options menu-1 flex_c"
               v-show="cardMenu == simpletodo.id"
@@ -66,25 +70,25 @@
                   }}
                   categoria</span
                 >
-                  <menu
-                    v-show="simpletodoSubOptionId == simpletodo.id"
-                    class="
-                      flex_c
-                      menu_suboptions
-                      upper
-                      menu-1
-                      scroll-1 scroll-tiny
-                    "
-                    :id="`submenu-${simpletodo.id}`"
+                <menu
+                  v-show="simpletodoSubOptionId == simpletodo.id"
+                  class="
+                    flex_c
+                    menu_suboptions
+                    upper
+                    menu-1
+                    scroll-1 scroll-tiny
+                  "
+                  :id="`submenu-${simpletodo.id}`"
+                >
+                  <li
+                    v-for="(title, id) in categories[0]"
+                    :key="id"
+                    @click="changeSimpletodoCategory(id, simpletodo)"
                   >
-                    <li
-                      v-for="(title, id) in categories[0]"
-                      :key="id"
-                      @click="changeSimpletodoCategory(id, simpletodo)"
-                    >
-                      <span>{{ title }}</span>
-                    </li>
-                  </menu>
+                    <span>{{ title }}</span>
+                  </li>
+                </menu>
               </li>
               <li
                 v-if="!simpletodo.finished && simpletodo.categoryId != 0"
@@ -103,23 +107,31 @@
                 <edit-icon class="icon" /><span>Adicionar descrição</span>
               </li>
             </menu>
-        </div>
-        <div
-          :class="`options_container  ${
-            checkIfHaveDescription(simpletodo) ? 'flex_c' : 'flex_r'
-          }`"
-        >
-          <button
-            class="important"
-            @click="changeSimpletodoImportance(simpletodo.id)"
+          </div>
+          <div
+            :class="`options_container  ${
+              checkIfHaveDescription(simpletodo) ? 'flex_c' : 'flex_r'
+            }`"
           >
-            <star-icon :class="`icon ${simpletodo.important}`" />
-          </button>
-          <button class="finish" @click="changeSimpletodoState(simpletodo.id)">
-            <check-icon :class="`icon ${simpletodo.finished}`" />
-          </button>
+            <button
+              class="important"
+              @click="changeSimpletodoImportance(simpletodo.id)"
+            >
+              <star-icon :class="`icon ${simpletodo.important}`" />
+            </button>
+            <button
+              class="finish"
+              @click="changeSimpletodoState(simpletodo.id)"
+            >
+              <check-icon :class="`icon ${simpletodo.finished}`" />
+            </button>
+          </div>
         </div>
       </div>
+    </div>
+    <div class="error-container flex_c" v-else>
+      <img src="~/assets/images/errors/sad-baby.png" />
+      <p>Você ainda não tem nenhuma tarefa...</p>
     </div>
   </div>
 </template>
@@ -307,7 +319,7 @@ export default {
       })
     },
     deleteSimpletodo(simpletodoId) {
-      this.$store.commit('openModal', {subject: this.modalSubjects.onDelete})
+      this.$store.commit('openModal', { subject: this.modalSubjects.onDelete })
       this.simpletodoOnDelete = simpletodoId
     },
   },
@@ -328,186 +340,199 @@ export default {
 
 <style lang="scss" scoped>
 .wrapper {
-  position: absolute;
-  width: 100%;
-  top: 25px;
-  height: 130%;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 40px 50px;
-  padding: 0 80px;
-  grid-auto-rows: min-content;
+  padding: 30px 80px;
 
-  .card {
-    padding: 12px 6px 12px 12px;
-    gap: 6px;
-    background: linear-gradient(160deg, #cfcfcf, #eaeaea);
-    box-shadow: 5px 5px 10px #707070, -3px -3px 10px #fff;
-    border-radius: 10px;
-    height: fit-content;
-    position: relative;
+  .cards-container {
+    grid-auto-rows: min-content;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 40px 50px;
 
-    transition: opacity 200ms, transform 200ms;
-    &::before,
-    &::after {
-      left: 0;
-      right: 100%;
-      transition: left 350ms, right 350ms;
-    }
+    .card {
+      padding: 12px 6px 12px 12px;
+      gap: 6px;
+      background: linear-gradient(160deg, #cfcfcf, #eaeaea);
+      box-shadow: 5px 5px 10px #707070, -3px -3px 10px #fff;
+      border-radius: 10px;
+      height: fit-content;
+      position: relative;
 
-    &.true {
-      opacity: 0.7;
+      transition: opacity 200ms, transform 200ms;
       &::before,
       &::after {
-        left: -18px;
-        right: -18px;
-        height: 1px;
-        background-color: #202020c9;
+        left: 0;
+        right: 100%;
+        transition: left 350ms, right 350ms;
       }
-      &::before {
-        top: 30%;
-      }
-      &::after {
-        top: 70%;
-      }
-    }
 
-    &.being_removed {
-      transform: scale(0.3);
-      opacity: 0;
-    }
-
-    .category_mark {
-      position: absolute;
-      top: 0;
-      padding: 0 7px 2px 7px;
-      border-top-left-radius: 10px;
-      border-top-right-radius: 10px;
-      right: 20px;
-      transform: translateY(-100%);
-      background-color: #e9e9e9;
-      box-shadow: inset 0 -2px 3px 0 #909090, 0 0 4px #a0a0a0;
-      cursor: pointer;
-
-      span {
-        font-size: 10px;
-        font-weight: 300;
-        text-transform: uppercase;
-      }
-      transition: box-shadow 200ms;
-
-      &:hover {
-        box-shadow: inset 0 -2px 3px 0 #909090, 0 0 4px transparent;
-      }
-    }
-    .left {
-      flex-grow: 1;
-      gap: 8px;
-
-      .title_container {
-        .title {
-          text-transform: uppercase;
-          font-weight: 500;
-          border-radius: 3px;
-          padding: 3px 5px;
-          cursor: default;
-          width: 100%;
-          transition: margin-left 100ms;
-          text-overflow: ellipsis;
-        }
-        &.focused .title {
-          margin-left: 10px;
+      &.true {
+        opacity: 0.7;
+        &::before,
+        &::after {
+          left: -18px;
+          right: -18px;
+          height: 1px;
+          background-color: #202020c9;
         }
         &::before {
-          left: 0;
-          top: 0;
-          bottom: 0;
-          width: 8px;
-          border-radius: 10px;
-          box-shadow: inset 2px 2px 6px transparent,
-            inset -2px -2px 6px transparent;
-          transition: box-shadow 200ms;
+          top: 30%;
         }
-        &.focused::before {
-          box-shadow: inset 2px 2px 6px #707070, inset -2px -2px 6px #fff;
+        &::after {
+          top: 70%;
         }
       }
-      .description {
-        box-shadow: inset 2px 2px 6px #707070, inset -2px -2px 6px #fff;
-        border-radius: 8px;
-        padding: 8px;
-        font-weight: 300;
+
+      &.being_removed {
+        transform: scale(0.3);
+        opacity: 0;
+      }
+
+      .category_mark {
+        position: absolute;
+        top: 0;
+        padding: 0 7px 2px 7px;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        right: 20px;
+        transform: translateY(-100%);
+        background-color: #e9e9e9;
+        box-shadow: inset 0 -2px 3px 0 #909090, 0 0 4px #a0a0a0;
+        cursor: pointer;
+
+        span {
+          font-size: 10px;
+          font-weight: 300;
+          text-transform: uppercase;
+        }
+        transition: box-shadow 200ms;
+
+        &:hover {
+          box-shadow: inset 0 -2px 3px 0 #909090, 0 0 4px transparent;
+        }
+      }
+      .left {
         flex-grow: 1;
-        overflow-y: auto;
-        resize: none;
-        cursor: default;
-      }
-    }
-    .right {
-      &.flex_r {
-        width: fit-content;
-        padding-right: 12px;
-      }
-      width: 30px;
-      align-items: center;
-      justify-content: space-between;
+        gap: 8px;
 
-      button {
-        .icon {
-          width: 16px;
-          height: 16px;
+        .title_container {
+          .title {
+            text-transform: uppercase;
+            font-weight: 500;
+            border-radius: 3px;
+            padding: 3px 5px;
+            cursor: default;
+            width: 100%;
+            transition: margin-left 100ms;
+            text-overflow: ellipsis;
+          }
+          &.focused .title {
+            margin-left: 10px;
+          }
+          &::before {
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 8px;
+            border-radius: 10px;
+            box-shadow: inset 2px 2px 6px transparent,
+              inset -2px -2px 6px transparent;
+            transition: box-shadow 200ms;
+          }
+          &.focused::before {
+            box-shadow: inset 2px 2px 6px #707070, inset -2px -2px 6px #fff;
+          }
+        }
+        .description {
+          box-shadow: inset 2px 2px 6px #707070, inset -2px -2px 6px #fff;
+          border-radius: 8px;
+          padding: 8px;
+          font-weight: 300;
+          flex-grow: 1;
+          overflow-y: auto;
+          resize: none;
+          cursor: default;
         }
       }
-      .menu_container {
-        position: relative;
+      .right {
+        &.flex_r {
+          width: fit-content;
+          padding-right: 12px;
+        }
+        width: 30px;
+        align-items: center;
+        justify-content: space-between;
 
-        .menu_options {
-          li {
-            .icon {
-              &.trash::v-deep {
-                path {
-                  stroke: rgb(143, 5, 5);
+        button {
+          .icon {
+            width: 16px;
+            height: 16px;
+          }
+        }
+        .menu_container {
+          position: relative;
+
+          .menu_options {
+            li {
+              .icon {
+                &.trash::v-deep {
+                  path {
+                    stroke: rgb(143, 5, 5);
+                  }
+                }
+              }
+            }
+          }
+        }
+        .options_container {
+          align-items: center;
+          gap: 6px;
+
+          .important {
+            svg::v-deep path {
+              fill: transparent;
+              stroke: rgb(185, 155, 17);
+              stroke-width: 30px;
+              transition: fill 300ms;
+            }
+            .true::v-deep path {
+              fill: rgb(185, 155, 17);
+            }
+          }
+          .finish {
+            svg {
+              border-radius: 100%;
+              border: 1px solid #202020;
+              transition: border 300ms;
+              &::v-deep polyline {
+                stroke: transparent;
+                transition: stroke 300ms;
+              }
+
+              &.true {
+                border: 1px solid transparent;
+                transform: scale(1.3);
+
+                &::v-deep polyline {
+                  stroke: #202020;
                 }
               }
             }
           }
         }
       }
-      .options_container {
-        align-items: center;
-        gap: 6px;
+    }
+  }
+  .error-container {
+    align-items: center;
+    gap: 20px;
+    height: 100%;
 
-        .important {
-          svg::v-deep path {
-            fill: transparent;
-            stroke: rgb(185, 155, 17);
-            stroke-width: 30px;
-            transition: fill 300ms;
-          }
-          .true::v-deep path {
-            fill: rgb(185, 155, 17);
-          }
-        }
-        .finish {
-          svg {
-            border-radius: 100%;
-            border: 1px solid #202020;
-            transition: border 300ms;
-            &::v-deep polyline {
-              stroke: transparent;
-              transition: stroke 300ms;
-            }
-
-            &.true {
-              border: 1px solid transparent;
-              transform: scale(1.3);
-
-              &::v-deep polyline {
-                stroke: #202020;
-              }
-            }
-          }
-        }
-      }
+    img {
+      opacity: 0.6;
+      width: 180px;
+      max-width: 80%;
+    }
+    p {
+      font-style: italic;
     }
   }
 }
