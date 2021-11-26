@@ -42,7 +42,6 @@
           <button class="menu_button" @click="showMenu(simpletodo.id, $event)">
             <three-dots-menu class="icon" />
           </button>
-          <transition name="fade-down">
             <menu
               class="menu_options menu-1 flex_c"
               v-show="cardMenu == simpletodo.id"
@@ -67,7 +66,6 @@
                   }}
                   categoria</span
                 >
-                <transition name="fade-down">
                   <menu
                     v-show="simpletodoSubOptionId == simpletodo.id"
                     class="
@@ -87,7 +85,6 @@
                       <span>{{ title }}</span>
                     </li>
                   </menu>
-                </transition>
               </li>
               <li
                 v-if="!simpletodo.finished && simpletodo.categoryId != 0"
@@ -106,7 +103,6 @@
                 <edit-icon class="icon" /><span>Adicionar descrição</span>
               </li>
             </menu>
-          </transition>
         </div>
         <div
           :class="`options_container  ${
@@ -257,7 +253,6 @@ export default {
       var fieldValue = event.target.value
       event.path[1].classList.remove('focused')
 
-
       if (fieldValue != this.fieldCache) {
         this.callToSaveSimpletodo(fieldValue, simpletodo, fieldName).then(
           (res) => {
@@ -312,7 +307,7 @@ export default {
       })
     },
     deleteSimpletodo(simpletodoId) {
-      this.$store.commit('openModal', this.modalSubjects.onDelete)
+      this.$store.commit('openModal', {subject: this.modalSubjects.onDelete})
       this.simpletodoOnDelete = simpletodoId
     },
   },

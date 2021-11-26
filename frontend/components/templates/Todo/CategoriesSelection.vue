@@ -119,7 +119,7 @@ export default {
         })
     },
     deleteCategory(categoryId) {
-      this.$store.commit('openModal', this.modalSubjects.onDelete)
+      this.$store.commit('openModal', {subject: this.modalSubjects.onDelete})
       this.categoryOnDelete = categoryId
     },
   },

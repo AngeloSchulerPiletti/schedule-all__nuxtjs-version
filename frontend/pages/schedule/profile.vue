@@ -4,18 +4,26 @@
     <div id="friends-list" class="border-soft flex_c" :data-state="menuState">
       <pressable-button @state="listenState"><friends /></pressable-button>
       <hr class="division_3d" />
-      <div v-if="fetchError" id="fetch-error">Houve um erro</div>
-      <div v-if="haveFriends == false" id="no-friends">Você não tem amigos</div>
-      <div v-else id="friend-card-container" class="flex_c scroll-1 up">
-        <div
-          class="friend-card flex_r"
-          v-for="(user, index) in friendsList"
-          :key="index"
-        >
-          <button class="menu up"><three-dots-menu /></button>
-          <div class="data-user flex_c">
-            <h6 class="title-1_4">{{ user.fullName }}</h6>
-            <span class="username">{{ user.userName }}</span>
+      <div id="friends-view-container" class="up">
+        <div v-if="fetchError" id="fetch-error">Houve um erro</div>
+        <div v-if="haveFriends == false" id="no-friends">
+          Você não tem amigos
+        </div>
+        <div v-else id="friend-cards-container" class="scroll-1 flex_c">
+          <div
+            class="friend-card flex_r"
+            v-for="(user, index) in friendsList"
+            :key="index"
+          >
+            <drop-menu-list
+              :menu="menu"
+              :uniqueKey="user.friendshipId.toString()"
+              defaultPosition="goRight"
+            />
+            <div class="data-user flex_c">
+              <h6 class="title-1_4 fullname">{{ user.fullName }}</h6>
+              <span class="username">{{ user.userName }}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -25,8 +33,9 @@
 
 <script>
 import Friends from '@/components/icons/Friends.vue'
-import ThreeDotsMenu from '@/components/icons/ThreeDotsMenu.vue'
 import PressableButton from '@/components/PressableButton'
+import DropMenuList from '@/components/DropMenuList'
+import Trash from '@/components/icons/Trash.vue'
 
 export default {
   layout: 'dashboard',
@@ -36,9 +45,73 @@ export default {
       friendsList: [],
       haveFriends: null,
       fetchError: false,
+      modalConfirmation: {
+        title: 'Quer mesmo deixar de ser amigo dessa pessoa?',
+        subject: 'deleteFriendship',
+        paragraph: 'Você poderá voltar a ser amigo dessa pessoa no futuro.',
+        friendshipOnDelete: null,
+      },
+      menu: {
+        info: {
+          idPrefix: 'friendslist-actions',
+        },
+        data: [
+          {
+            icon: Trash,
+            text: 'Excluir',
+            callback: (friendshipId) => {
+              let modalData = this.modalConfirmation
+              this.$store.commit('openModal', {
+                subject: modalData.subject,
+                title: modalData.title,
+                paragraph: modalData.paragraph,
+              })
+              this.modalConfirmation.friendshipOnDelete = friendshipId
+            },
+          },
+          // Futuramente um link de share de algum amigo
+          // Futuramente um action de copy o username de um amigo
+        ],
+      },
     }
   },
+  computed: {
+    deleteAnswer() {
+      if (
+        this.$store.state.confirmationModal.subject ==
+        this.modalConfirmation.subject
+      ) {
+        return this.$store.state.confirmationModal.answer
+      }
+    },
+  },
   watch: {
+    deleteAnswer(newValue) {
+      if (newValue) {
+        this.$axios
+          .delete('v1/Friendship/delete-friendship', {
+            data: this.modalConfirmation.friendshipOnDelete,
+          })
+          .then((res) => {
+            for (let i = 0; i < this.friendsList.length; i++) {
+              if (
+                this.friendsList[i].friendshipId ==
+                this.modalConfirmation.friendshipOnDelete
+              ) {
+                console.log('using the data stored')
+                this.friendsList.splice(i, 1)
+              }
+            }
+            if (this.friendsList.length <= 0) this.haveFriends = false
+            // Mostra mensagem de sucesso
+          })
+          .catch((err) => {
+            // displays an error
+          })
+      }
+      console.log('Cleaning answer')
+      this.$store.commit('cleanAnswer')
+    },
     haveFriends(newValue) {
       if (newValue != null) {
         this.$store.commit('setDashboardPageStatus', 'loaded')
@@ -66,8 +139,9 @@ export default {
   },
   components: {
     Friends,
-    ThreeDotsMenu,
     PressableButton,
+    DropMenuList,
+    Trash,
   },
 }
 </script>
@@ -79,20 +153,17 @@ export default {
   height: 100%;
 
   #profile-configs {
-    background-color: blue;
+    width: 100%;
+    height: 100%;
   }
   #friends-list {
     border-top-left-radius: 15px;
-    position: absolute;
-    right: 0;
-    top: 0;
-    bottom: 0;
     padding: 20px 18px;
     gap: 20px;
     box-sizing: content-box;
 
     & * {
-      box-sizing: border-box !important;
+      box-sizing: border-box;
     }
 
     &::before {
@@ -122,38 +193,53 @@ export default {
 
     &[data-state='open'] {
       animation: open_anim 300ms ease 0ms 1 normal forwards;
-      #friend-card-container {
+      #friends-view-container {
         opacity: 1;
       }
     }
     &[data-state='close'] {
       animation: close_anim 300ms ease 0ms 1 normal forwards;
-      #friend-card-container {
+      #friends-view-container {
         opacity: 0;
       }
     }
-    #friend-card-container {
+    #friends-view-container {
       transition: opacity 200ms;
       height: 100%;
-      gap: 14px;
-      overflow-y: auto;
-      overflow-x: hidden;
 
-      .friend-card {
-        width: $open-width;
-        gap: 6px;
+      #friend-cards-container {
+        height: 100%;
+        overflow-y: auto;
+        overflow-x: hidden;
+        gap: 16px;
 
-        .data-user {
-          gap: 5px;
-
-          .username {
-            font-size: 14px;
-            font-style: italic;
-          }
+        #fetch-error,
+        #no-friends {
+          position: absolute;
+          width: $open-width;
         }
-        .menu {
-          width: 16px;
-          height: 16px;
+
+        .friend-card {
+          width: $open-width;
+          gap: 6px;
+
+          .data-user {
+            gap: 5px;
+
+            .fullname,
+            .username {
+              text-overflow: ellipsis;
+              display: -webkit-box;
+              -webkit-line-clamp: 1; /* number of lines to show */
+              line-clamp: 1;
+              -webkit-box-orient: vertical;
+              overflow: hidden;
+            }
+            .username {
+              font-size: 14px;
+              font-style: italic;
+            }
+          }
         }
       }
     }

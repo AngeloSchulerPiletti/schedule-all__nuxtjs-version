@@ -14,8 +14,14 @@
           class="input_text-1"
           type="text"
           placeholder="unique_username123"
+          v-model="nickname"
         />
-        <button class="button-1 btn-3">Convidar</button>
+        <button class="button-1 btn-3" @click="invite">Convidar</button>
+      </div>
+      <div v-show="errors.length > 0" class="errors">
+        <ul class="flex_c">
+          <li v-for="(error, index) in errors" :key="index">{{ error }}</li>
+        </ul>
       </div>
     </div>
   </modal-back>
@@ -30,12 +36,29 @@ export default {
     return {
       show: false,
       showClass: '',
+      nickname: null,
+      errors: [],
     }
+  },
+  computed:{
+    
   },
   methods: {
     close() {
       this.showClass = ''
       this.$store.commit('changeInviteFriendModalVisibility')
+    },
+    invite() {
+      this.$axios
+        .post('v1/Friendship/invite-friend', this.nickname)
+        .then((res) => {
+          this.close();
+          //Mostra mensagem de sucesso
+        })
+        .catch((err) => {
+          var messages = err.response.data.messages;
+          this.errors = messages ? messages : ["Esse usuário não existe"];
+        })
     },
   },
   computed: {
@@ -71,6 +94,7 @@ export default {
   box-shadow: -2px -2px 20px #404040;
   position: relative;
   gap: 20px;
+  padding: 20px 20px;
 
   #close {
     position: absolute;
@@ -81,11 +105,9 @@ export default {
   }
 
   .top {
-    padding: 20px 20px 0 20px;
     gap: 5px;
   }
   .bottom {
-    padding: 0 20px 20px 20px;
     gap: 15px;
     input {
       flex-grow: 1;

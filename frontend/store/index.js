@@ -16,10 +16,7 @@ export const state = () => ({
 })
 
 export const mutations = {
-    openModal(state, subject, title = null, paragraph = null) {
-        console.log(subject, state.confirmationModal.subject);
-
-        console.log('else');
+    openModal(state, {subject, title = null, paragraph = null}) {
         state.confirmationModal.called = true;
         state.confirmationModal.subject = subject;
         state.confirmationModal.data.title = title;
@@ -27,7 +24,6 @@ export const mutations = {
 
     },
     closeModal(state, answer) {
-        console.log('close is been called');
         state.confirmationModal.called = false;
         state.confirmationModal.answer = answer;
     },
