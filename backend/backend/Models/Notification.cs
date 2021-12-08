@@ -10,7 +10,7 @@ namespace backend.Models
 {
     public class Notification
     {
-        public Notification(long userId, string title, string text, string subject, long correlatedUserId = 0, string correlatedLink = null, bool hasQuestion = false)
+        public Notification(long userId, string title, string text = null, string subject = "other", long correlatedUserId = 0, string correlatedLink = null, bool hasQuestion = false)
         {
             UserId = userId;
             Title = title;

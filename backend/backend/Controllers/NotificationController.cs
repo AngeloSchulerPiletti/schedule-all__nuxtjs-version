@@ -74,6 +74,12 @@ namespace backend.Controllers
             Notification notification = _business.CheckNotificationOwner(user.Id, notificationId);
             if (notification == null) return BadRequest(new MessageBadgeVO(new List<string> { "Notificação não encontrada" }));
 
+            if (notification.HasQuestion)
+            {
+                notification.Answer = 1;
+                MessageBadgeVO answerResult = _business.AnswerBasedOnSubject(notification);
+            }
+
             MessageBadgeVO deleteResult = _business.DeleteNotification(notificationId);
             if (deleteResult.isError) return BadRequest(deleteResult);
             return Ok(deleteResult);
@@ -91,7 +97,7 @@ namespace backend.Controllers
 
             if (!notification.HasQuestion) return BadRequest(new MessageBadgeVO(new List<string> { "Essa notificação não pode ser respondida" }));
 
-            if (notificationVO.Answer != 1 || notificationVO.Answer != 2) return BadRequest(new MessageBadgeVO(new List<string> { "Resposta inválida" }));
+            if (notificationVO.Answer != 1 && notificationVO.Answer != 2) return BadRequest(new MessageBadgeVO(new List<string> { "Resposta inválida" }));
             notification.Answer = notificationVO.Answer;
 
             MessageBadgeVO answerResult = _business.AnswerBasedOnSubject(notification);

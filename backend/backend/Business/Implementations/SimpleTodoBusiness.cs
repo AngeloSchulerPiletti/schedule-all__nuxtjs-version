@@ -12,10 +12,12 @@ namespace backend.Business.Implementations
     public class SimpleTodoBusiness : ISimpleTodoBusiness
     {
         private ISimpleTodoRepository _repository;
+        private INotificationRepository _notificationRepository;
 
-        public SimpleTodoBusiness(ISimpleTodoRepository repository)
+        public SimpleTodoBusiness(ISimpleTodoRepository repository, INotificationRepository notificationRepository)
         {
             _repository = repository;
+            _notificationRepository = notificationRepository;
         }
 
         public object CreateSimpleTodo(NewSimpleTodoVO simpletodo, User user)
@@ -28,6 +30,10 @@ namespace backend.Business.Implementations
             MessageBadgeVO creationResult = _repository.CreateSimpleTodo(simpletodo, user);
             if (!creationResult.isError)
             {
+                // DELETA ISSO FUTURAMENTE
+                _notificationRepository.CreateNewNotification(new Notification(user.Id, String.Concat("A tarefa ", simpletodo.Title, " foi criada com sucesso!")));
+                //DELETA ISSO FUTURAMENTE
+                
                 return _repository.GetLastSimpleTodoByUserId(user.Id);
             }
             else
