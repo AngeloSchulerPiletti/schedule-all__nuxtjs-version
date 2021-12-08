@@ -24,7 +24,18 @@ namespace backend.Business.Implementations
 
         public MessageBadgeVO AnswerQuestion(Notification notification)
         {
-            if (notification.Answer == 2) return _repository.AnswerTheInvite(notification.UserId, notification.CorrelatedUserId);
+            if (notification.Answer == 2) {
+                MessageBadgeVO answerResult =_repository.AnswerTheInvite(notification.UserId, notification.CorrelatedUserId);
+                if(!answerResult.isError)
+                {
+                    List<User> usersData = _userRepository.GetUsersDataFromIdList(new List<long> { notification.UserId, notification.CorrelatedUserId });
+
+                    Notification acceptNotification1 = new(usersData[0].Id, "Novo amigo!", String.Concat("Agora, você e ", usersData[1].UserName, " são amigos!"), "friendship");
+                    _notificationRepository.CreateNewNotification(acceptNotification1);
+                    Notification acceptNotification2 = new(usersData[1].Id, "Novo amigo!", String.Concat("Agora, você e ", usersData[0].UserName, " são amigos!"), "friendship");
+                    _notificationRepository.CreateNewNotification(acceptNotification2);
+                }
+            }
             return _repository.DeleteInvite(notification.UserId, notification.CorrelatedUserId);
         }
 

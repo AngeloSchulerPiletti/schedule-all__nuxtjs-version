@@ -39,7 +39,7 @@ namespace backend.Repository.Implementations
             Friendship invite = _context.Friendships.FirstOrDefault(i => i.ReceiverId == userId && i.SenderId == senderId);
             invite.InviteAccepted = true;
             _context.SaveChanges();
-            return null;
+            return new MessageBadgeVO(new List<string> { "Convite respondido" }, false);
         }
 
         public MessageBadgeVO CheckIfInviteExists(long inviteId)

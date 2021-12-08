@@ -78,6 +78,7 @@ namespace backend.Controllers
             {
                 notification.Answer = 1;
                 MessageBadgeVO answerResult = _business.AnswerBasedOnSubject(notification);
+                if (answerResult.isError) return BadRequest(answerResult);
             }
 
             MessageBadgeVO deleteResult = _business.DeleteNotification(notificationId);
@@ -102,7 +103,11 @@ namespace backend.Controllers
 
             MessageBadgeVO answerResult = _business.AnswerBasedOnSubject(notification);
             if (answerResult.isError) return BadRequest(answerResult);
-            return Ok(answerResult);
+
+            MessageBadgeVO deleteResult = _business.DeleteNotification(notificationVO.Id);
+            if (deleteResult.isError) return BadRequest(deleteResult);
+
+            return Ok(deleteResult);
         }
     }
 }

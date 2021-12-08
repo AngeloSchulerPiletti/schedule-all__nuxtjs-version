@@ -2,6 +2,7 @@
 using backend.Models;
 using backend.Models.Context;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Security.Cryptography;
@@ -177,6 +178,11 @@ namespace backend.Repository
         public User GetUserDataFromId(long id)
         {
             return _context.Users.FirstOrDefault(u => u.Id == id);
+        }
+
+        public List<User> GetUsersDataFromIdList(List<long> ids)
+        {
+            return _context.Users.Where(u => ids.Contains(u.Id)).ToList();
         }
     }
 }

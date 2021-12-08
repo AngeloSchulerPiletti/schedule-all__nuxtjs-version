@@ -30,7 +30,6 @@ namespace backend.Business.Implementations
             try
             {
                 _business[notification.Subject].AnswerQuestion(notification);
-                _repository.DeleteNotification(notification.Id);
                 return new MessageBadgeVO(new List<string> { "Convite respondido com sucesso!" }, false);
             }
             catch (Exception)

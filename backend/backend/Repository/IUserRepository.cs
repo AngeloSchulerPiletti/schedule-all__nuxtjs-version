@@ -1,5 +1,6 @@
 ﻿using backend.Data.VO;
 using backend.Models;
+using System.Collections.Generic;
 
 namespace backend.Repository
 {
@@ -14,5 +15,6 @@ namespace backend.Repository
         MessageBadgeVO CheckIfUserAlreadyExists(NewUserVO user, MessageBadgeVO error);
         bool RevokeToken(string userName);
         User RefreshUserInfo(User user);
+        List<User> GetUsersDataFromIdList(List<long> ids);
     }
 }
