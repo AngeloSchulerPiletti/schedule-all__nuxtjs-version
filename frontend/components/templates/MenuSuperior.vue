@@ -1,26 +1,39 @@
 <template>
   <div class="wrapper flex_r border-soft">
-    <div id="user-profile-menu_container" class="flex_r"><NuxtLink to="/schedule/profile">
-      <div class="pic_container pseudo spare-button">
-        <img
-          :src="`https://avatars.dicebear.com/api/human/${userData.userName}.svg`"
-          alt=""
-        />
-      </div></NuxtLink>
+    <div id="user-profile-menu_container" class="flex_r">
+      <NuxtLink to="/schedule/profile">
+        <div class="pic_container pseudo spare-button">
+          <img
+            :src="`https://avatars.dicebear.com/api/human/${userData.userName}.svg`"
+            alt=""
+          /></div
+      ></NuxtLink>
       <div class="flex_c user_info">
         <span>{{ userData.userName }}</span>
         <span>{{ userData.fullName }}</span>
       </div>
     </div>
     <div id="dashboard-options_container" class="flex_r">
-      <button @click="openInviteFriendModal">
-        <invite-friend class="widther" />
-      </button>
-      <button>
-        <notification />
-      </button>
-      <button><wallet/></button>
-      <button><configuration /></button>
+      <div class="button-modal_container">
+        <button @click="openInviteFriendModal">
+          <invite-friend class="widther" />
+        </button>
+      </div>
+      <div class="button-modal_container" @mouseleave="closeNotifications">
+        <button
+          @click="openNotifications"
+          :class="`new-${notificationIsNew} pseudo_base`"
+        >
+          <notification :notificationIsNew="notificationIsNew" />
+        </button>
+        <notification-wrapper />
+      </div>
+      <div class="button-modal_container">
+        <button><wallet /></button>
+      </div>
+      <div class="button-modal_container">
+        <button><configuration /></button>
+      </div>
     </div>
   </div>
 </template>
@@ -30,11 +43,32 @@ import InviteFriend from '@/components/icons/InviteFriend'
 import Notification from '@/components/icons/Notification'
 import Wallet from '@/components/icons/Wallet'
 import Configuration from '@/components/icons/Configuration'
+import NotificationWrapper from '@/components/templates/Modals/Notifications/NotificationWrapper'
 
 export default {
+  computed: {
+    notificationIsNew() {
+      return this.$store.state.notifications.newNotifications
+    },
+  },
+  watch: {},
   methods: {
     openInviteFriendModal() {
       this.$store.commit('changeInviteFriendModalVisibility')
+    },
+    openNotifications() {
+      this.$axios
+        .patch('/v1/Notification/notifications-was-seen')
+        .then((res) => {
+          this.$store.commit('notifications/sawNotifications')
+          this.$store.commit('notifications/setNotificationsModalState', true)
+        })
+        .catch((err) => {
+          console.log(err)
+        })
+    },
+    closeNotifications() {
+      this.$store.commit('notifications/setNotificationsModalState', false)
     },
   },
   props: {
@@ -45,6 +79,7 @@ export default {
     Notification,
     Configuration,
     Wallet,
+    NotificationWrapper,
   },
 }
 </script>
@@ -54,6 +89,8 @@ export default {
   padding: 12px 40px 20px 40px;
   background: linear-gradient(2deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1));
   justify-content: space-between;
+  position: relative;
+  z-index: 100;
 
   &::before {
     box-shadow: 6px 6px 14px #a9a8b7, -6px -6px 14px #fff,
@@ -79,11 +116,11 @@ export default {
         border-radius: 100%;
       }
       $img_scale: 1.1;
-      img{
+      img {
         transform: scale($img_scale);
         transition: transform 200ms;
       }
-      &:hover img{
+      &:hover img {
         transform: scale($img_scale) translate(3px, 3px);
       }
     }
@@ -107,6 +144,22 @@ export default {
     gap: 8px;
     position: relative;
     z-index: 10;
+
+    .button-modal_container {
+      position: relative;
+      button {
+        &.new-true {
+          &::before {
+            top: 10%;
+            right: 10%;
+            width: 7px;
+            height: 7px;
+            border-radius: 100%;
+            background-color: #d6b007;
+          }
+        }
+      }
+    }
 
     svg {
       width: 20px;
