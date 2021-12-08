@@ -5,6 +5,9 @@ export const state = () => ({
 });
 
 export const mutations = {
+    deleteNotification(state, index){
+        state.notifications.splice(index, 1);
+    },
     setNotificationsModalState(state, action){
         state.openNotifications = action;
     },

@@ -1,25 +1,43 @@
 <template>
-  <transition>
+  <transition name="wrapper">
     <div id="notification-container" v-show="openNotifications">
-      <div
-        v-for="(notif, index) in getNotifications"
-        :key="index"
-        class="notify-card flex_r"
-      >
-        <div class="flex_c data">
-          <div class="content flex_c">
-            <h1 v-if="notif.title">{{ notif.title }}</h1>
-            <p class="paragraph-2" v-if="notif.text">{{ notif.text }}</p>
+      <transition-group name="card">
+        <div
+          v-for="(notif, index) in getNotifications"
+          :key="notif.id"
+          class="notify-card flex_r"
+        >
+          <div class="flex_c data">
+            <div class="content flex_c">
+              <h1
+                v-if="notif.title"
+                @click="moreLines($event)"
+                @mouseleave="lessLines($event)"
+              >
+                {{ notif.title }}
+              </h1>
+              <p class="paragraph-2" v-if="notif.text">{{ notif.text }}</p>
+            </div>
+            <div v-if="notif.hasQuestion" class="answer flex_r">
+              <button
+                class="btn-4_tiny"
+                @click="answerQuestion(2, notif.id, index)"
+              >
+                aceitar
+              </button>
+              <button
+                class="btn-4_tiny"
+                @click="answerQuestion(1, notif.id, index)"
+              >
+                negar
+              </button>
+            </div>
           </div>
-          <div v-if="notif.hasQuestion" class="answer flex_r">
-            <button class="btn-4_tiny">aceitar</button>
-            <button class="btn-4_tiny">negar</button>
-          </div>
+          <button class="delete" @click="deleteNotification(notif.id, index)">
+            <add />
+          </button>
         </div>
-        <button class="delete">
-          <add />
-        </button>
-      </div>
+      </transition-group>
     </div>
   </transition>
 </template>
@@ -29,6 +47,41 @@ import Add from '../../../icons/Add.vue'
 export default {
   data() {
     return {}
+  },
+  methods: {
+    moreLines(event) {
+      event.target.classList.add('more')
+    },
+    lessLines(event) {
+      if (event.target.classList.contains('more')) {
+        event.target.classList.remove('more')
+      }
+    },
+    answerQuestion(answer, notificationId, index) {
+      this.$axios
+        .put('/v1/Notification/answer-notification', {
+          id: notificationId,
+          answer: answer,
+        })
+        .then((res) => {
+          this.$store.commit('notifications/deleteNotification', index)
+        })
+        .catch((err) => {
+          console.log(err.response)
+        })
+    },
+    deleteNotification(notificationId, index) {
+      this.$axios
+        .delete('/v1/Notification/delete-notification', {
+          data: notificationId,
+        })
+        .then((res) => {
+          this.$store.commit('notifications/deleteNotification', index)
+        })
+        .catch((err) => {
+          console.log(err.response)
+        })
+    },
   },
   computed: {
     getNotifications() {
@@ -42,7 +95,6 @@ export default {
     getNotifications(newValue, oldValue) {
       console.log(`notifications: ${oldValue} to ${newValue}`)
     },
-    openNotifications(newValue, oldValue) {},
   },
   components: {
     Add,
@@ -51,6 +103,38 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.wrapper-enter-active,
+.wrapper-leave-active {
+  transition: opacity 200ms;
+}
+.wrapper-enter,
+.wrapper-leave-active {
+  opacity: 0;
+}
+
+@keyframes deletingCard {
+  0% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(20%);
+    opacity: 0;
+  }
+}
+
+// .card-enter-active,
+.card-leave-active {
+  animation: deletingCard 300ms ease 0ms 1 normal both;
+}
+
+// .card-enter, .card-leave-to{
+//   opacity: 0;
+// }
+// .card-enter-to, .card-leave{
+//   opacity: 1;
+// }
+
 #notification-container {
   position: absolute;
   bottom: 0;
@@ -73,6 +157,7 @@ export default {
 
   .notify-card {
     padding: 8px 10px;
+    box-sizing: border-box;
     &:not(:last-child) {
       border-bottom: 1px solid #60606060;
     }
@@ -88,6 +173,11 @@ export default {
           -webkit-line-clamp: 1;
           -webkit-box-orient: vertical;
           overflow: hidden;
+          cursor: default;
+
+          &.more {
+            -webkit-line-clamp: 3;
+          }
         }
         p {
           font-size: 11px;
@@ -95,6 +185,11 @@ export default {
           -webkit-line-clamp: 3;
           -webkit-box-orient: vertical;
           overflow: hidden;
+          cursor: default;
+
+          &:focus {
+            -webkit-line-clamp: 5;
+          }
         }
       }
       .answer {
