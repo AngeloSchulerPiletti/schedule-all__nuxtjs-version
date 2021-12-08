@@ -57,6 +57,7 @@ export default {
     searchForNotifications(){
       this.$axios.get("/v1/Notification/get-user-notifications").then(res => {
         this.$store.commit("notifications/setNotifications", res.data);
+        console.log(res);
       }).catch(err => {
         //Displays an error about the notifications
       })
