@@ -34,6 +34,14 @@ namespace backend.Repository.Implementations
 
         }
 
+        public MessageBadgeVO AnswerTheInvite(long userId, long senderId)
+        {
+            Friendship invite = _context.Friendships.FirstOrDefault(i => i.ReceiverId == userId && i.SenderId == senderId);
+            invite.InviteAccepted = true;
+            _context.SaveChanges();
+            return null;
+        }
+
         public MessageBadgeVO CheckIfInviteExists(long inviteId)
         {
             var result = _context.Friendships.FirstOrDefault(i => i.Id == inviteId);
@@ -61,7 +69,14 @@ namespace backend.Repository.Implementations
             {
                 return new MessageBadgeVO(new List<string> { "Não foi possível responder seu convite" });
             }
+        }
 
+        public MessageBadgeVO DeleteInvite(long userId, long senderId)
+        {
+            Friendship invite = _context.Friendships.FirstOrDefault(i => i.ReceiverId == userId && i.SenderId == senderId);
+            _context.Friendships.Remove(invite);
+            _context.SaveChanges();
+            return null;
         }
 
         public List<FriendshipSenderVO> GetSenderVoFromReceiverId(long receiverId, bool inviteAnswer)
@@ -94,17 +109,10 @@ namespace backend.Repository.Implementations
 
         public MessageBadgeVO SendInvite(long senderId, long receiverId)
         {
-            try
-            {
-                Friendship friendship = new(senderId, receiverId);
-                _context.Friendships.Add(friendship);
-                _context.SaveChanges();
-                return new MessageBadgeVO(new List<string> { "Convite enviado com sucesso!" }, false);
-            }
-            catch (Exception)
-            {
-                return new MessageBadgeVO(new List<string> { "Não foi possível enviar seu convite!" });
-            }
+            Friendship friendship = new(senderId, receiverId);
+            _context.Friendships.Add(friendship);
+            _context.SaveChanges();
+            return null;
         }
 
         public MessageBadgeVO CheckIfIsAlreadyFriend(long friendId, long userId)
@@ -116,5 +124,6 @@ namespace backend.Repository.Implementations
             if (possibility2 != null) return caseError;
             return new MessageBadgeVO(new List<string> { "Você ainda não é amigo dessa pessoa" }, false);
         }
+
     }
 }

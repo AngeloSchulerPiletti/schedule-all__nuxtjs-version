@@ -1,5 +1,7 @@
 ﻿using backend.Data.VO;
 using backend.Data.VO.Friendship;
+using backend.Data.VO.Notification;
+using backend.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +12,7 @@ namespace backend.Business
     public interface IFriendshipBusiness
     {
         MessageBadgeVO CheckIfUserExists(string friendUserName);
+        MessageBadgeVO AnswerQuestion(Notification notification);
         MessageBadgeVO CheckIfInviteExists(long inviteId);
         long GetIdFromUserName(string friendUserName);
         MessageBadgeVO SendInvite(long senderId, long receiverId);

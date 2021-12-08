@@ -18,5 +18,6 @@ namespace backend.Models.Context
         public DbSet<Category> Categorys { get; set; }
         public DbSet<SimpleTodoBond> SimpleTodoBonds { get; set; }
         public DbSet<Friendship> Friendships { get; set; }
+        public DbSet<Notification> Notifications { get; set; }
     }
 }

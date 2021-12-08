@@ -1,5 +1,7 @@
 ﻿using backend.Data.VO;
 using backend.Data.VO.Friendship;
+using backend.Data.VO.Notification;
+using backend.Models;
 using backend.Repository;
 using System;
 using System.Collections.Generic;
@@ -11,9 +13,17 @@ namespace backend.Business.Implementations
     public class FriendshipBusinessImplementation : IFriendshipBusiness
     {
         private IFriendshipRepository _repository;
-        public FriendshipBusinessImplementation(IFriendshipRepository repository)
+        private INotificationRepository _notificationRepository;
+        public FriendshipBusinessImplementation(IFriendshipRepository repository, INotificationRepository notificationRepository)
         {
             _repository = repository;
+            _notificationRepository = notificationRepository;
+        }
+
+        public MessageBadgeVO AnswerQuestion(Notification notification)
+        {
+            if (notification.Answer == 2) return _repository.AnswerTheInvite(notification.UserId, notification.CorrelatedUserId);
+            return _repository.DeleteInvite(notification.UserId, notification.CorrelatedUserId);
         }
 
         public MessageBadgeVO AnswerTheInvite(FriendshipAnswerVO inviteAnswer, long userId)
@@ -70,7 +80,17 @@ namespace backend.Business.Implementations
 
         public MessageBadgeVO SendInvite(long senderId, long receiverId)
         {
-            return _repository.SendInvite(senderId, receiverId);
+            try
+            {
+                _repository.SendInvite(senderId, receiverId);
+                Notification notification = new(receiverId, "Convite de Amizade", "Você recebeu um convite de amizade!", "friendship", senderId, null, true);
+                _notificationRepository.CreateNewNotification(notification);
+                return new MessageBadgeVO(new List<string> { "Convite enviado com sucesso!" }, false);
+            }
+            catch (Exception)
+            {
+                return new MessageBadgeVO(new List<string> { "Não foi possível enviar seu convite!" });
+            }
         }
 
         private List<FriendshipInviteVO> GetUsersDataFromSendersId(List<FriendshipSenderVO> sendersId)
