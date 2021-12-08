@@ -53,6 +53,21 @@ export default {
         this.$store.commit('setDashboardPageStatus', 'loading');
     },
   },
+  methods:{
+    searchForNotifications(){
+      this.$axios.get("/v1/Notification/get-user-notifications").then(res => {
+        this.$store.commit("notifications/setNotifications", res.data);
+      }).catch(err => {
+        //Displays an error about the notifications
+      })
+    }
+  },
+  updated(){
+    this.searchForNotifications();
+  },
+  mounted(){
+    this.searchForNotifications();
+  },
   components: {
     MenuLateral,
     MenuSuperior,
