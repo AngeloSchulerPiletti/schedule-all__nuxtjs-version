@@ -1,6 +1,11 @@
 <template>
   <transition name="wrapper">
     <div id="notification-container" v-show="openNotifications">
+      <div class="error_container" v-if="getNotifications.length == 0">
+        <creative-img-error
+        imgName="jacket-dog2.jpg"
+        text="As coisas estão quietas por aqui"/>
+      </div>
       <transition-group name="card">
         <div
           v-for="(notif, index) in getNotifications"
@@ -43,11 +48,10 @@
 </template>
 
 <script>
-import Add from '../../../icons/Add.vue'
+import Add from '@/components/icons/Add'
+import CreativeImgError from '@/components/errors/CreativeImgError'
+
 export default {
-  data() {
-    return {}
-  },
   methods: {
     moreLines(event) {
       event.target.classList.add('more')
@@ -98,6 +102,7 @@ export default {
   },
   components: {
     Add,
+    CreativeImgError,
   },
 }
 </script>
@@ -155,6 +160,9 @@ export default {
   border-radius: 10px;
   padding: 5px 0;
 
+  .error_container{
+    padding: 10px 5px;
+  }
   .notify-card {
     padding: 8px 10px;
     box-sizing: border-box;
