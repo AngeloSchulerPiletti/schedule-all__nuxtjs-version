@@ -7,6 +7,7 @@ namespace backend.Repository
     {
         User ValidateCredentials(UserVO user);
         User ValidateCredentials(string userName);
+        User GetUserDataFromId(long id);
         MessageBadgeVO ValidateUserVO(UserVO user, MessageBadgeVO error);
         MessageBadgeVO ValidateNewUserVO(NewUserVO user, MessageBadgeVO error);
         bool SaveNewUserOnDB(NewUserVO user);

@@ -13,11 +13,13 @@ namespace backend.Business.Implementations
     public class FriendshipBusinessImplementation : IFriendshipBusiness
     {
         private IFriendshipRepository _repository;
+        private IUserRepository _userRepository;
         private INotificationRepository _notificationRepository;
-        public FriendshipBusinessImplementation(IFriendshipRepository repository, INotificationRepository notificationRepository)
+        public FriendshipBusinessImplementation(IFriendshipRepository repository, INotificationRepository notificationRepository, IUserRepository userRepository)
         {
             _repository = repository;
             _notificationRepository = notificationRepository;
+            _userRepository = userRepository;
         }
 
         public MessageBadgeVO AnswerQuestion(Notification notification)
@@ -83,7 +85,8 @@ namespace backend.Business.Implementations
             try
             {
                 _repository.SendInvite(senderId, receiverId);
-                Notification notification = new(receiverId, "Convite de Amizade", "Você recebeu um convite de amizade!", "friendship", senderId, null, true);
+                User sender = _userRepository.GetUserDataFromId(senderId);
+                Notification notification = new(receiverId, "Convite de Amizade", String.Concat(sender.UserName, " enviou um convite de amizade!"), "friendship", senderId, null, true);
                 _notificationRepository.CreateNewNotification(notification);
                 return new MessageBadgeVO(new List<string> { "Convite enviado com sucesso!" }, false);
             }

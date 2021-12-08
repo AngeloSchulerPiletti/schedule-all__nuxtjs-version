@@ -173,5 +173,10 @@ namespace backend.Repository
             if (error.messages.Count > 0) return error;
             return null;
         }
+
+        public User GetUserDataFromId(long id)
+        {
+            return _context.Users.FirstOrDefault(u => u.Id == id);
+        }
     }
 }
