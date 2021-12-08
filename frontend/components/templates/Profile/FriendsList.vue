@@ -39,7 +39,7 @@ import Trash from '@/components/icons/Trash.vue'
 export default {
   data() {
     return {
-      menuState: 'close',
+      menuState: 'null',
       friendsList: [],
       haveFriends: null,
       fetchError: false,
@@ -188,6 +188,12 @@ export default {
     animation: open_anim 300ms ease 0ms 1 normal forwards;
     #friends-view-container {
       opacity: 1;
+    }
+  }
+  &[data-state='null']{
+    width: 40px;
+    #friends-view-container {
+      opacity: 0;
     }
   }
   &[data-state='close'] {
