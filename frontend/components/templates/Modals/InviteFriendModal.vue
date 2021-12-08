@@ -45,8 +45,9 @@ export default {
   },
   methods: {
     close() {
-      this.showClass = ''
-      this.$store.commit('changeInviteFriendModalVisibility')
+      this.showClass = '';
+      this.nickname = null;
+      this.$store.commit('changeInviteFriendModalVisibility');
     },
     invite() {
       this.$axios
