@@ -55,8 +55,11 @@
               <li class="flex_r" @click="deleteSimpletodo(simpletodo.id)">
                 <trash-icon class="icon trash" /><span>Delete</span>
               </li>
-              <li v-if="!simpletodo.finished" class="flex_r">
-                <friends-icon class="icon" /><span>Convidar amigo</span>
+              <li v-if="!simpletodo.finished && !simpletodo.colaborative" class="flex_r" @click="changeSimpletodoColaborative(simpletodo.id)">
+                <friends-icon class="icon" /><span>Tornar colaborativa</span>
+              </li>
+              <li v-if="!simpletodo.finished && simpletodo.colaborative" class="flex_r"> 
+                <friends-icon class="icon" /><span>Gerenciar Participantes</span>
               </li>
               <li
                 v-if="!simpletodo.finished"
@@ -288,6 +291,13 @@ export default {
         .then((res) => {
           this.$store.commit('simpletodo/updateSimpletodo', newSimpletodo)
         })
+    },
+    changeSimpletodoColaborative(simpletodoId){
+      this.$axios.patch("/v1/SimpleTodo/change-simpletodo-colaborative", simpletodoId).then(res => {
+          this.$store.commit('simpletodo/updateSimpletodo', res.data);
+      }).catch(err => {
+        //Displays error
+      })
     },
     changeSimpletodoState(simpletodoId) {
       this.$axios

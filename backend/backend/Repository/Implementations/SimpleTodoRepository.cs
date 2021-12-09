@@ -143,5 +143,17 @@ namespace backend.Repository.Implementations
                 return new MessageBadgeVO(new List<string> { "Não foi possível deletar esta tarefa" });
             }
         }
+
+        public SimpleTodo SetSimpleTodoColaborative(long simpletodoId, long userId)
+        {
+            var task = _context.SimpleTodos.SingleOrDefault(task => task.Id == simpletodoId & task.UserId == userId);
+            if (task == null) return null;
+
+            task.Colaborative = !task.Colaborative;
+
+            _context.SaveChanges();
+
+            return _context.SimpleTodos.SingleOrDefault(task => task.Id == simpletodoId);
+        }
     }
 }

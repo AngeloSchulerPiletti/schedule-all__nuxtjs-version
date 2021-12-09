@@ -15,6 +15,9 @@ import FriendsList from '@/components/templates/Profile/FriendsList'
 
 export default {
   layout: 'dashboard',
+  head:{
+    title: "Perfil",
+  },
   components: {
     ProfileConfig,
     FriendsList,

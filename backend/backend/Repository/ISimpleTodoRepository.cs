@@ -17,5 +17,6 @@ namespace backend.Repository
         public SimpleTodo GetLastSimpleTodoByUserId(long userId);
         public List<SimpleTodo> GetImportantSimpleTodos(long userId);
         public List<SimpleTodo> GetSimpleTodosByCategory(int pagination, long userId);
+        public SimpleTodo SetSimpleTodoColaborative(long simpletodoId, long userId);
     }
 }

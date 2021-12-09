@@ -142,5 +142,10 @@ namespace backend.Business.Implementations
             return errors.messages.Count > 0 ? errors : null;
 
         }
+
+        public SimpleTodo SetSimpleTodoColaborative(long simpletodoId, long userId)
+        {
+            return _repository.SetSimpleTodoColaborative(simpletodoId, userId);
+        }
     }
 }

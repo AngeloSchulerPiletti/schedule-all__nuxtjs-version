@@ -10,7 +10,7 @@ namespace backend.Models
     [Table("simpletodos")]
     public class SimpleTodo
     {
-        public SimpleTodo(DateTime createdAt, string title, string description, long categoryId, long userId, bool important = false)
+        public SimpleTodo(DateTime createdAt, string title, string description, long categoryId, long userId, bool important = false, bool colaborative = false)
         {
             CreatedAt = createdAt;
             Title = title;
@@ -18,6 +18,7 @@ namespace backend.Models
             CategoryId = categoryId;
             UserId = userId;
             Important = important;
+            Colaborative = colaborative;
         }
 
         [Key]
@@ -39,5 +40,7 @@ namespace backend.Models
         public long UserId { get; set; }
         [Column("important")]
         public bool Important { get; set; }
+        [Column("colaborative")]
+        public bool Colaborative { get; set; }
     }
 }

@@ -16,6 +16,7 @@ namespace backend.Business
         public MessageBadgeVO ValidateSimpleTodoInput(NewSimpleTodoVO simpletodo);
         public MessageBadgeVO ValidateSimpleTodoInput(SimpleTodoVO simpletodo);
         public List<SimpleTodo> GetUserSimpleTodosByCategory(int? pagination, long userId);
-        public object SetSimpleTodoImportance(long simpletodoId, long userId);
+        public object SetSimpleTodoImportance(long simpletodoId, long userId); 
+        public SimpleTodo SetSimpleTodoColaborative(long simpletodoId, long userId);
     }
 }
