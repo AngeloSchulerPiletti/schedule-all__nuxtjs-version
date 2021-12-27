@@ -116,6 +116,7 @@ namespace backend.Controllers
 
             SimpleTodo result = _business.SetSimpleTodoColaborative(simpletodoId, user.Id);
             if (result == null) return BadRequest(new MessageBadgeVO(new List<string> { "Não foi possível realizar esta ação..." }));
+
             return Ok(result);
         }
 

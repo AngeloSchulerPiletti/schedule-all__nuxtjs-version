@@ -45,13 +45,17 @@ namespace backend
         public void ConfigureServices(IServiceCollection services)
         {
             var tokenConfigurations = new TokenConfiguration();
-
             new ConfigureFromConfigurationOptions<TokenConfiguration>(
                     Configuration.GetSection("TokenConfigurations")
                 )
                 .Configure(tokenConfigurations);
 
             services.AddSingleton(tokenConfigurations);
+
+            services.AddSingleton((serviceProvider) =>
+            {
+                return Configuration.GetSection("EthereumConfigurations").Get<EthereumConfiguration>();
+            });
 
             services.AddAuthentication(options =>
             {
@@ -92,7 +96,7 @@ namespace backend
                 });
             });
 
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(x => x.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore);
 
             var connection = Configuration["MySQLConnection:MySQLConnectionString"];
             services.AddDbContext<MySQLContext>(options =>
@@ -113,6 +117,7 @@ namespace backend
             services.AddScoped<ISignupBusiness, SignupBusinessImplementation>();
             services.AddScoped<ILoginBusiness, LoginBusinessImplementation>();
             services.AddScoped<INotificationBusiness, NotificationBusiness>();
+            services.AddScoped<IEthereumBusiness, EthereumBusiness>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<ICategoryBusiness, CategoryBusiness>();
             services.AddScoped<IFriendshipBusiness, FriendshipBusinessImplementation>();
