@@ -21,10 +21,6 @@ namespace backend.Business.Implementations
         {
             var web3 = new Web3(_configuration.Host);
 
-            var url = _configuration.Host;
-            var contract = _configuration.TaskTokenContractAddress;
-            var asasdas = 2;
-
             var balanceOfFunctionMessage = new BalanceOfFunction()
             {
                 Owner = address
@@ -32,6 +28,7 @@ namespace backend.Business.Implementations
 
             var balanceHandler = web3.Eth.GetContractQueryHandler<BalanceOfFunction>();
             var balance = balanceHandler.QueryDeserializingToObjectAsync<BalanceOfOutputDTO>(balanceOfFunctionMessage, _configuration.TaskTokenContractAddress).Result;
+
             return balance.Balance;
         }
     }

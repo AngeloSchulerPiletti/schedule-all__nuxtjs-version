@@ -35,8 +35,12 @@ namespace backend.Business.Implementations
                     Notification acceptNotification2 = new(usersData[1].Id, "Novo amigo!", String.Concat("Agora, você e ", usersData[0].UserName, " são amigos!"), "friendship");
                     _notificationRepository.CreateNewNotification(acceptNotification2);
                 }
+                return answerResult;
             }
-            return _repository.DeleteInvite(notification.UserId, notification.CorrelatedUserId);
+            else
+            {
+                return _repository.DeleteInvite(notification.UserId, notification.CorrelatedUserId);
+            }
         }
 
         public MessageBadgeVO AnswerTheInvite(FriendshipAnswerVO inviteAnswer, long userId)
