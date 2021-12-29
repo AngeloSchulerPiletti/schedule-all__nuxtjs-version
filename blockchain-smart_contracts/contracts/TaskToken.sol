@@ -4,7 +4,7 @@ pragma solidity >=0.5.0 <0.9.0;
 
 import "./ITaskToken.sol";
 
-contract TaskToken is IERC20 {
+contract TaskToken is IERC20, dAppConfig {
     uint256 constant private MAX_UINT256 = 2**256 - 1;
     mapping (address => uint256) public balances;
     mapping (address => mapping (address => uint256)) public allowed;
@@ -13,6 +13,15 @@ contract TaskToken is IERC20 {
     address private owner;
     uint256 public tokenOfferCotation;
     uint256 public tokenTradeCotation;
+
+    mapping (uint256 => taskData) public taskOwner; //taskId => struct
+    struct taskData {
+        bool status;
+        bool onStaking;
+        address[] colaborators;
+        address owner;
+        bool deleted;
+    }
 
     /*
     NOTE:
@@ -32,7 +41,6 @@ contract TaskToken is IERC20 {
     }
 
 
-    
     //======= TOKEN P2P TRASFERS =======// 
     function transfer(address _to, uint256 _value) public override returns (bool success) {
         require(balances[msg.sender] >= _value, "token balance is lower than the value requested");
@@ -53,8 +61,6 @@ contract TaskToken is IERC20 {
         return true;
     }
 
-
-    
     //======= ACCOUNT & TRADE OPERATIONS =======// 
     function approve(address _spender, uint256 _value) public override returns (bool success) {
         allowed[msg.sender][_spender] = _value;
@@ -65,12 +71,10 @@ contract TaskToken is IERC20 {
         return allowed[_owner][_spender];
     }
 
-
     //========= ACCOUNT CHECK ========//
     function balanceOf(address _owner) public override view returns (uint256 balance) {
         return balances[_owner];
     }
-
 
     //======= CONTRACT CRYPTO OFFER TOOLS =======// 
     function changeTokenOfferCotation(uint256 _newCotation) public{
@@ -82,7 +86,6 @@ contract TaskToken is IERC20 {
         offerAvailable = !offerAvailable;
     }
 
-
     //======= CONTRACT ORDERS =======// 
     function buyFromContract(uint256 _amount) public payable{
         require(offerAvailable == true, "You can't buy tokens from the contract for now");
@@ -93,6 +96,34 @@ contract TaskToken is IERC20 {
         balances[address(this)] -= _amount;
     }
 
+
+    function userSignedUp(string memory _username) public{
+        emit SignedUpUser(msg.sender, _username);
+    }
+
+    function addTaskToStaking(uint256 _taskId) public{
+        require(taskOwner[_taskId].owner == msg.sender, "This task doesn't belong you");
+        require(balances[msg.sender] >= 1, "You don't have TaskTokens enough to do this operation");
+        require(taskOwner[_taskId].onStaking == false, "This task is already in staking");
+        balances[msg.sender] -= 1;
+        taskOwner[_taskId].onStaking = true;
+
+        emit NewTaskInStaking(_taskId, msg.sender);
+    }
+
+    function finishTask(uint256 _taskId) public{
+        bool passed = verifyIfIsOwnerOrColaborator(_taskId);
+        require(passed, "You're not a colaborator");
+
+        delete taskOwner[_taskId];
+        balances[msg.sender] += 1;
+
+        emit TaskDeletedFromStaking(_taskId, msg.sender);
+    }
+
+    function taskIsInStaking(uint256 _taskId) public view returns(bool payout){
+        return taskOwner[_taskId].onStaking;
+    }
 
 
     //------------- HELPERS -------------//
@@ -116,5 +147,20 @@ contract TaskToken is IERC20 {
             _i /= 10;
         }
         return string(bstr);
+    }
+
+
+    function verifyIfIsOwnerOrColaborator(uint256 _taskId) internal view returns (bool _result){
+        address[] memory colaborators = taskOwner[_taskId].colaborators;
+        bool passed = false;
+        for (uint256 i = 0; i < colaborators.length; i++) {
+            if(colaborators[i] == msg.sender){
+                passed = true;
+            }
+        }
+        if(msg.sender == taskOwner[_taskId].owner){
+            passed = true;
+        }
+        return passed;
     }
 }

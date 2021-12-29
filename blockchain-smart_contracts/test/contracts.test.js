@@ -1,3 +1,5 @@
+const { assert } = require('chai');
+
 const TaskToken = artifacts.require("TaskToken");
 
 require('chai')
@@ -66,10 +68,40 @@ contract("TaskToken", ([owner, investor]) => {
         await taskToken.buyFromContract(100, {from: other_investor, value: 100*(10**15)}).should.be.rejected;
         var balanceResult = await taskToken.balanceOf(other_investor);
         assert.equal(balanceResult.toString(), '0', `Investor should has 0 but actually has ${balanceResult}`);
-    })
+    });
+
+
+    it("Task 2 is not in staking yet", async () => {
+        var payout = await taskToken.taskIsInStaking(2);
+        assert.equal(payout, false, `O payout foi: ${payout}`)
+    });
+
+    it("Ether before", async () => {
+        var balance = await web3.eth.getBalance(owner);
+        console.log(`balance before: ${balance}`);
+    });
+    it("See the return from undefined", async () =>{
+        var resp = await taskToken.addTaskToStaking(2, {from: owner});
+        console.log(resp.receipt.gasUsed);
+        assert.equal(typeof resp, "object", `The resp is: ${resp}`);
+    });
+    it("Ether after", async () => {
+        var balance = await web3.eth.getBalance(owner);
+        console.log(`balance after: ${balance}`);
+    });
+
+    it("Task 2 is in staking", async () => {
+        var payout = await taskToken.taskIsInStaking(2);
+        assert.equal(payout, true, `O payout foi: ${payout}`)
+    });
+
 
     
-
+    it("Trying to sign up new user", async () =>{
+        var resp = await taskToken.userSignedUp("leandro");
+        console.log(resp.receipt.gasUsed);
+        assert.equal(typeof resp, "object", `The resp is: ${resp}`);
+    });
 
 });
 
