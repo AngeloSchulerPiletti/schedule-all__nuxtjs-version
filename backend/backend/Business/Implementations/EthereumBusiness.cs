@@ -1,6 +1,7 @@
 ﻿using backend.Configurations;
 using backend.Data.DTO.Ethereum;
 using Nethereum.Web3;
+using Nethereum.Web3.Accounts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +31,21 @@ namespace backend.Business.Implementations
             var balance = balanceHandler.QueryDeserializingToObjectAsync<BalanceOfOutputDTO>(balanceOfFunctionMessage, _configuration.TaskTokenContractAddress).Result;
 
             return balance.Balance;
+        }
+
+        public bool CheckIfTaskIsInStaking(long taskId)
+        {
+            var web3 = new Web3(_configuration.Host);
+
+            var TaskIsInStakingFunctionMessage = new TaskIsInStakingFunction()
+            {
+                TaskId = taskId
+            };
+
+            var taskIsInStakingHandler = web3.Eth.GetContractQueryHandler<TaskIsInStakingFunction>();
+            var taskIsInStaking = taskIsInStakingHandler.QueryDeserializingToObjectAsync<TaskIsInStakingOutputDTO>(TaskIsInStakingFunctionMessage, _configuration.TaskTokenContractAddress).Result;
+
+            return taskIsInStaking.IsInStaking;
         }
     }
 }

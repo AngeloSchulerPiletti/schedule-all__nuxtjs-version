@@ -27,13 +27,19 @@ namespace backend.Controllers
         }
 
         [HttpGet]
-        [Route("ether")]
-        public IActionResult Ether([FromBody] string address)
+        [Route("tasktoken-balance/{address}")]
+        public IActionResult TaskTokenBalance(string address)
         {
             var balance = _business.GetAccountBalance(address);
-
             return Ok(balance);
         }
 
+        [HttpGet]
+        [Route("task-is-in-staking/{id}")]
+        public IActionResult CheckIfTaskIsInStaking(long id)
+        {
+            var result = _business.CheckIfTaskIsInStaking(id);
+            return Ok(result);
+        }
     }
 }
