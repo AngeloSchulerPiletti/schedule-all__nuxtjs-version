@@ -24,7 +24,7 @@ contract("TaskToken", ([owner, investor]) => {
         const ownerBalance = await taskToken.balanceOf.call(owner);
 
         var result = false;
-        if(contractBalance == 70000000 && ownerBalance == 30000000){
+        if(contractBalance == 700000000 && ownerBalance == 300000000){
             result = true;
         }
         assert.equal(result, true, `Balances aren't correct. Gave: ${contractBalance} and ${ownerBalance}`);
@@ -72,36 +72,38 @@ contract("TaskToken", ([owner, investor]) => {
 
 
     it("Task 2 is not in staking yet", async () => {
+        // var payout = await taskToken.taskIsInStaking(5);
         var payout = await taskToken.taskIsInStaking(2);
-        assert.equal(payout, false, `O payout foi: ${payout}`)
+        console.log(typeof payout);
+        assert.equal(payout, "farelse", `O payout foi: ${payout}`)
     });
 
-    it("Ether before", async () => {
-        var balance = await web3.eth.getBalance(owner);
-        console.log(`balance before: ${balance}`);
-    });
-    it("See the return from undefined", async () =>{
-        var resp = await taskToken.addTaskToStaking(2, {from: owner});
-        console.log(resp.receipt.gasUsed);
-        assert.equal(typeof resp, "object", `The resp is: ${resp}`);
-    });
-    it("Ether after", async () => {
-        var balance = await web3.eth.getBalance(owner);
-        console.log(`balance after: ${balance}`);
-    });
+    // it("Ether before", async () => {
+    //     var balance = await web3.eth.getBalance(owner);
+    //     console.log(`balance before: ${balance}`);
+    // });
+    // it("See the return from undefined", async () =>{
+    //     var resp = await taskToken.addTaskToStaking(2, {from: owner});
+    //     console.log(resp.receipt.gasUsed);
+    //     assert.equal(typeof resp, "object", `The resp is: ${resp}`);
+    // });
+    // it("Ether after", async () => {
+    //     var balance = await web3.eth.getBalance(owner);
+    //     console.log(`balance after: ${balance}`);
+    // });
 
-    it("Task 2 is in staking", async () => {
-        var payout = await taskToken.taskIsInStaking(2);
-        assert.equal(payout, true, `O payout foi: ${payout}`)
-    });
+    // it("Task 2 is in staking", async () => {
+    //     var payout = await taskToken.taskIsInStaking(2);
+    //     assert.equal(payout, true, `O payout foi: ${payout}`)
+    // });
 
 
     
-    it("Trying to sign up new user", async () =>{
-        var resp = await taskToken.userSignedUp("leandro");
-        console.log(resp.receipt.gasUsed);
-        assert.equal(typeof resp, "object", `The resp is: ${resp}`);
-    });
+    // it("Trying to sign up new user", async () =>{
+    //     var resp = await taskToken.userSignedUp("leandro");
+    //     console.log(resp.receipt.gasUsed);
+    //     assert.equal(typeof resp, "object", `The resp is: ${resp}`);
+    // });
 
 });
 

@@ -8,7 +8,7 @@ contract TaskToken is IERC20, dAppConfig {
     uint256 constant private MAX_UINT256 = 2**256 - 1;
     mapping (address => uint256) public balances;
     mapping (address => mapping (address => uint256)) public allowed;
-    uint256 public totalSupply = 100000000; //100.000.000
+    uint256 public totalSupply = 1000000000; //1.000.000.000
     bool private offerAvailable = true;
     address private owner;
     uint256 public tokenOfferCotation;
@@ -35,9 +35,9 @@ contract TaskToken is IERC20, dAppConfig {
 
     constructor() {
         owner = msg.sender;
-        balances[msg.sender] = 30000000;               // Give the creator 30% of all tokens
+        balances[msg.sender] = 300000000;               // Give the creator 30% of all tokens
         balances[address(this)] = totalSupply - balances[msg.sender];
-        tokenOfferCotation = 10**15 wei;
+        tokenOfferCotation = 10**12 wei; // 0,000001 ether, ou R$0,02
     }
 
 
@@ -121,7 +121,7 @@ contract TaskToken is IERC20, dAppConfig {
         emit TaskDeletedFromStaking(_taskId, msg.sender);
     }
 
-    function taskIsInStaking(uint256 _taskId) public view returns(bool payout){
+    function taskIsInStaking(uint256 _taskId) public view returns(bool isInStaking){
         return taskOwner[_taskId].onStaking;
     }
 
