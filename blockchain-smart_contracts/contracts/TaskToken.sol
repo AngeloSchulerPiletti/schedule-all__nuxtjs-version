@@ -112,7 +112,7 @@ contract TaskToken is IERC20, dAppConfig {
     }
 
     function finishTask(uint256 _taskId) public{
-        bool passed = verifyIfIsOwnerOrColaborator(_taskId);
+        bool passed = verifyIfIsTaskOwnerOrColaborator(_taskId);
         require(passed, "You're not a colaborator");
 
         delete taskOwner[_taskId];
@@ -150,7 +150,7 @@ contract TaskToken is IERC20, dAppConfig {
     }
 
 
-    function verifyIfIsOwnerOrColaborator(uint256 _taskId) internal view returns (bool _result){
+    function verifyIfIsTaskOwnerOrColaborator(uint256 _taskId) internal view returns (bool _result){
         address[] memory colaborators = taskOwner[_taskId].colaborators;
         bool passed = false;
         for (uint256 i = 0; i < colaborators.length; i++) {
