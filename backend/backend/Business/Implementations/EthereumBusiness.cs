@@ -1,5 +1,6 @@
 ﻿using backend.Configurations;
 using backend.Data.DTO.Ethereum;
+using backend.Data.VO;
 using Nethereum.ABI.FunctionEncoding.Attributes;
 using Nethereum.Contracts;
 using Nethereum.Web3;
@@ -47,6 +48,16 @@ namespace backend.Business.Implementations
             var taskIsInStaking = taskIsInStakingHandler.QueryDeserializingToObjectAsync<TaskIsInStakingOutputDTO>(taskIsInStakingFunctionMessage, _configuration.TaskTokenContractAddress).Result;
 
             return taskIsInStaking.IsInStaking;
+        }
+
+        public MessageBadgeVO CheckIfSignUpWasEmitted(string userName, string walletAddress)
+        {
+            var signedUpEventHandler = _anonymousWeb3.Eth.GetEvent<SignedUpUserEventDTO>(_configuration.TaskTokenContractAddress);
+
+            var filterSignedUpUserEvents = signedUpEventHandler.CreateFilterInput(walletAddress, userName);
+            var signedUpUserEvents = signedUpEventHandler.GetAllChangesAsync(filterSignedUpUserEvents);
+
+            return new MessageBadgeVO(new List<string> { "Please, check out the CheckIfSignUpWasEmitted function" });
         }
     }
 }

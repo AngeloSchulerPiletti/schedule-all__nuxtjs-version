@@ -85,9 +85,11 @@ namespace backend.Repository
             MessageBadgeVO error = new(new List<string>());
 
             var usernameResult = _context.Users.SingleOrDefault(u => u.UserName.Equals(user.UserName));
-            if (usernameResult != null) error.messages.Add("nick de usuário já cadastrado. Escolha outro nick");
+            if (usernameResult != null) error.messages.Add("Nick de usuário já cadastrado. Escolha outro nick");
             var emailResult = _context.Users.SingleOrDefault(u => u.Email.Equals(user.Email));
-            if (emailResult != null) error.messages.Add("email de usuário já cadastrado. Escolha outro email ou faça login");
+            if (emailResult != null) error.messages.Add("Email de usuário já cadastrado. Escolha outro email ou faça login");
+            var walletResult = _context.Users.SingleOrDefault(u => u.WalletAddress.Equals(user.WalletAddress));
+            if (walletResult != null) error.messages.Add("Outro usuário já está usando esta wallet. Se você acha que isso e um erro, reivindique-a aqui");
 
             if (error.messages.Count == 0) error.isError = false;
             return error;
@@ -99,8 +101,9 @@ namespace backend.Repository
             string fullName = userVo.FullName;
             string email = userVo.Email;
             string userName = userVo.UserName;
+            string walletAddress = userVo.WalletAddress;
 
-            User user = new(userName, fullName, email, hashedPassword);
+            User user = new(userName, fullName, email, hashedPassword, walletAddress);
 
             _context.Add(user);
             _context.SaveChanges();
@@ -149,6 +152,13 @@ namespace backend.Repository
                     return error;
                 }
             }
+
+
+            if (user.WalletAddress.Length != 40) error.messages.Add("Endereço da wallet inválido");
+            var walletPattern = @"^0x[a-fA-F0-9]{40}$";
+            Match walletMatch = Regex.Match(user.WalletAddress, walletPattern);
+            bool isWallet = walletMatch.Success;
+            if (!isWallet) error.messages.Add("Endereço de wallet inválido. Você precisa estar conectado a uma wallet para se cadastrar");
 
 
             if (user.UserName.Length < 4) error.messages.Add("Nickname precisa ter pelo menos 5 caracteres");

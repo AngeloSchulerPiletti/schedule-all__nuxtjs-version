@@ -5,21 +5,21 @@ namespace backend.Data.VO
 {
     public class NewUserVO
     {
-        public NewUserVO()
-        {
-            this.inputsName = new();
-            this.inputsName.Add("Password", "senha");
-            this.inputsName.Add("UserName", "nickname");
-            this.inputsName.Add("PasswordConfirmation", "confirmação de senha");
-            this.inputsName.Add("Email", "email");
-            this.inputsName.Add("FullName", "nome completo");
-        }
+        private Dictionary<string, string> _inputsName = new() { 
+            { "Password", "senha" }, 
+            { "UserName", "nickname" },
+            { "PasswordConfirmation", "confirmação de senha" },
+            { "Email", "email" },
+            { "FullName", "nome completo" },
+            { "WalletAddress", "endereço da wallet" }
+        };
 
-        public Dictionary<string, string> inputsName { get; set; }
+        public Dictionary<string, string> inputsName { get => _inputsName; }
         public string Password { get; set; }
         public string PasswordConfirmation { get; set; }
         public string UserName { get; set; }
         public string FullName { get; set; }
         public string Email { get; set; }
+        public string WalletAddress { get; set; }
     }
 }

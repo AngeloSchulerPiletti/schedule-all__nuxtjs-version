@@ -57,7 +57,7 @@ namespace backend.Business.Implementations
                             refreshToken
                             );
 
-            return new UserDataVO(user.UserName, user.FullName, user.Email, token);
+            return new UserDataVO(user.UserName, user.FullName, user.Email, user.WalletAddress, token);
         }
 
         public UserDataVO ValidateCredentials(TokenVO tokenVo)
@@ -94,7 +94,7 @@ namespace backend.Business.Implementations
                             refreshToken
                             );
 
-            return new UserDataVO(user.UserName, user.FullName, user.Email, token);
+            return new UserDataVO(user.UserName, user.FullName, user.Email, user.WalletAddress, token);
         }
 
         public bool RevokeToken(string userName)

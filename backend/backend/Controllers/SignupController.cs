@@ -17,10 +17,12 @@ namespace backend.Controllers
     public class SignupController : ControllerBase
     {
         private ISignupBusiness _signupBusiness;
+        private IEthereumBusiness _ethereumBusiness;
 
-        public SignupController(ISignupBusiness signupBusiness, IUserRepository userRepository) : base(userRepository)
+        public SignupController(ISignupBusiness signupBusiness, IEthereumBusiness ethereumBusiness, IUserRepository userRepository) : base(userRepository)
         {
             _signupBusiness = signupBusiness;
+            _ethereumBusiness = ethereumBusiness;
         }
 
 
@@ -33,6 +35,10 @@ namespace backend.Controllers
 
             MessageBadgeVO existanceResult = _signupBusiness.CheckIfUserAlreadyExists(user);
             if (existanceResult.isError) return BadRequest(existanceResult);
+
+            // Adicionar a questão da wallet no Auth e etc
+            MessageBadgeVO walletEventResult = _ethereumBusiness.CheckIfSignUpWasEmitted(user.UserName, user.WalletAddress);
+            if (walletEventResult.isError) return BadRequest(walletEventResult);
 
             MessageBadgeVO saveResult = _signupBusiness.CreateNewUser(user);
             if (saveResult.isError) return BadRequest(saveResult);

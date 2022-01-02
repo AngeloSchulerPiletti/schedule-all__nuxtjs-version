@@ -8,12 +8,13 @@ namespace backend.Models
     [Table("users")]
     public class User
     {
-        public User(string userName, string fullName, string email, string password)
+        public User(string userName, string fullName, string email, string password, string walletAddress)
         {
             UserName = userName;
             FullName = fullName;
             Email = email;
             Password = password;
+            WalletAddress = walletAddress;
         }
 
         [Key]
@@ -27,6 +28,8 @@ namespace backend.Models
         public string Email { get; set; }
         [Column("password")]
         public string Password { get; set; }
+        [Column("wallet_address")]
+        public string WalletAddress { get; set; }
         [Column("refresh_token")]
         public string RefreshToken { get; set; }
         [Column("refresh_token_expiry_time")]

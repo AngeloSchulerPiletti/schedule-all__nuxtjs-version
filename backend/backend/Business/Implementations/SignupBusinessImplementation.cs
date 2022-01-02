@@ -54,7 +54,7 @@ namespace backend.Business.Implementations
                             refreshToken
                             );
 
-            return new UserDataVO(freshUser.UserName, freshUser.FullName, freshUser.Email, token);
+            return new UserDataVO(freshUser.UserName, freshUser.FullName, freshUser.Email, freshUser.WalletAddress, token);
         }
 
         public MessageBadgeVO CheckIfUserAlreadyExists(NewUserVO user)
