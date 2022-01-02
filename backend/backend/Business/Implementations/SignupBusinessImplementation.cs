@@ -27,24 +27,11 @@ namespace backend.Business.Implementations
             _tokenService = tokenService;
         }
 
-        public object CreateNewUser(NewUserVO user)
+        public UserDataVO AuthTheNewUser(User freshUser)
         {
-            MessageBadgeVO errors = new(new List<string>());
-
-            MessageBadgeVO inputsValidateResult = _repository.ValidateNewUserVO(user, errors);
-            if (inputsValidateResult != null) return inputsValidateResult;
-
-            MessageBadgeVO checkUserExistenceResult = _repository.CheckIfUserAlreadyExists(user, errors);
-            if (checkUserExistenceResult is MessageBadgeVO) return checkUserExistenceResult;
-
-            bool saveResult = _repository.SaveNewUserOnDB(user);
-            if (!saveResult) return new MessageBadgeVO(new List<string> { "Houve um erro ao salvar seu usuário. Tente novamente mais tarde" });
-
-            User freshUser = _repository.ValidateCredentials(user.UserName);
-
             var claims = new List<Claim> {
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString("N")),
-                new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName)
+                new Claim(JwtRegisteredClaimNames.UniqueName, freshUser.UserName)
             };
 
             string accessToken = _tokenService.GenerateAccessToken(claims);
@@ -58,7 +45,6 @@ namespace backend.Business.Implementations
             DateTime createDate = DateTime.Now;
             DateTime expirationDate = createDate.AddMinutes(_configuration.Minutes);
 
-            if (errors.messages.Count > 0) return errors;
 
             TokenVO token = new(
                             true,
@@ -68,8 +54,32 @@ namespace backend.Business.Implementations
                             refreshToken
                             );
 
-            return new UserDataVO(user.UserName, user.FullName, user.Email, token);
+            return new UserDataVO(freshUser.UserName, freshUser.FullName, freshUser.Email, token);
         }
+
+        public MessageBadgeVO CheckIfUserAlreadyExists(NewUserVO user)
+        {
+            return _repository.CheckIfUserAlreadyExists(user);
+        }
+
+        public MessageBadgeVO CreateNewUser(NewUserVO user)
+        {
+            bool saveResult = _repository.SaveNewUserOnDB(user);
+            
+            if (!saveResult) return new MessageBadgeVO(new List<string> { "Houve um erro ao salvar seu usuário. Tente novamente mais tarde" });
+            return new MessageBadgeVO(new List<string> { "Usuário salvo com sucesso" }, false);
+        }
+
+        public User GetTheNewUser(string username)
+        {
+            return _repository.GetUserByUsername(username);
+        }
+
+        public MessageBadgeVO ValidateInputs(NewUserVO user)
+        {
+            return _repository.ValidateNewUserVO(user);
+        }
+
 
     }
 }

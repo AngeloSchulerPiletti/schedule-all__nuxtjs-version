@@ -32,7 +32,7 @@ namespace backend.Controllers
 
                     var userName = token.Claims.FirstOrDefault(claim => claim.Type == "unique_name").Value;
                     if (userName == null) return null;
-                    var user = _userRepository.ValidateCredentials(userName);
+                    var user = _userRepository.GetUserByUsername(userName);
                     return user;
         }
             return null;

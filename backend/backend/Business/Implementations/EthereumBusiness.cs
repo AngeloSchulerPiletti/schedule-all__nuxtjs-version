@@ -1,5 +1,7 @@
 ﻿using backend.Configurations;
 using backend.Data.DTO.Ethereum;
+using Nethereum.ABI.FunctionEncoding.Attributes;
+using Nethereum.Contracts;
 using Nethereum.Web3;
 using Nethereum.Web3.Accounts;
 using System;
@@ -13,21 +15,22 @@ namespace backend.Business.Implementations
     public class EthereumBusiness : IEthereumBusiness
     {
         private EthereumConfiguration _configuration;
+        private Web3 _anonymousWeb3;
+        // private Web3 _accountedWeb3
         public EthereumBusiness(EthereumConfiguration configuration)
         {
             _configuration = configuration;
+            _anonymousWeb3 = new Web3(configuration.Host);
         }
 
         public BigInteger GetAccountBalance(string address)
         {
-            var web3 = new Web3(_configuration.Host);
-
             var balanceOfFunctionMessage = new BalanceOfFunction()
             {
                 Owner = address
             };
 
-            var balanceHandler = web3.Eth.GetContractQueryHandler<BalanceOfFunction>();
+            var balanceHandler = _anonymousWeb3.Eth.GetContractQueryHandler<BalanceOfFunction>();
             var balance = balanceHandler.QueryDeserializingToObjectAsync<BalanceOfOutputDTO>(balanceOfFunctionMessage, _configuration.TaskTokenContractAddress).Result;
 
             return balance.Balance;
@@ -35,15 +38,13 @@ namespace backend.Business.Implementations
 
         public bool CheckIfTaskIsInStaking(long taskId)
         {
-            var web3 = new Web3(_configuration.Host);
-
-            var TaskIsInStakingFunctionMessage = new TaskIsInStakingFunction()
+            var taskIsInStakingFunctionMessage = new TaskIsInStakingFunction()
             {
                 TaskId = taskId
             };
 
-            var taskIsInStakingHandler = web3.Eth.GetContractQueryHandler<TaskIsInStakingFunction>();
-            var taskIsInStaking = taskIsInStakingHandler.QueryDeserializingToObjectAsync<TaskIsInStakingOutputDTO>(TaskIsInStakingFunctionMessage, _configuration.TaskTokenContractAddress).Result;
+            var taskIsInStakingHandler = _anonymousWeb3.Eth.GetContractQueryHandler<TaskIsInStakingFunction>();
+            var taskIsInStaking = taskIsInStakingHandler.QueryDeserializingToObjectAsync<TaskIsInStakingOutputDTO>(taskIsInStakingFunctionMessage, _configuration.TaskTokenContractAddress).Result;
 
             return taskIsInStaking.IsInStaking;
         }

@@ -70,7 +70,7 @@ namespace backend.Business.Implementations
 
             var username = principal.Identity.Name;
 
-            var user = _repository.ValidateCredentials(username);
+            var user = _repository.GetUserByUsername(username);
 
             if (user == null ||
                 user.RefreshToken != refreshToken ||

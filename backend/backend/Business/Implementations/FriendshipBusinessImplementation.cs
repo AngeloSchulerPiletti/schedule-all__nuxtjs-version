@@ -28,7 +28,7 @@ namespace backend.Business.Implementations
                 MessageBadgeVO answerResult =_repository.AnswerTheInvite(notification.UserId, notification.CorrelatedUserId);
                 if(!answerResult.isError)
                 {
-                    List<User> usersData = _userRepository.GetUsersDataFromIdList(new List<long> { notification.UserId, notification.CorrelatedUserId });
+                    List<User> usersData = _userRepository.GetUsersByIdList(new List<long> { notification.UserId, notification.CorrelatedUserId });
 
                     Notification acceptNotification1 = new(usersData[0].Id, "Novo amigo!", String.Concat("Agora, você e ", usersData[1].UserName, " são amigos!"), "friendship");
                     _notificationRepository.CreateNewNotification(acceptNotification1);
@@ -100,7 +100,7 @@ namespace backend.Business.Implementations
             try
             {
                 _repository.SendInvite(senderId, receiverId);
-                User sender = _userRepository.GetUserDataFromId(senderId);
+                User sender = _userRepository.GetUserById(senderId);
                 Notification notification = new(receiverId, "Convite de Amizade", String.Concat(sender.UserName, " enviou um convite de amizade!"), "friendship", senderId, null, true);
                 _notificationRepository.CreateNewNotification(notification);
                 return new MessageBadgeVO(new List<string> { "Convite enviado com sucesso!" }, false);

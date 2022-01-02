@@ -37,7 +37,7 @@ namespace backend.Repository
         }
 
 
-        public User ValidateCredentials(string userName)
+        public User GetUserByUsername(string userName)
         {
             return _context.Users.SingleOrDefault(u => u.UserName == userName);
         }
@@ -80,13 +80,17 @@ namespace backend.Repository
             return BitConverter.ToString(hashedBytes);
         }
 
-        public MessageBadgeVO CheckIfUserAlreadyExists(NewUserVO user, MessageBadgeVO error)
+        public MessageBadgeVO CheckIfUserAlreadyExists(NewUserVO user)
         {
+            MessageBadgeVO error = new(new List<string>());
+
             var usernameResult = _context.Users.SingleOrDefault(u => u.UserName.Equals(user.UserName));
             if (usernameResult != null) error.messages.Add("nick de usuário já cadastrado. Escolha outro nick");
             var emailResult = _context.Users.SingleOrDefault(u => u.Email.Equals(user.Email));
             if (emailResult != null) error.messages.Add("email de usuário já cadastrado. Escolha outro email ou faça login");
-            return error.messages.Count > 0 ? error : null;
+
+            if (error.messages.Count == 0) error.isError = false;
+            return error;
         }
 
         public bool SaveNewUserOnDB(NewUserVO userVo)
@@ -133,8 +137,10 @@ namespace backend.Repository
             return null;
         }
 
-        public MessageBadgeVO ValidateNewUserVO(NewUserVO user, MessageBadgeVO error)
+        public MessageBadgeVO ValidateNewUserVO(NewUserVO user)
         {
+            MessageBadgeVO error = new(new List<string>());
+
             foreach (PropertyInfo input in typeof(NewUserVO).GetProperties())
             {
                 if (input.GetValue(user) == null)
@@ -171,16 +177,16 @@ namespace backend.Repository
             if (user.PasswordConfirmation == null) error.messages.Add("Preencha a confirmação de senha");
             if (!user.Password.Equals(user.PasswordConfirmation)) error.messages.Add("A confirmação de senha é diferente da senha");
 
-            if (error.messages.Count > 0) return error;
-            return null;
+            if (error.messages.Count == 0) error.isError = false;
+            return error;
         }
 
-        public User GetUserDataFromId(long id)
+        public User GetUserById(long id)
         {
             return _context.Users.FirstOrDefault(u => u.Id == id);
         }
 
-        public List<User> GetUsersDataFromIdList(List<long> ids)
+        public List<User> GetUsersByIdList(List<long> ids)
         {
             return _context.Users.Where(u => ids.Contains(u.Id)).ToList();
         }
