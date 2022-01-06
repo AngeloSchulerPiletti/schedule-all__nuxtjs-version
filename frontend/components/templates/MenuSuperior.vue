@@ -10,7 +10,7 @@
       ></NuxtLink>
       <div class="flex_c user_info">
         <span>{{ userData.userName }}</span>
-        <span>{{ userData.fullName }}</span>
+        <span class="upper">{{ userData.fullName }}</span>
       </div>
     </div>
     <div id="dashboard-options_container" class="flex_r">
