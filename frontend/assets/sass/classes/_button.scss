@@ -1,6 +1,11 @@
 /*+====================================+
   |                BUTTON              |
   +====================================+*/
+.button-disabled{
+  opacity: 0.5;
+  pointer-events: none;
+}
+
 .button-1 {
   flex-grow: 0;
   height: fit-content;

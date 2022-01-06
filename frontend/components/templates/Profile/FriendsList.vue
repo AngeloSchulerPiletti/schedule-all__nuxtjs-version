@@ -15,7 +15,7 @@
             defaultPosition="goRight"
           />
           <div class="data-user flex_c">
-            <h6 class="title-1_4 fullname">{{ user.fullName }}</h6>
+            <h6 class="title-1_4 fullname upper">{{ user.fullName }}</h6>
             <span class="username">{{ user.userName }}</span>
           </div>
         </div>
@@ -126,6 +126,9 @@ export default {
         .then((res) => {
           this.friendsList = res.data
           this.haveFriends = res.data.length > 0 ? true : false
+          res.data.forEach(element => {
+            console.log(element.fullName);
+          });
         })
         .catch((err) => {
           this.$store.commit('setDashboardPageStatus', 'error')
