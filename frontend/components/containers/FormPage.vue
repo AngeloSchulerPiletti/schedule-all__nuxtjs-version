@@ -26,7 +26,7 @@
             <li v-for="(error, index) in errors" :key="index">{{error}}</li>
           </ul>
         </div>
-        <div class="actions">
+        <div class="actions flex_r">
           <slot :form_data="form_data"></slot>
         </div>
       </form>
@@ -116,6 +116,10 @@ export default {
           font-size: 13px;
         }
       }
+    }
+
+    .actions{
+      justify-content: space-between;
     }
   }
 }
