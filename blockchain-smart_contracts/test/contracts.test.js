@@ -74,8 +74,14 @@ contract("TaskToken", ([owner, investor]) => {
     it("Task 2 is not in staking yet", async () => {
         // var payout = await taskToken.taskIsInStaking(5);
         var payout = await taskToken.taskIsInStaking(2);
-        console.log(typeof payout);
-        assert.equal(payout, "farelse", `O payout foi: ${payout}`)
+        assert.equal(payout, false, `O payout foi: ${payout}`)
+    });
+    
+    it("Logging User Signed Up, then trying to get the evnts", async () => {
+        const name = "angelo";
+        var receipt = await taskToken.userSignedUp(name);
+        var eventsReceipt = await taskToken.getPastEvents('SignedUpUser')
+        assert.equal(eventsReceipt[0].returnValues[1], name, `O payout foi: ${eventsReceipt[0].returnValues}`)
     });
 
     // it("Ether before", async () => {

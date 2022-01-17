@@ -35,7 +35,7 @@ interface IERC20 {
 }
 
 interface dAppConfig{
-    event SignedUpUser(address indexed _user, string indexed _username);
+    event SignedUpUser(address indexed _user, string _username);
 
     event NewTaskInStaking(uint256 indexed _taskId, address indexed _owner);
     event TaskDeletedFromStaking(uint256 indexed _taskId, address indexed _finisher);
