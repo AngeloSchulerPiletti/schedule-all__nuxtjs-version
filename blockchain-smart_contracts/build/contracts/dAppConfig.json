@@ -30,7 +30,7 @@
           "type": "address"
         },
         {
-          "indexed": true,
+          "indexed": false,
           "internalType": "string",
           "name": "_username",
           "type": "string"
@@ -59,7 +59,7 @@
       "type": "event"
     }
   ],
-  "metadata": "{\"compiler\":{\"version\":\"0.8.10+commit.fc410830\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"_taskId\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"_owner\",\"type\":\"address\"}],\"name\":\"NewTaskInStaking\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"_user\",\"type\":\"address\"},{\"indexed\":true,\"internalType\":\"string\",\"name\":\"_username\",\"type\":\"string\"}],\"name\":\"SignedUpUser\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"_taskId\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"_finisher\",\"type\":\"address\"}],\"name\":\"TaskDeletedFromStaking\",\"type\":\"event\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/ITaskToken.sol\":\"dAppConfig\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/ITaskToken.sol\":{\"keccak256\":\"0xed8cca20ce106b5ce7abbfcbc222b5b6066e5be9ace8d70322ac25528b243425\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://81d3f32f7da6a646dce7c1d480d4d06f05fb4d6241286c1e8c5e9aa3c0d82744\",\"dweb:/ipfs/QmX7c3FAgZfgFgGhT3yDygX5EXPeAWkWquY7gGDMWBUVFf\"]}},\"version\":1}",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.10+commit.fc410830\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"_taskId\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"_owner\",\"type\":\"address\"}],\"name\":\"NewTaskInStaking\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"_user\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"_username\",\"type\":\"string\"}],\"name\":\"SignedUpUser\",\"type\":\"event\"},{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"uint256\",\"name\":\"_taskId\",\"type\":\"uint256\"},{\"indexed\":true,\"internalType\":\"address\",\"name\":\"_finisher\",\"type\":\"address\"}],\"name\":\"TaskDeletedFromStaking\",\"type\":\"event\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"project:/contracts/ITaskToken.sol\":\"dAppConfig\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\"},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"project:/contracts/ITaskToken.sol\":{\"keccak256\":\"0x545c66cb2f56d9b159f04b8dcabf2a6898806100aa39686a076bab5a5543ba58\",\"license\":\"MIT\",\"urls\":[\"bzz-raw://dab35fddb0d261a9beb8b4ce10d1c376e2c313c65f40b6c099de0da310a42aa5\",\"dweb:/ipfs/QmcnJfMg1MT9BkQJqZZ2PsjFRQHWAZXaj8Dgq8uJQLUBeB\"]}},\"version\":1}",
   "bytecode": "0x",
   "deployedBytecode": "0x",
   "immutableReferences": {},
@@ -67,7 +67,7 @@
   "deployedGeneratedSources": [],
   "sourceMap": "",
   "deployedSourceMap": "",
-  "source": "// SPDX-License-Identifier: MIT\r\npragma solidity ^0.8.3;\r\n\r\ninterface IERC20 {\r\n    /// @param _owner The address from which the balance will be retrieved\r\n    /// @return balance the balance\r\n    function balanceOf(address _owner) external view returns (uint256 balance);\r\n\r\n    /// @notice send `_value` token to `_to` from `msg.sender`\r\n    /// @param _to The address of the recipient\r\n    /// @param _value The amount of token to be transferred\r\n    /// @return success Whether the transfer was successful or not\r\n    function transfer(address _to, uint256 _value)  external returns (bool success);\r\n\r\n    /// @notice send `_value` token to `_to` from `_from` on the condition it is approved by `_from`\r\n    /// @param _from The address of the sender\r\n    /// @param _to The address of the recipient\r\n    /// @param _value The amount of token to be transferred\r\n    /// @return success Whether the transfer was successful or not\r\n    function transferFrom(address _from, address _to, uint256 _value) external returns (bool success);\r\n\r\n    /// @notice `msg.sender` approves `_addr` to spend `_value` tokens\r\n    /// @param _spender The address of the account able to transfer the tokens\r\n    /// @param _value The amount of wei to be approved for transfer\r\n    /// @return success Whether the approval was successful or not\r\n    function approve(address _spender  , uint256 _value) external returns (bool success);\r\n\r\n    /// @param _owner The address of the account owning tokens\r\n    /// @param _spender The address of the account able to transfer the tokens\r\n    /// @return remaining Amount of remaining tokens allowed to spent\r\n    function allowance(address _owner, address _spender) external view returns (uint256 remaining);\r\n\r\n    event Transfer(address indexed _from, address indexed _to, uint256 _value);\r\n    event Approval(address indexed _owner, address indexed _spender, uint256 _value);\r\n}\r\n\r\ninterface dAppConfig{\r\n    event SignedUpUser(address indexed _user, string indexed _username);\r\n\r\n    event NewTaskInStaking(uint256 indexed _taskId, address indexed _owner);\r\n    event TaskDeletedFromStaking(uint256 indexed _taskId, address indexed _finisher);\r\n}",
+  "source": "// SPDX-License-Identifier: MIT\r\npragma solidity ^0.8.3;\r\n\r\ninterface IERC20 {\r\n    /// @param _owner The address from which the balance will be retrieved\r\n    /// @return balance the balance\r\n    function balanceOf(address _owner) external view returns (uint256 balance);\r\n\r\n    /// @notice send `_value` token to `_to` from `msg.sender`\r\n    /// @param _to The address of the recipient\r\n    /// @param _value The amount of token to be transferred\r\n    /// @return success Whether the transfer was successful or not\r\n    function transfer(address _to, uint256 _value)  external returns (bool success);\r\n\r\n    /// @notice send `_value` token to `_to` from `_from` on the condition it is approved by `_from`\r\n    /// @param _from The address of the sender\r\n    /// @param _to The address of the recipient\r\n    /// @param _value The amount of token to be transferred\r\n    /// @return success Whether the transfer was successful or not\r\n    function transferFrom(address _from, address _to, uint256 _value) external returns (bool success);\r\n\r\n    /// @notice `msg.sender` approves `_addr` to spend `_value` tokens\r\n    /// @param _spender The address of the account able to transfer the tokens\r\n    /// @param _value The amount of wei to be approved for transfer\r\n    /// @return success Whether the approval was successful or not\r\n    function approve(address _spender  , uint256 _value) external returns (bool success);\r\n\r\n    /// @param _owner The address of the account owning tokens\r\n    /// @param _spender The address of the account able to transfer the tokens\r\n    /// @return remaining Amount of remaining tokens allowed to spent\r\n    function allowance(address _owner, address _spender) external view returns (uint256 remaining);\r\n\r\n    event Transfer(address indexed _from, address indexed _to, uint256 _value);\r\n    event Approval(address indexed _owner, address indexed _spender, uint256 _value);\r\n}\r\n\r\ninterface dAppConfig{\r\n    event SignedUpUser(address indexed _user, string _username);\r\n\r\n    event NewTaskInStaking(uint256 indexed _taskId, address indexed _owner);\r\n    event TaskDeletedFromStaking(uint256 indexed _taskId, address indexed _finisher);\r\n}",
   "sourcePath": "C:\\Users\\angel\\OneDrive\\Documentos\\Projetos GitHub\\schedule-all__nuxtjs-version\\blockchain-smart_contracts\\contracts\\ITaskToken.sol",
   "ast": {
     "absolutePath": "project:/contracts/ITaskToken.sol",
@@ -960,13 +960,13 @@
                 {
                   "constant": false,
                   "id": 72,
-                  "indexed": true,
+                  "indexed": false,
                   "mutability": "mutable",
                   "name": "_username",
-                  "nameLocation": "1997:9:0",
+                  "nameLocation": "1989:9:0",
                   "nodeType": "VariableDeclaration",
                   "scope": 74,
-                  "src": "1982:24:0",
+                  "src": "1982:16:0",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -986,15 +986,15 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1958:49:0"
+              "src": "1958:41:0"
             },
-            "src": "1940:68:0"
+            "src": "1940:60:0"
           },
           {
             "anonymous": false,
             "id": 80,
             "name": "NewTaskInStaking",
-            "nameLocation": "2022:16:0",
+            "nameLocation": "2014:16:0",
             "nodeType": "EventDefinition",
             "parameters": {
               "id": 79,
@@ -1006,10 +1006,10 @@
                   "indexed": true,
                   "mutability": "mutable",
                   "name": "_taskId",
-                  "nameLocation": "2055:7:0",
+                  "nameLocation": "2047:7:0",
                   "nodeType": "VariableDeclaration",
                   "scope": 80,
-                  "src": "2039:23:0",
+                  "src": "2031:23:0",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1020,7 +1020,7 @@
                     "id": 75,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2039:7:0",
+                    "src": "2031:7:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1034,10 +1034,10 @@
                   "indexed": true,
                   "mutability": "mutable",
                   "name": "_owner",
-                  "nameLocation": "2080:6:0",
+                  "nameLocation": "2072:6:0",
                   "nodeType": "VariableDeclaration",
                   "scope": 80,
-                  "src": "2064:22:0",
+                  "src": "2056:22:0",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1048,7 +1048,7 @@
                     "id": 77,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2064:7:0",
+                    "src": "2056:7:0",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1058,15 +1058,15 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2038:49:0"
+              "src": "2030:49:0"
             },
-            "src": "2016:72:0"
+            "src": "2008:72:0"
           },
           {
             "anonymous": false,
             "id": 86,
             "name": "TaskDeletedFromStaking",
-            "nameLocation": "2100:22:0",
+            "nameLocation": "2092:22:0",
             "nodeType": "EventDefinition",
             "parameters": {
               "id": 85,
@@ -1078,10 +1078,10 @@
                   "indexed": true,
                   "mutability": "mutable",
                   "name": "_taskId",
-                  "nameLocation": "2139:7:0",
+                  "nameLocation": "2131:7:0",
                   "nodeType": "VariableDeclaration",
                   "scope": 86,
-                  "src": "2123:23:0",
+                  "src": "2115:23:0",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1092,7 +1092,7 @@
                     "id": 81,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2123:7:0",
+                    "src": "2115:7:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -1106,10 +1106,10 @@
                   "indexed": true,
                   "mutability": "mutable",
                   "name": "_finisher",
-                  "nameLocation": "2164:9:0",
+                  "nameLocation": "2156:9:0",
                   "nodeType": "VariableDeclaration",
                   "scope": 86,
-                  "src": "2148:25:0",
+                  "src": "2140:25:0",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -1120,7 +1120,7 @@
                     "id": 83,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2148:7:0",
+                    "src": "2140:7:0",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -1130,17 +1130,17 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2122:52:0"
+              "src": "2114:52:0"
             },
-            "src": "2094:81:0"
+            "src": "2086:81:0"
           }
         ],
         "scope": 88,
-        "src": "1913:265:0",
+        "src": "1913:257:0",
         "usedErrors": []
       }
     ],
-    "src": "33:2145:0"
+    "src": "33:2137:0"
   },
   "legacyAST": {
     "absolutePath": "project:/contracts/ITaskToken.sol",
@@ -2033,13 +2033,13 @@
                 {
                   "constant": false,
                   "id": 72,
-                  "indexed": true,
+                  "indexed": false,
                   "mutability": "mutable",
                   "name": "_username",
-                  "nameLocation": "1997:9:0",
+                  "nameLocation": "1989:9:0",
                   "nodeType": "VariableDeclaration",
                   "scope": 74,
-                  "src": "1982:24:0",
+                  "src": "1982:16:0",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2059,15 +2059,15 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "1958:49:0"
+              "src": "1958:41:0"
             },
-            "src": "1940:68:0"
+            "src": "1940:60:0"
           },
           {
             "anonymous": false,
             "id": 80,
             "name": "NewTaskInStaking",
-            "nameLocation": "2022:16:0",
+            "nameLocation": "2014:16:0",
             "nodeType": "EventDefinition",
             "parameters": {
               "id": 79,
@@ -2079,10 +2079,10 @@
                   "indexed": true,
                   "mutability": "mutable",
                   "name": "_taskId",
-                  "nameLocation": "2055:7:0",
+                  "nameLocation": "2047:7:0",
                   "nodeType": "VariableDeclaration",
                   "scope": 80,
-                  "src": "2039:23:0",
+                  "src": "2031:23:0",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2093,7 +2093,7 @@
                     "id": 75,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2039:7:0",
+                    "src": "2031:7:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -2107,10 +2107,10 @@
                   "indexed": true,
                   "mutability": "mutable",
                   "name": "_owner",
-                  "nameLocation": "2080:6:0",
+                  "nameLocation": "2072:6:0",
                   "nodeType": "VariableDeclaration",
                   "scope": 80,
-                  "src": "2064:22:0",
+                  "src": "2056:22:0",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2121,7 +2121,7 @@
                     "id": 77,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2064:7:0",
+                    "src": "2056:7:0",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -2131,15 +2131,15 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2038:49:0"
+              "src": "2030:49:0"
             },
-            "src": "2016:72:0"
+            "src": "2008:72:0"
           },
           {
             "anonymous": false,
             "id": 86,
             "name": "TaskDeletedFromStaking",
-            "nameLocation": "2100:22:0",
+            "nameLocation": "2092:22:0",
             "nodeType": "EventDefinition",
             "parameters": {
               "id": 85,
@@ -2151,10 +2151,10 @@
                   "indexed": true,
                   "mutability": "mutable",
                   "name": "_taskId",
-                  "nameLocation": "2139:7:0",
+                  "nameLocation": "2131:7:0",
                   "nodeType": "VariableDeclaration",
                   "scope": 86,
-                  "src": "2123:23:0",
+                  "src": "2115:23:0",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2165,7 +2165,7 @@
                     "id": 81,
                     "name": "uint256",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2123:7:0",
+                    "src": "2115:7:0",
                     "typeDescriptions": {
                       "typeIdentifier": "t_uint256",
                       "typeString": "uint256"
@@ -2179,10 +2179,10 @@
                   "indexed": true,
                   "mutability": "mutable",
                   "name": "_finisher",
-                  "nameLocation": "2164:9:0",
+                  "nameLocation": "2156:9:0",
                   "nodeType": "VariableDeclaration",
                   "scope": 86,
-                  "src": "2148:25:0",
+                  "src": "2140:25:0",
                   "stateVariable": false,
                   "storageLocation": "default",
                   "typeDescriptions": {
@@ -2193,7 +2193,7 @@
                     "id": 83,
                     "name": "address",
                     "nodeType": "ElementaryTypeName",
-                    "src": "2148:7:0",
+                    "src": "2140:7:0",
                     "stateMutability": "nonpayable",
                     "typeDescriptions": {
                       "typeIdentifier": "t_address",
@@ -2203,17 +2203,17 @@
                   "visibility": "internal"
                 }
               ],
-              "src": "2122:52:0"
+              "src": "2114:52:0"
             },
-            "src": "2094:81:0"
+            "src": "2086:81:0"
           }
         ],
         "scope": 88,
-        "src": "1913:265:0",
+        "src": "1913:257:0",
         "usedErrors": []
       }
     ],
-    "src": "33:2145:0"
+    "src": "33:2137:0"
   },
   "compiler": {
     "name": "solc",
@@ -2221,7 +2221,7 @@
   },
   "networks": {},
   "schemaVersion": "3.4.3",
-  "updatedAt": "2021-12-30T22:35:09.454Z",
+  "updatedAt": "2022-01-17T11:55:35.949Z",
   "devdoc": {
     "kind": "dev",
     "methods": {},
