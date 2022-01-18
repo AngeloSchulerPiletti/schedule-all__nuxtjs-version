@@ -1,6 +1,12 @@
 import colors from 'vuetify/es5/util/colors'
 
 export default {
+  publicRuntimeConfig: {
+    contractAddress: process.env.CONTRACT_ADDRESS,
+    contractJsonPath: process.env.CONTRACT_JSON_PATH,
+    networkAddress: process.env.NETWORK_ADDRESS,
+  },
+  
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
     titleTemplate: '%s | SCHEDULE',
@@ -15,11 +21,14 @@ export default {
       { name: 'format-detection', content: 'telephone=no' }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
-      { rel: 'preconnect', href: 'https://fonts.googleapis.com'},
-      { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin:""},
-      { rel: 'stylesheet', href: "https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@200;300;400;500;700;800&family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400&display=swap"}
+      { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
+      { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: "" },
+      { rel: 'stylesheet', href: "https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@200;300;400;500;700;800&family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400&display=swap" }
     ]
+  },
+
+  router: {
+    middleware: 'wallet_connection',
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
@@ -32,7 +41,10 @@ export default {
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
   plugins: [
-    '~/plugins/axios.js'
+    '~/plugins/axios.js',
+    '~/plugins/user-web3.client.js',
+    '~/plugins/node-web3.client.js',
+    '~/plugins/smart-contract.client.js',
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components
@@ -52,6 +64,7 @@ export default {
     '@nuxtjs/axios',
     'cookie-universal-nuxt',
     '@nuxtjs/style-resources',
+    'web3',
     // '@nuxtjs/auth-next'
   ],
 
@@ -62,7 +75,6 @@ export default {
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {
     baseUrl: "https://localhost:44335/api/",
-
   },
 
 
