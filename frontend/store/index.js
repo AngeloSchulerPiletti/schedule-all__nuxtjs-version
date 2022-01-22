@@ -1,6 +1,10 @@
 
 export const state = () => ({
     dashboardPageStatus: 'loading',
+    entry: {
+        pageName: null,
+        pageRoute: null,
+    },
     confirmationModal: {
         called: false,
         subject: null,
@@ -16,12 +20,15 @@ export const state = () => ({
 })
 
 export const mutations = {
+    setEntryPage(state, [pageName, pageRoute]){
+        state.entry['pageName'] = pageName;
+        state.entry['pageRoute'] = pageRoute;
+    },
     openModal(state, {subject, title = null, paragraph = null}) {
         state.confirmationModal.called = true;
         state.confirmationModal.subject = subject;
         state.confirmationModal.data.title = title;
         state.confirmationModal.data.paragraph = paragraph;
-
     },
     closeModal(state, answer) {
         state.confirmationModal.called = false;
@@ -42,6 +49,9 @@ export const mutations = {
 
 export const actions = {
     async nuxtServerInit(vuexContext, { app, redirect }) {
+        var {name, path} = app.router.history.current;
+        vuexContext.commit("setEntryPage", [name, path]);
+        
         var userData_obj = app.$cookies.get('userData')
         if (userData_obj) {
             var refreshToken = userData_obj.tokenData.refreshToken,
