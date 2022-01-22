@@ -1,7 +1,8 @@
 
 
-export default async function (app = { redirect, $axios, store, $userWeb3 }) {
+export default async function ({ redirect, $axios, store, $userWeb3 }) {
     // Precisa acontecer na primeira chamada/reload também...
+
     if (!process.server) {
         if (store.state.wallet.hasMetaMask === null) {
             (typeof window.ethereum !== 'undefined' && window.ethereum.isMetaMask) ?
@@ -16,14 +17,10 @@ export default async function (app = { redirect, $axios, store, $userWeb3 }) {
         if (userWallet) {
             console.log("wallet connected");
             store.dispatch("wallet/connectedWallet", userWallet);
-            // store.commit('wallet/setWalletAddress', userWallet);
-            // store.commit('wallet/setWalletConnection', true);
         }
         else {
             console.log("wallet not connected");
             store.dispatch("wallet/disconnectedWallet");
-            // store.commit('wallet/setWalletAddress', null);
-            // store.commit('wallet/setWalletConnection', false);
         }
     }
 }
