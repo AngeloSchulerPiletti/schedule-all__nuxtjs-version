@@ -25,6 +25,7 @@
 
 <script>
 import FormPage from '@/components/containers/FormPage.vue'
+import taskTokenService from '@/services/taskTokenService.js'
 
 export default {
   middleware: 'auth_not_allowed',
@@ -75,20 +76,17 @@ export default {
     hasMetaMask() {
       return this.$store.state.wallet.hasMetaMask
     },
+    getWalletAddress() {
+      return this.$store.state.wallet.walletAddress
+    },
   },
   methods: {
-    async checkTaskTokenUserEventLog() {
-      var receipt = await this.$smartContract.getPastEvents('SignedUpUser')
-      console.log(receipt)
-
-      return false
-    },
     connectWallet() {
       if (this.hasMetaMask) {
         this.$userWeb3.eth
           .requestAccounts()
           .then((accounts) => {
-            var walletAddress = accounts[0]
+            let walletAddress = accounts[0]
             this.$store.dispatch('wallet/connectedWallet', walletAddress)
           })
           .catch((err) => {
@@ -101,42 +99,40 @@ export default {
       }
     },
     createNewUser(data) {
-      this.taskTokenUserEventRequest(data).then(() => {
-        this.checkTaskTokenUserEventLog().then(() => {
-          console.log('loguei aquilo')
+      if (!data.userName) return (this.errors = ['Preencha o nickname'])
+
+      this.checkTaskTokenUserEventLog(data)
+        .then(async (nicknameAlreadyLogged) => {
+          if (!nicknameAlreadyLogged) {
+            this.taskTokenUserEventRequest(data).then(() => {
+              this.apiUserRequest(data)
+            })
+          }
+          this.apiUserRequest(data)
         })
-      })
-      // this.checkTaskTokenUserEventLog()
-      //   .then((isLogged) => {
-      //     if (!isLogged) {
-      //       console.log('Não emitiu o evento')
-      //       this.taskTokenUserEventRequest(data)
-      //         .then((res) => {
-      //           // this.apiUserRequest(data)
-      //           console.log('tentando criar novo usuário')
-      //         })
-      //         .catch((err) => {
-      //           console.log(err)
-      //         })
-      //     } else {
-      //       console.log('Já emitiu o evento')
-      //       // this.apiUserRequest(data)
-      //     }
-      //   })
-      //   .catch((err) => {
-      //     throw new Error(err);
-      //   })
+        .catch((err) => {
+          this.errors = [
+            'Houve um erro ao verificar os eventos da rede, tente novamente mais tarde',
+          ]
+        })
+    },
+    checkTaskTokenUserEventLog(data) {
+      return taskTokenService
+        .eventUserSignedUp(this.$smartContract, this.getWalletAddress)
+        .then((receipt) => {
+          var nickname = ''
+          if (receipt[0] && receipt[0].returnValues[1])
+            nickname = receipt[0].returnValues[1]
+
+          return data.userName == nickname
+        })
     },
     async taskTokenUserEventRequest(data) {
-      var res = await this.$smartContract.methods
-        .userSignedUp(data.userName)
-        .send(
-          { from: this.$store.state.wallet.walletAddress },
-          function (error, transactionHash) {
-            console.log(error, transactionHash)
-          }
-        )
-        console.log(res);
+      await taskTokenService.sendUserSignedUp(
+        this.$smartContract,
+        data.userName,
+        this.getWalletAddress
+      )
     },
     apiUserRequest(data) {
       this.$axios
@@ -146,11 +142,14 @@ export default {
           this.$router.push('/schedule')
         })
         .catch((err) => {
-          if (err.response.data.messages) {
-            this.errors = err.response.data.messages
-            return
-          }
-          this.errors = ['Problemas internos, tente mais tarde']
+          if (!navigator.onLine)
+            this.errors = [
+              'Você está offline. Se você já pagou a transação não precisará pagar novamente, apenas use o mesmo nickname',
+            ]
+          else
+            this.errors = [
+              'Houve um erro. Se você já pagou a transação não precisará pagar novamente, apenas use o mesmo nickname',
+            ]
         })
     },
   },
