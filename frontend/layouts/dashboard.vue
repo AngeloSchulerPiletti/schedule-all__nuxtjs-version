@@ -36,7 +36,7 @@ import ConfirmationModal from "@/components/templates/Modals/ConfirmationModal";
 import InviteFriendModal from '@/components/templates/Modals/InviteFriendModal.vue';
 
 export default {
-  middleware: 'auth',
+  middleware: ['auth', 'wallet_connection'],
   computed: {
     userData() {
       return this.$cookies.get('userData');

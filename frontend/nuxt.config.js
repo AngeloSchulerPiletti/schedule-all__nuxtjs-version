@@ -28,7 +28,7 @@ export default {
   },
 
   router: {
-    middleware: 'wallet_connection',
+    // middleware: 'wallet_connection',
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
