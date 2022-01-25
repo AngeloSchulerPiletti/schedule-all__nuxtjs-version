@@ -54,10 +54,22 @@ namespace backend.Business.Implementations
         {
             var signedUpEventHandler = _anonymousWeb3.Eth.GetEvent<SignedUpUserEventDTO>(_configuration.TaskTokenContractAddress);
 
-            var filterSignedUpUserEvents = signedUpEventHandler.CreateFilterInput(walletAddress, userName);
+            var filterSignedUpUserEvents = signedUpEventHandler.CreateFilterInput(walletAddress);
             var signedUpUserEvents = signedUpEventHandler.GetAllChangesAsync(filterSignedUpUserEvents);
+            var signedUpUserEventsResponse = signedUpUserEvents.Result;
 
-            return new MessageBadgeVO(new List<string> { "Please, check out the CheckIfSignUpWasEmitted function" });
+
+            if(signedUpUserEventsResponse.Count > 0)
+            {
+                for (int i = 0; i < signedUpUserEventsResponse.Count; i++)
+                {
+                    if(signedUpUserEventsResponse[i].Event.UserName == userName)
+                    {
+                        return new MessageBadgeVO(new List<string> { "O nickname corresponde ao nickname emitido pelo contrato" }, false);
+                    }
+                }
+            }
+            return new MessageBadgeVO(new List<string> { "O nickname enviado não corresponde ao nickname pago" });
         }
     }
 }

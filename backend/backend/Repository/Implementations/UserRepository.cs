@@ -154,7 +154,7 @@ namespace backend.Repository
             }
 
 
-            if (user.WalletAddress.Length != 40) error.messages.Add("Endereço da wallet inválido");
+            if (user.WalletAddress.Length != 42) error.messages.Add("Endereço da wallet inválido");
             var walletPattern = @"^0x[a-fA-F0-9]{40}$";
             Match walletMatch = Regex.Match(user.WalletAddress, walletPattern);
             bool isWallet = walletMatch.Success;

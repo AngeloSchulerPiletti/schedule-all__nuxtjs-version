@@ -13,7 +13,7 @@ namespace backend.Data.DTO.Ethereum
         [Parameter("address", "_user", 1, true)]
         public string User { get; set; }
 
-        [Parameter("string", "_username", 1, true)]
+        [Parameter("string", "_username", 1, false)]
         public string UserName { get; set; }
     }
 }
