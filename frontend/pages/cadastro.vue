@@ -15,7 +15,7 @@
             ? 'button-1 btn-2'
             : 'button-disabled button-1 btn-2'
         "
-        @click="connectWallet"
+        @click="connectWalletIfMetaMask"
       >
         Conectar Wallet
       </button>
@@ -25,6 +25,7 @@
 
 <script>
 import FormPage from '@/components/containers/FormPage.vue'
+import {connectWallet} from '@/utils/walletConnectionManager.js'
 import taskTokenService from '@/services/taskTokenService.js'
 
 export default {
@@ -81,20 +82,12 @@ export default {
     },
   },
   methods: {
-    connectWallet() {
+    async connectWalletIfMetaMask() {
       if (this.hasMetaMask) {
-        this.$userWeb3.eth
-          .requestAccounts()
-          .then((accounts) => {
-            let walletAddress = accounts[0]
-            this.$store.dispatch('wallet/connectedWallet', walletAddress)
-          })
-          .catch((err) => {
-            //Dá nada, mas criar botão "universal" para a pessoa poder conectar enquanto não estiver conectada
-          })
+        await connectWallet(this.$userWeb3, this.$store);
       } else {
         this.errors.push(
-          'Você pode usar o website sem a MetaMask, mas com ela você tem acesso a muitos outros recursos web3!'
+          'Você precisa da MetaMask para acessar os recursos do Schedule-All'
         )
       }
     },
