@@ -17,3 +17,4 @@ Every time your contract is updated and you run `truffle compile`, `truffle migr
 
 ### Ganache IP Address
 Check out your browser wallet to be sure you are connected to your local Ethereum Network (Ganache). If you're not, go to the wallet settings, then network, and update the URL there.
+Also, update de front-end `.env` file and the backend `appsettings.json` file.
