@@ -107,8 +107,7 @@ export default {
             this.taskTokenUserEventRequest(data).then(() => {
               this.apiUserRequest(data)
             })
-          }
-          this.apiUserRequest(data)
+          } else this.apiUserRequest(data)
         })
         .catch((err) => {
           this.errors = [
@@ -120,21 +119,34 @@ export default {
       return taskTokenService
         .eventUserSignedUp(this.$smartContract, this.getWalletAddress)
         .then((receipt) => {
-          var nickname = ''
-          if (receipt[0] && receipt[0].returnValues[1])
-            nickname = receipt[0].returnValues[1]
+          if (receipt.length > 0) {
+            var nicknames = []
+            for (let i = 0; i < receipt.length; i++) {
+              nicknames.push(receipt[i].returnValues[1])
+            }
+            var nicknamesStr = nicknames.join(', ')
 
-          return data.userName == nickname
+            if (nicknames.includes(data.userName)) {
+              return true
+            }
+            this.errors = [
+              `Você já pagou pelos seguintes nicknames: ${nicknamesStr}`,
+              `Para não pagar uma nova taxa utilize um dos nicknames já pagos`,
+              'Caso queira usar um nickname diferente, continue',
+            ]
+          }
+          return false
         })
     },
     async taskTokenUserEventRequest(data) {
-      await taskTokenService.sendUserSignedUp(
+      return await taskTokenService.sendUserSignedUp(
         this.$smartContract,
         data.userName,
         this.getWalletAddress
       )
     },
     apiUserRequest(data) {
+      data.walletAddress = this.getWalletAddress
       this.$axios
         .post('/v1/Signup/signup', data)
         .then((response) => {
@@ -142,7 +154,9 @@ export default {
           this.$router.push('/schedule')
         })
         .catch((err) => {
-          if (!navigator.onLine)
+          if (err.response && err.response.data.messages) {
+            this.errors = err.response.data.messages
+          } else if (!navigator.onLine)
             this.errors = [
               'Você está offline. Se você já pagou a transação não precisará pagar novamente, apenas use o mesmo nickname',
             ]

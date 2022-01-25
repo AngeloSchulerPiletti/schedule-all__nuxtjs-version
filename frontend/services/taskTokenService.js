@@ -12,8 +12,15 @@ export default class taskTokenService {
             )
     }
 
-    static async eventUserSignedUp(contract, wallet = null){
-        let eventFilter = wallet ? {filter: { _user: wallet }} : undefined;
+    static async eventUserSignedUp(contract, wallet = null) {
+        let eventFilter = wallet ? {
+            filter: { _user: wallet },
+            fromBlock: 0,
+            toBlock: 'latest'
+        } : {
+            fromBlock: 0,
+            toBlock: 'latest'
+        };
         return await contract.getPastEvents('SignedUpUser', eventFilter);
     }
 }
