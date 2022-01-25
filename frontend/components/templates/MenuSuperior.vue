@@ -11,6 +11,7 @@
       <div class="flex_c user_info">
         <span>{{ userData.userName }}</span>
         <span class="upper">{{ userData.fullName }}</span>
+        <NuxtLink to="/schedule/wallet"><span :class="`warn ${getWalletMessage[1]}`" v-html="getWalletMessage[0]"></span></NuxtLink>
       </div>
     </div>
     <div id="dashboard-options_container" class="flex_r">
@@ -50,6 +51,11 @@ export default {
     notificationIsNew() {
       return this.$store.state.notifications.newNotifications
     },
+    getWalletMessage(){
+      return this.$store.state.wallet.isTheConnectedWalletSigned ? 
+      [`wallet <b>correta</b>`, 'green'] : 
+      [`wallet <b>incorreta</b>`, 'red'];
+    }
   },
   watch: {},
   methods: {
@@ -127,6 +133,8 @@ export default {
     .user_info {
       justify-content: center;
       gap: 6px;
+      position: relative;
+      z-index: 10;
 
       span:nth-child(1) {
         font-size: 22px;
@@ -135,6 +143,23 @@ export default {
       span:nth-child(2) {
         font-size: 13px;
         font-weight: 400;
+      }
+
+      a, .warn{
+        font-size: 10px !important;
+        font-weight: 300 !important;
+        transition: transform 200ms;
+        &:hover{
+          transform: translateX(5px);
+        }
+      }
+      .warn{
+        &.red{
+          color: #c70000;
+        }
+        &.green{
+          color: #0eac00;
+        }
       }
     }
   }

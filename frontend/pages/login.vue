@@ -66,7 +66,7 @@ export default {
   methods: {
     async connectWalletIfMetaMask() {
       if (this.hasMetaMask) {
-        await connectWallet(this.$userWeb3, this.$store)
+        await connectWallet(this.$userWeb3, this.$store, this.$cookies)
       } else {
         this.errors.push(
           'Você precisa da MetaMask para acessar os recursos do Schedule-All'
