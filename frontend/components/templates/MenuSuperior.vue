@@ -11,7 +11,12 @@
       <div class="flex_c user_info">
         <span>{{ userData.userName }}</span>
         <span class="upper">{{ userData.fullName }}</span>
-        <NuxtLink to="/schedule/wallet"><span :class="`warn ${getWalletMessage[1]}`" v-html="getWalletMessage[0]"></span></NuxtLink>
+        <NuxtLink to="/schedule/wallet"
+          ><span
+            :class="`warn ${getWalletMessage[1]}`"
+            v-html="getWalletMessage[0]"
+          ></span
+        ></NuxtLink>
       </div>
     </div>
     <div id="dashboard-options_container" class="flex_r">
@@ -30,7 +35,7 @@
         <notification-wrapper />
       </div>
       <div class="button-modal_container">
-        <button><wallet /></button>
+        <button @click="goToWallet"><wallet /></button>
       </div>
       <div class="button-modal_container">
         <button><configuration /></button>
@@ -51,14 +56,24 @@ export default {
     notificationIsNew() {
       return this.$store.state.notifications.newNotifications
     },
-    getWalletMessage(){
-      return this.$store.state.wallet.isTheConnectedWalletSigned ? 
-      [`wallet <b>correta</b>`, 'green'] : 
-      [`wallet <b>incorreta</b>`, 'red'];
-    }
+    getWalletMessage() {
+      switch (this.$store.state.wallet.isTheConnectedWalletSigned) {
+        case null:
+          return [`wallet <b>desconectada</b>`, 'red']
+
+        case false:
+          return [`wallet <b>incorreta</b>`, 'red']
+
+        default:
+          return [`wallet <b>correta</b>`, 'green']
+      }
+    },
   },
   watch: {},
   methods: {
+    goToWallet() {
+      this.$router.push('/schedule/wallet')
+    },
     openInviteFriendModal() {
       this.$store.commit('changeInviteFriendModalVisibility')
     },
@@ -145,20 +160,21 @@ export default {
         font-weight: 400;
       }
 
-      a, .warn{
+      a,
+      .warn {
         font-size: 10px !important;
-        font-weight: 300 !important;
+        font-weight: 500 !important;
         transition: transform 200ms;
-        &:hover{
+        &:hover {
           transform: translateX(5px);
         }
       }
-      .warn{
-        &.red{
-          color: #c70000;
+      .warn {
+        &.red {
+          color: $check_red;
         }
-        &.green{
-          color: #0eac00;
+        &.green {
+          color: $check_green;
         }
       }
     }
