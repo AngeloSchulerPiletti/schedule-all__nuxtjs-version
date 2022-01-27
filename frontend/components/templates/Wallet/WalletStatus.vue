@@ -2,6 +2,9 @@
   <div id="wallet-status-container" class="flex_c wrapper border-soft">
     <h6 class="upper flex_r">
       Status da wallet <connection :class="`status-${isWalletSigned}`" />
+      <transition name="fade"
+        ><span v-show="wasUpdated">Atualizado!</span></transition
+      >
     </h6>
     <div id="explanation-container" class="flex_c up">
       <div :class="`status-container status-${isWalletSigned}`">
@@ -22,9 +25,15 @@
         </p>
       </div>
       <div class="actions flex_r">
-        <button class="button-3 btn-4_tiny">Atualizar</button>
+        <button @click="updateWallet" class="button-3 btn-4_tiny">
+          Atualizar
+        </button>
         <button
-          :class="!isWalletConnected ? 'button-1 btn-4_tiny' : 'button-disabled button-1 btn-4_tiny'"
+          :class="
+            !isWalletConnected
+              ? 'button-1 btn-4_tiny'
+              : 'button-disabled button-1 btn-4_tiny'
+          "
           @click="connectWallet"
         >
           Conectar
@@ -35,10 +44,18 @@
 </template>
 
 <script>
-import { connectWallet } from '@/utils/walletConnectionManager.js'
+import {
+  connectWallet,
+  checkWalletConnection,
+} from '@/utils/walletConnectionManager.js'
 import Connection from '@/components/icons/Connection.vue'
 
 export default {
+  data() {
+    return {
+      wasUpdated: false,
+    }
+  },
   computed: {
     isWalletConnected() {
       return this.$store.state.wallet.connected
@@ -53,6 +70,13 @@ export default {
   methods: {
     async connectWallet() {
       await connectWallet(this.$userWeb3, this.$store, this.$cookies)
+    },
+    async updateWallet() {
+      await checkWalletConnection(this.$store, this.$userWeb3, this.$cookies)
+      this.wasUpdated = true
+      setTimeout(() => {
+        this.wasUpdated = false
+      }, 3000)
     },
   },
   components: {
@@ -88,6 +112,10 @@ export default {
         }
       }
     }
+    span {
+      font-size: 0.6em;
+      margin-left: auto;
+    }
   }
   #explanation-container {
     gap: 16px;
@@ -103,7 +131,7 @@ export default {
       }
     }
     .actions {
-        gap: 10px;
+      gap: 10px;
     }
   }
 }
