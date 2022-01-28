@@ -45,6 +45,7 @@ export default {
     '~/plugins/node-web3.client.js',
     '~/plugins/smart-contract.client.js',
     '~/plugins/wallet_connection.client.js',
+    '~/plugins/unauthAxios.client.js',
   ],
 
   // Auto import components: https://go.nuxtjs.dev/config-components

@@ -15,10 +15,10 @@ export default function ({ $axios, redirect, $cookies }) {
     });
 
     $axios.onResponse(response => {
-        // console.log(response);
+        //
     });
 
     $axios.onError(error => {
-        console.log(error);
+        //
     });
 }
