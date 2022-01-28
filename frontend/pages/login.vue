@@ -78,6 +78,7 @@ export default {
         .post('/v1/Auth/signin', data.form_data)
         .then((response) => {
           this.$cookies.set('userData', response.data)
+          this.$axios.setToken(response.data.tokenData.accessToken, 'Bearer');
           this.$router.push('/schedule')
         })
         .catch((err) => {
