@@ -2,11 +2,15 @@
   <div id="wallet-status-container" class="flex_c wrapper border-soft">
     <h6 class="upper flex_r">
       Status da wallet <connection :class="`status-${isWalletSigned}`" />
-      <transition name="fade"
-        ><span v-show="wasUpdated">Atualizado!</span></transition
-      >
+      <pressable-button
+        class="show-status"
+        :goRight="false"
+        @state="listenState"
+        ><arrows
+      /></pressable-button>
     </h6>
-    <div id="explanation-container" class="flex_c up">
+    <transition name="dropping">
+    <div v-show="showStatus" id="explanation-container" class="flex_c up">
       <div :class="`status-container status-${isWalletSigned}`">
         <p v-if="isWalletSigned">
           A wallet conectada é a wallet que você utilizou no seu cadastro.
@@ -38,8 +42,12 @@
         >
           Conectar
         </button>
+        <transition name="fade"
+          ><span v-show="wasUpdated">Atualizado!</span></transition
+        >
       </div>
     </div>
+    </transition>
   </div>
 </template>
 
@@ -49,11 +57,14 @@ import {
   checkWalletConnection,
 } from '@/utils/walletConnectionManager.js'
 import Connection from '@/components/icons/Connection.vue'
+import Arrows from '@/components/icons/Arrows.vue'
+import PressableButton from '@/components/PressableButton.vue'
 
 export default {
   data() {
     return {
       wasUpdated: false,
+      showStatus: false,
     }
   },
   computed: {
@@ -78,9 +89,15 @@ export default {
         this.wasUpdated = false
       }, 3000)
     },
+    listenState(state) {
+      if (state == 'open') this.showStatus = true;
+      else this.showStatus = false
+    },
   },
   components: {
     Connection,
+    Arrows,
+    PressableButton,
   },
 }
 </script>
@@ -88,8 +105,8 @@ export default {
 <style lang="scss" scoped>
 #wallet-status-container {
   margin: 20px 30px 30px 20px;
-  padding: 20px;
-  gap: 22px;
+  padding: 12px 25px;
+  gap: 8px;
 
   &::before {
     border-radius: 8px;
@@ -100,9 +117,11 @@ export default {
   h6 {
     gap: 8px;
     align-items: center;
+
     svg {
       width: 0.85em;
       height: 0.85em;
+
       &::v-deep {
         & path {
           fill: $check_red;
@@ -112,9 +131,20 @@ export default {
         }
       }
     }
-    span {
-      font-size: 0.6em;
+
+    .show-status {
       margin-left: auto;
+
+      svg {
+        transform: rotate(90deg);
+        width: 30px;
+        height: 30px;
+        &::v-deep {
+          & path {
+            fill: #303030;
+          }
+        }
+      }
     }
   }
   #explanation-container {
@@ -132,6 +162,12 @@ export default {
     }
     .actions {
       gap: 10px;
+      align-items: flex-end;
+
+      span {
+        font-size: 0.6em;
+        margin-left: auto;
+      }
     }
   }
 }
